@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import Logo from '@/components/shared/logo';
 import Section from '@/components/shared/section';
 import NavSearch from '@/components/shared/navbar/nav-search';
@@ -6,9 +7,9 @@ import NavWallet from './nav-wallet';
 import NavCart from './nav-cart';
 import NavLocation from './nav-location';
 
-const ShopNavbar = () => {
+const ShopNavbar = forwardRef<HTMLElement>((props, ref) => {
   return (
-    <Section className="bg-primary-light sticky top-0 z-30">
+    <Section ref={ref} className="bg-primary-light sticky top-0 z-30">
       {/* Desktop */}
       <div className="hidden w-full items-center justify-between gap-6 lg:flex">
         <div className="flex w-full items-center gap-6">
@@ -36,6 +37,8 @@ const ShopNavbar = () => {
       </div>
     </Section>
   );
-};
+});
+
+ShopNavbar.displayName = 'ShopNavbar';
 
 export default ShopNavbar;

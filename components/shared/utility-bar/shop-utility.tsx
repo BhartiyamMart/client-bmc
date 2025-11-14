@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, forwardRef } from 'react';
 import CategoryItem from '@/components/shared/utility-bar/category-item';
 import ShopByCategory from '@/components/shared/utility-bar/shop-by-category';
 import CategorySidebar from '@/components/shared/utility-bar/category-sidebar';
@@ -15,13 +15,37 @@ const CATEGORIES = [
   { name: 'Brands', icon: '/temp/d.png' },
 ] as const;
 
-const ShopUtility = () => {
+interface ShopUtilityProps {
+  navbarRef?: React.RefObject<HTMLElement | null>; // Accept null in the type
+}
+
+const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef }, ref) => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarPosition, setSidebarPosition] = useState({ top: 0, left: 0 });
   const [isPositionSet, setIsPositionSet] = useState(false);
+  const [navbarHeight, setNavbarHeight] = useState(90);
   const buttonRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Calculate navbar height dynamically
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      if (navbarRef?.current) {
+        const height = navbarRef.current.offsetHeight;
+        setNavbarHeight(height);
+      }
+    };
+
+    updateNavbarHeight();
+    window.addEventListener('resize', updateNavbarHeight);
+
+    if (document.fonts) {
+      document.fonts.ready.then(updateNavbarHeight);
+    }
+
+    return () => window.removeEventListener('resize', updateNavbarHeight);
+  }, [navbarRef]);
 
   useEffect(() => {
     if (!sidebarOpen) return;
@@ -75,7 +99,7 @@ const ShopUtility = () => {
 
   return (
     <>
-      {/* Backdrop Overlay - z-40 */}
+      {/* Backdrop Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/40"
@@ -86,10 +110,13 @@ const ShopUtility = () => {
         />
       )}
 
-      {/* Navigation Bar - z-50 to stay above backdrop */}
-      <nav className="sticky top-[90px] z-30 hidden w-full items-center justify-center bg-white shadow-sm md:flex">
+      {/* Navigation Bar - Dynamic top position */}
+      <nav
+        ref={ref}
+        className="sticky z-30 hidden w-full items-center justify-center bg-white shadow-sm md:flex"
+        style={{ top: `${navbarHeight}px` }}
+      >
         <Container className="flex items-center gap-2.5 p-3 md:px-4 lg:px-5">
-          {/* Shop by Category Button - z-50 with relative positioning */}
           <div ref={buttonRef} className="relative z-50">
             <ShopByCategory isOpen={sidebarOpen} onToggle={setSidebarOpen} />
           </div>
@@ -104,7 +131,7 @@ const ShopUtility = () => {
         </Container>
       </nav>
 
-      {/* Category Sidebar - z-50 to be above backdrop */}
+      {/* Category Sidebar */}
       {sidebarOpen && isPositionSet && (
         <div ref={sidebarRef}>
           <CategorySidebar
@@ -118,6 +145,8 @@ const ShopUtility = () => {
       )}
     </>
   );
-};
+});
+
+ShopUtility.displayName = 'ShopUtility';
 
 export default ShopUtility;

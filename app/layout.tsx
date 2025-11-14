@@ -1,4 +1,6 @@
+import './cstyle.css';
 import './globals.css';
+
 import Script from 'next/script';
 import NextTopLoader from 'nextjs-toploader';
 

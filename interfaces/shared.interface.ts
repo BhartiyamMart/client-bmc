@@ -22,7 +22,7 @@ export interface IBanner {
   title: string;
   priority: number;
   imageUrlSmall: string;
-  imageUrlMedium: string;
+  imageUrlMedium?: string;
   imageUrlLarge: string;
   bannerUrl: string;
   description: string;

@@ -8,14 +8,14 @@ import ShopUtility from '@/components/shared/utility-bar/shop-utility';
 import FeaturedCategory from '@/components/pages/shop/featured-category';
 
 const ShopPage = () => {
-  const navbarRef = useRef<HTMLElement>(null); // Changed from HTMLDivElement
+  const navbarRef = useRef<HTMLElement>(null);
 
   return (
     <main className="">
       <ShopNavbar ref={navbarRef} />
       <ShopUtility navbarRef={navbarRef} />
       <FeaturedBanner />
-      {/* <FeaturedCategory /> */}
+      <FeaturedCategory />
       <FooterBar />
     </main>
   );

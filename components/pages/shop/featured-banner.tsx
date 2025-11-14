@@ -109,7 +109,7 @@ const FeaturedBanner = () => {
                       src={banner.imageUrlSmall}
                       alt={banner.title || 'Featured Banner'}
                       fill
-                      className="rounded-[12px] object-cover"
+                      className="rounded-[12px] object-cover select-none"
                       sizes="(max-width: 1024px) 100vw, 0px"
                       priority={banner.priority === 1}
                     />
@@ -121,7 +121,7 @@ const FeaturedBanner = () => {
                       src={banner.imageUrlLarge}
                       alt={banner.title || 'Featured Banner'}
                       fill
-                      className="rounded-2xl object-cover"
+                      className="rounded-2xl object-cover select-none"
                       sizes="(min-width: 1024px) 100vw, 0px"
                       priority={banner.priority === 1}
                     />

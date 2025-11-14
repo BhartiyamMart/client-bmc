@@ -33,21 +33,19 @@ const NavLocation = () => {
   const displayAddress = location?.display_address || 'Select location';
 
   return (
-    <>
-      <div
-        className="max-w-[320px] min-w-0 flex-1 cursor-pointer text-left leading-tight"
-        onClick={() => setShowLocationModal(true)}
-      >
-        <p ref={titleRef} className="w-fit truncate text-xl font-semibold text-gray-900">
-          Delivery in 15 minutes
-        </p>
+    <div
+      className="max-w-[320px] min-w-0 flex-1 cursor-pointer text-left leading-tight"
+      onClick={() => setShowLocationModal(true)}
+    >
+      <p ref={titleRef} className="w-fit truncate text-xl font-semibold text-gray-900">
+        Delivery in 15 minutes
+      </p>
 
-        <p className="relative flex items-end gap-2" style={{ width: titleWidth ? `${titleWidth + 30}px` : 'auto' }}>
-          <span className="block truncate text-sm text-gray-600">{displayAddress}</span>
-          <TriangleDown className="w-[25px]" />
-        </p>
-      </div>
-    </>
+      <p className="relative flex items-end gap-2" style={{ width: titleWidth ? `${titleWidth + 30}px` : 'auto' }}>
+        <span className="block truncate text-sm text-gray-600">{displayAddress}</span>
+        <TriangleDown className="w-[25px]" />
+      </p>
+    </div>
   );
 };
 

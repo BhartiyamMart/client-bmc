@@ -1,10 +1,9 @@
 'use client';
 
-import { useLocationStore } from '@/stores/useLocation.store';
-import { TriangleDown } from '../svg-icon';
 import { useRef, useEffect, useState } from 'react';
-import LocationModal from '@/components/modals/location-modal';
+import { TriangleDown } from '@/components/shared/svg-icon';
 import { useLocationCheck } from '@/hooks/useLocationCheck';
+import { useLocationStore } from '@/stores/useLocation.store';
 
 const NavLocation = () => {
   const titleRef = useRef<HTMLParagraphElement>(null);
@@ -48,8 +47,6 @@ const NavLocation = () => {
           <TriangleDown className="w-[25px]" />
         </p>
       </div>
-
-      
     </>
   );
 };

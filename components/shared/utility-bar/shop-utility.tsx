@@ -95,8 +95,6 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
     };
   }, [sidebarOpen]);
 
-  if (pathname !== '/') return null;
-
   return (
     <>
       {/* Backdrop Overlay */}

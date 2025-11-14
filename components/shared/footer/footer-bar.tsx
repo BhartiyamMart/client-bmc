@@ -8,8 +8,8 @@ import {
   HomeBottomNavIcon,
   WalletBottomNavIcon,
 } from '@/components/shared/svg-icon';
-import Section from './section';
-import Container from './container';
+import Section from '../section';
+import Container from '../container';
 
 // Types
 type TabId = 'shop' | 'explore' | 'saveItems' | 'wallet';
@@ -94,7 +94,7 @@ const FooterBar = () => {
         <nav
           role="navigation"
           aria-label="Bottom navigation"
-          className="xs:mb-2 xs:p-1.5 mb-1.5 rounded-full border border-gray-100 bg-white/95 p-1 shadow-[0px_0px_2px_0px_#00000040] sm:p-2"
+          className="xs:mb-2 xs:p-1.5 mb-1.5 rounded-full border border-gray-100 bg-white p-1 shadow-[0px_0px_2px_0px_#00000040] sm:p-2"
         >
           <div className="xs:gap-1 flex items-stretch justify-around gap-0.5">
             {TABS.map((tab) => {

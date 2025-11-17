@@ -62,3 +62,9 @@ export interface ICategory {
   link: string;
   img: string;
 }
+
+export interface IStoreType {
+  title: string;
+  img: string;
+  para: string;
+}

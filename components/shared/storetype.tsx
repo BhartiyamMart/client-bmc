@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { ContactForm } from './contact/contact-form';
-// import { storeTypes } from '@/data/landingstore'; // adjust path as needed
+import { storeTypes } from '@/data/landingStore';
 import { Mail, Phone } from './svg-icon';
 const StoreType = () => {
   return (
@@ -19,7 +19,7 @@ const StoreType = () => {
             </h2>
           </header> */}
 
-          {/* <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
             {storeTypes.map((card) => (
               <article key={card.title} className="relative overflow-hidden rounded-lg shadow-md">
                 <Image
@@ -36,13 +36,13 @@ const StoreType = () => {
                 </div>
               </article>
             ))}
-          </div> */}
+          </div>
         </div>
       </section>
 
       <section
         id="contact"
-        className="w-full bg-[url('/img/contact_bg.jpg')] bg-cover bg-fixed bg-center px-5 sm:px-6 lg:px-10"
+        className="w-full bg-[url('/images/partner-with-us/contact_bg.webp')] bg-cover bg-fixed bg-center px-5 sm:px-6 lg:px-10"
       >
         <div className="mx-auto mt-10 max-w-7xl pt-10 pb-20">
           <header className="mb-8 text-center"></header>

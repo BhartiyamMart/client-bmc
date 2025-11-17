@@ -7,6 +7,7 @@ import ShopUtility from '@/components/shared/utility-bar/shop-utility';
 import FeaturedCategory from '@/components/pages/shop/featured-category';
 import FooterBar from '@/components/shared/footer/footer-bar';
 import Footer from '@/components/shared/footer/footer';
+import Rest from './test';
 
 const ShopPage = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -16,6 +17,7 @@ const ShopPage = () => {
       <ShopNavbar ref={navbarRef} />
       <ShopUtility navbarRef={navbarRef} />
       <FeaturedBanner />
+      {/* <Rest /> */}
       <FeaturedCategory />
       <FooterBar />
       <Footer />

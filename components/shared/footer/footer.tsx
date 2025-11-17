@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Logo from '@/components/shared/logo';
-
+import { PhonePay, MasterCard, Visa, BhimPay } from '@/components/shared/svg-icon';
 const Footer = () => {
   const socialLinks = [
     {
@@ -68,7 +68,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative mb-20 border-t border-gray-200 bg-white px-4 py-6 sm:px-6 md:px-8 md:py-10 lg:mb-0 lg:px-20">
+    <footer className="relative mb-14 border-t border-gray-200 bg-white px-4 py-6 sm:px-6 md:px-8 md:py-10 lg:mb-0 lg:px-20">
       <div className="mx-auto max-w-[1439px]">
         <div className="mx-auto grid max-w-[1539px] gap-8 text-sm text-gray-700 md:gap-12 lg:grid-cols-3">
           {/* Logo + Social Section */}
@@ -130,7 +130,12 @@ const Footer = () => {
           {/* Payment Methods Section */}
           <div className="lg:col-span-1">
             <p className="mb-3 text-sm font-semibold text-gray-800 sm:text-base">We accept payment</p>
-            {/* Add your payment method icons here */}
+            <div className="flex items-center gap-3">
+              <BhimPay />
+              <PhonePay />
+              <Visa />
+              <MasterCard />
+            </div>
           </div>
         </div>
       </div>

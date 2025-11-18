@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     // 👇 Add the allowed quality values here
     qualities: [25, 50, 75, 85, 90, 100],
 

@@ -1,6 +1,6 @@
 import AboutContent from './about-content';
 import { ContactForm } from '../contact/contact-form';
-import { Mail, Phone } from '@/components/shared/svg-icon';
+import { Mail, Phone } from '@/components/shared/svg/svg-icon';
 const About = () => {
   return (
     <div>

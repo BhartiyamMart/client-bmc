@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { storeList } from '@/apis/location.api';
 import { useLocationStore } from '@/stores/useLocation.store';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CloseIcon, LocateFixed, MapPin, OopsIcon } from '@/components/shared/svg-icon';
+import { CloseIcon, LocateFixed, MapPin, OopsIcon } from '@/components/shared/svg/svg-icon';
 
 // Constants
 const DEBOUNCE_DELAY = 500;

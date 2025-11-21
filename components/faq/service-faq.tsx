@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Minus, Plus } from '../shared/svg-icon';
+import { Minus, Plus } from '../shared/svg/svg-icon';
 
 interface FaqAboutus {
   question: string;

@@ -4,7 +4,7 @@ import Icon from '@/components/shared/icon';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
-import { ProfileIcon } from '@/components/shared/svg-icon';
+import { ProfileIcon } from '@/components/shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
 
 const NavProfile = () => {

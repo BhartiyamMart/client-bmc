@@ -1,4 +1,4 @@
-import { Clock } from '../svg-icon';
+import { Clock } from '../svg/svg-icon';
 import CareerForm from './career-form';
 
 const CareerPage = () => {

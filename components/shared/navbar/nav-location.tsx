@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { TriangleDown } from '@/components/shared/svg-icon';
+import { TriangleDown } from '@/components/shared/svg/svg-icon';
 import { useLocationCheck } from '@/hooks/useLocationCheck';
 import { useLocationStore } from '@/stores/useLocation.store';
 

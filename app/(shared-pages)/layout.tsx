@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useRef, useEffect, useState } from 'react';
+
 import Footer from '@/components/shared/footer/footer';
 import SharedNavbar from '@/components/shared/navbar/shared-navbar';
 

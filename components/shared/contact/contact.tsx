@@ -1,5 +1,5 @@
 import { ContactForm } from './contact-form';
-import { Mail, Phone, Clock } from '@/components/shared/svg-icon';
+import { Mail, Phone, Clock } from '@/components/shared/svg/svg-icon';
 const Contact = () => {
   return (
     <>

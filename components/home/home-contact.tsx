@@ -1,5 +1,5 @@
 import { ContactForm } from '@/components/shared/contact/contact-form';
-import { Mail, Phone } from '@/components/shared/svg-icon';
+import { Mail, Phone } from '@/components/shared/svg/svg-icon';
 
 const HomeContact = () => {
   return (

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, CloseIcon } from '../shared/svg-icon';
+import { ArrowLeft, CloseIcon } from '../shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
 import { editProfile, sendOtp, verifyOtp } from '@/apis/auth.api';
 

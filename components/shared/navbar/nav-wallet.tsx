@@ -5,7 +5,7 @@ import Icon from '@/components/shared/icon';
 
 import { useCallback } from 'react';
 import { useAuthStore } from '@/stores/useAuth.store';
-import { WalletIcon } from '@/components/shared/svg-icon';
+import { WalletIcon } from '@/components/shared/svg/svg-icon';
 import toast from 'react-hot-toast';
 
 const NavWallet = () => {

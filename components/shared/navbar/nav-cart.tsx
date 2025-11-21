@@ -1,7 +1,7 @@
 'use client';
 
 import Icon from '@/components/shared/icon';
-import { CartIcon } from '@/components/shared/svg-icon';
+import { CartIcon } from '@/components/shared/svg/svg-icon';
 
 const NavCart = () => {
   return (

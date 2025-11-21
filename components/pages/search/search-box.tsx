@@ -4,7 +4,7 @@ import { useRouter } from 'nextjs-toploader/app';
 import { useSearchParams } from 'next/navigation';
 import { useRef, useEffect, useState } from 'react';
 import { ISearchProps } from '@/interfaces/shared.interface';
-import { ArrowLeft, CloseIcon, SearchIcon } from '@/components/shared/svg-icon';
+import { ArrowLeft, CloseIcon, SearchIcon } from '@/components/shared/svg/svg-icon';
 
 const SearchBox: React.FC<ISearchProps> = ({ isMobile = false }) => {
   const [query, setQuery] = useState('');

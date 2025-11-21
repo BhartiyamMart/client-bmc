@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import FaqAboutus from '../faq/service-faq';
 
-import { Mail, Phone } from './svg-icon';
+import { Mail, Phone } from './svg/svg-icon';
 import { ContactForm } from './contact/contact-form';
 import { Card, CardContent } from '@/components/ui/card';
 

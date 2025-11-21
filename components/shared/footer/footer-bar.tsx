@@ -7,7 +7,7 @@ import {
   ExploreBottomNavIcon,
   HomeBottomNavIcon,
   WalletBottomNavIcon,
-} from '@/components/shared/svg-icon';
+} from '@/components/shared/svg/svg-icon';
 import Section from '../section';
 import Container from '../container';
 

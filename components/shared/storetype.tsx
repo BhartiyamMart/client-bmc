@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { ContactForm } from './contact/contact-form';
 import { storeTypes } from '@/data/landingStore';
-import { Mail, Phone } from './svg-icon';
+import { Mail, Phone } from './svg/svg-icon';
 const StoreType = () => {
   return (
     <>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SearchIcon } from '@/components/shared/svg-icon';
+import { SearchIcon } from '@/components/shared/svg/svg-icon';
 import { ISearchProps } from '@/interfaces/shared.interface';
 
 const NavSearch: React.FC<ISearchProps> = ({ isMobile = false }) => {

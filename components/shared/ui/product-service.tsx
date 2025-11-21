@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 
 import Image from 'next/image';
-import FaqAboutus from '@/components/faq/service-faq';
+import ServiceFaq from '@/components/faq/service-faq';
 import HomeContact from '@/components/home/home-contact';
 
 const ProductService = () => {
@@ -189,7 +189,7 @@ const ProductService = () => {
       {/* FAQ Section */}
       <section className="bg-gray-50 py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <FaqAboutus />
+          <ServiceFaq />
         </div>
       </section>
 

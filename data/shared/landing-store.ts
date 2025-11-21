@@ -55,7 +55,7 @@ export const storeLogos = [
   { id: 24, src: '/images/partner-with-us/24.webp', alt: 'Snickers' },
 ];
 
-export const faqs: IFaqData[] = [
+export const serviceFaqs: IFaqData[] = [
   {
     question: 'Q1. What kind of products can I buy at Bhartiyam Mart?',
     answer: 'A1. Groceries, fruits, vegetables, dairy, packaged food, beverages, household items, and more.',
@@ -71,5 +71,28 @@ export const faqs: IFaqData[] = [
   {
     question: 'Q4. Can I order online?',
     answer: 'A4. Yes, you can place your orders via our WhatsApp, website, or app.',
+  },
+];
+
+export const partnerFaqs: IFaqData[] = [
+  {
+    question: 'Q1. Who can partner with Bhartiyam?',
+    answer:
+      'A1: Suppliers, manufacturers, distributors, wholesalers, logistics providers, and corporate businesses looking for collaboration in the retail and Fast Moving Consumer Goods (FMCG) sector.',
+  },
+  {
+    question: 'Q2. What benefits do Bhartiyam partners receive? ',
+    answer:
+      'A2. Partners enjoy brand credibility, large customer reach, and long-term growth opportunities in the expanding FMCG market. ',
+  },
+  {
+    question: 'Q3. How do I apply to become a partner? ',
+    answer:
+      'A3. You can reach out to us through our Partnership Contact Form or directly via email/phone. Our business development team will connect with you.  ',
+  },
+  {
+    question: 'Q4. Does Bhartiyam provide exclusive regional distribution rights? ',
+    answer:
+      'A4. Yes, based on evolution and demand, we offer regional and category-specific partnerships for distribution and retailers.',
   },
 ];

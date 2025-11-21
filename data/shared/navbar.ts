@@ -4,5 +4,5 @@ export const SharedNavbarMenu = [
   { href: '/store-type', label: 'Store Types' },
   { href: '/product-service', label: 'Products & Services' },
   { href: '/partner-bhartiyam', label: 'Partners With Us' },
-  { href: '/contact-us', label: 'Contact' },
+  { href: '/contact-us', label: 'Contact Us' },
 ];

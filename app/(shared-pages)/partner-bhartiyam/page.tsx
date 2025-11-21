@@ -1,3 +1,4 @@
+import PartnerBhartiyam from '@/components/shared/ui/partner-bhartiyam';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const page = () => {
-  //   return <PartnerBhartiyam />;
+  return <PartnerBhartiyam />;
 };
 
 export default page;

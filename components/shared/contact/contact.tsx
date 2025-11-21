@@ -1,54 +1,67 @@
 import { ContactForm } from './contact-form';
 import { Mail, Phone, Clock } from '@/components/shared/svg/svg-icon';
+
 const Contact = () => {
   return (
     <>
+      {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto mt-20 max-w-7xl px-5 pt-10 pb-10 sm:mt-25 sm:px-0 md:mt-25 lg:mt-25">
-          <h1 className="text-2xl font-semibold text-balance text-black sm:text-xl md:text-2xl">Contact Us</h1>
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">Contact Us</h1>
         </div>
       </section>
-      <section className="relative overflow-hidden py-16">
-        <div className="mx-auto max-w-7xl px-5 sm:px-0">
-          <div className="grid items-start gap-12 lg:grid-cols-7">
+
+      {/* Contact Content Section */}
+      <section className="w-full bg-white py-12 md:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-7 lg:gap-12">
             {/* Contact Information */}
             <div className="space-y-8 lg:col-span-4">
               <div>
-                <p className="mb-0 text-2xl font-semibold text-gray-900">Office:</p>
-                <p className="leading-relaxed text-gray-600">New Delhi, India</p>
+                <h2 className="mb-2 text-2xl font-semibold text-gray-900">Office</h2>
+                <p className="text-base leading-relaxed text-gray-600">New Delhi, India</p>
               </div>
 
               <div>
-                <p className="mb-2 text-xl font-semibold text-gray-900">Talk to Us Directly</p>
-                <p className="mb-2 flex text-gray-900">
-                  <strong className="flex">
-                    <Phone className="mr-1.5 w-4" /> Phone: &nbsp;
-                  </strong>{' '}
-                  +91 8800033044
-                </p>
-                <span className="flex text-gray-600">
-                  {' '}
-                  <Clock className="mr-1.5 w-4" /> (Available: Mon–Sat | 06:30 AM –10:00 PM)
-                </span>
-              </div>
-
-              <div>
-                <p className="mb-2 text-xl font-semibold text-gray-900">Drop Us an Email</p>
+                <h3 className="mb-3 text-xl font-semibold text-gray-900">Talk to Us Directly</h3>
                 <div className="space-y-2">
-                  <p className="flex text-black">
-                    <strong className="flex">
-                      {' '}
-                      <Mail className="mr-1.5 w-4" /> For Support:
-                    </strong>{' '}
-                    &nbsp; care@bhartiyam.in
-                  </p>
-                  <p className="flex text-black">
-                    <strong className="flex">
-                      {' '}
-                      <Mail className="mr-1.5 w-4" /> General Enquiry:
-                    </strong>
-                    &nbsp; info@bhartiyam.in
-                  </p>
+                  <div className="flex items-start gap-2">
+                    <Phone className="mt-1 w-4 flex-shrink-0 text-orange-600" />
+                    <div>
+                      <span className="text-base font-semibold text-gray-900">Phone:</span>{' '}
+                      <a href="tel:+918800033044" className="text-base text-gray-900 hover:text-orange-600">
+                        +91 8800033044
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Clock className="mt-1 w-4 flex-shrink-0 text-orange-600" />
+                    <span className="text-base text-gray-600">(Available: Mon–Sat | 06:30 AM – 10:00 PM)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="mb-3 text-xl font-semibold text-gray-900">Drop Us an Email</h3>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2">
+                    <Mail className="mt-1 w-4 flex-shrink-0 text-orange-600" />
+                    <div>
+                      <span className="text-base font-semibold text-gray-900">For Support:</span>{' '}
+                      <a href="mailto:care@bhartiyam.in" className="text-base text-gray-900 hover:text-orange-600">
+                        care@bhartiyam.in
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Mail className="mt-1 w-4 flex-shrink-0 text-orange-600" />
+                    <div>
+                      <span className="text-base font-semibold text-gray-900">General Enquiry:</span>{' '}
+                      <a href="mailto:info@bhartiyam.in" className="text-base text-gray-900 hover:text-orange-600">
+                        info@bhartiyam.in
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -72,6 +85,7 @@ const Contact = () => {
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           className="w-full"
+          title="Bhartiyam Office Location"
         />
       </section>
     </>

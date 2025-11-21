@@ -77,8 +77,8 @@ const FeaturedCategory = () => {
   return (
     <Section className="">
       <Container>
-        <SectionTitle title="Top Category" />
-        <div className="mt-4">
+        {/* <SectionTitle title="Top Category" /> */}
+        <div className="">
           <Slider
             cards={cards}
             slidesToShow={6}

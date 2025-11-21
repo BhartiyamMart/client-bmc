@@ -332,9 +332,9 @@ const LocationModal = () => {
   if (!showLocationModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={handleBackdropClick}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={handleBackdropClick}>
       <div
-        className="relative w-full max-w-xl overflow-hidden rounded-lg bg-white shadow-xl"
+        className="relative w-full max-w-xl overflow-hidden rounded bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Loading Overlay */}
@@ -352,7 +352,7 @@ const LocationModal = () => {
           {hasValidLocation && (
             <button
               onClick={handleClose}
-              className="absolute top-3 right-3 rounded-full p-1.5 text-gray-600 transition-colors hover:bg-gray-100"
+              className="absolute top-3 right-3 cursor-pointer rounded-full p-1.5 text-gray-600 transition-colors hover:bg-gray-100"
               aria-label="Close"
             >
               <CloseIcon className="h-5 w-5" />
@@ -396,7 +396,7 @@ const LocationModal = () => {
             <button
               onClick={handleDetectLocation}
               disabled={isDetecting || isCheckingStore || !isScriptLoaded}
-              className="flex items-center justify-center gap-2 rounded bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex cursor-pointer items-center justify-center gap-2 rounded bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70"
             >
               <LocateFixed className={`h-4 w-4 ${isDetecting ? 'animate-pulse' : ''}`} />
               <span>{isDetecting ? 'Detecting...' : 'Detect'}</span>

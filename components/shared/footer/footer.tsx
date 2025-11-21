@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import Logo from '@/components/shared/logo';
-import { PhonePay, MasterCard, Visa, BhimPay } from '@/components/shared/svg-icon';
+import { PhonePay } from '../svg/phonepay';
+import { MasterCard } from '../svg/masterCard';
+import { Visa } from '../svg/visa';
+import { BhimPay } from '../svg/bhimpay';
 const Footer = () => {
   const socialLinks = [
     {
@@ -130,7 +133,7 @@ const Footer = () => {
           {/* Payment Methods Section */}
           <div className="lg:col-span-1">
             <p className="mb-3 text-sm font-semibold text-gray-800 sm:text-base">We accept payment</p>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <BhimPay />
               <PhonePay />
               <Visa />

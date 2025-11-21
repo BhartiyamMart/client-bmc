@@ -10,6 +10,7 @@ import { Toaster } from 'react-hot-toast';
 import { Work_Sans } from 'next/font/google';
 
 import ActiveModal from '@/components/modals/active-modal';
+import { ScrollToTop } from '@/components/shared/scroll-to-top';
 
 const globalFont = Work_Sans({
   subsets: ['latin'],
@@ -59,6 +60,7 @@ export default function RootLayout({
         <Toaster position="top-right" reverseOrder={false} />
         <ActiveModal />
         {children}
+        <ScrollToTop />
       </body>
     </html>
   );

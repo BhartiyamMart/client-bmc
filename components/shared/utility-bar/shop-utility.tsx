@@ -111,10 +111,10 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
       {/* Navigation Bar - Dynamic top position */}
       <nav
         ref={ref}
-        className="sticky z-30 hidden w-full items-center justify-center bg-white shadow-sm md:flex"
+        className="sticky z-30 hidden w-full items-center justify-center bg-white p-3 shadow-sm md:p-4 lg:flex lg:p-5"
         style={{ top: `${navbarHeight}px` }}
       >
-        <Container className="flex items-center gap-2.5 p-3 md:px-4 lg:px-5">
+        <Container className="flex items-center gap-2.5">
           <div ref={buttonRef} className="relative z-50">
             <ShopByCategory isOpen={sidebarOpen} onToggle={setSidebarOpen} />
           </div>

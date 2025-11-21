@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import { ICategory } from '@/interfaces/shared.interface';
 import { CategoryData } from '@/data/temp';
 import FeaturedCategorySkeleton from './featured-categorySkeleton';
-import Section from '@/components/shared/section';
-import Container from '@/components/shared/container';
-import SectionTitle from '@/components/shared/section-title';
-import Slider from '@/components/shared/slider';
+import Section from '@/components/shared/ui/section';
+import Container from '@/components/shared/ui/container';
+import SectionTitle from '@/components/shared/ui/section-title';
+import Slider from '@/components/shared/ui/slider';
 
 const FeaturedCategory = () => {
   const [loading, setLoading] = useState(true);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ShopByCategory from '@/components/shared/utility-bar/shop-by-category';
+import ShopByCategory from '@/components/shared/ui/utility-bar/shop-by-category';
 
 interface CategorySidebarProps {
   position: { top: number; left: number };

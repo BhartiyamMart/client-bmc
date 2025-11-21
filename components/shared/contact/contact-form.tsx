@@ -36,7 +36,7 @@ export function ContactForm({ email }: ContactFormProps) {
   }
 
   return (
-    <div className="rounded bg-white p-6 shadow-sm lg:p-8">
+    <div className="rounded bg-white p-6 shadow lg:p-8">
       <h2 className="mb-6 text-2xl font-bold text-gray-900">Submit Your Enquiry</h2>
 
       <form onSubmit={onSubmit} className="space-y-4">

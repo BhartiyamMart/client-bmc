@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
-import Logo from '@/components/shared/logo';
-import Section from '@/components/shared/section';
+import Logo from '@/components/shared/ui/logo';
+import Section from '@/components/shared/ui/section';
 import NavSearch from '@/components/shared/navbar/nav-search';
 import NavProfile from './nav-profile';
 import NavWallet from './nav-wallet';

@@ -8,12 +8,12 @@ const HomeContact = () => {
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           {/* Left Column - Contact Info */}
           <div className="space-y-6">
-            <div className="rounded bg-white p-6 shadow-sm">
+            <div className="rounded bg-white p-6">
               <h2 className="mb-3 text-2xl font-bold text-gray-900">Address</h2>
               <p className="text-base text-gray-700">New Delhi, India</p>
             </div>
 
-            <div className="space-y-3 rounded bg-white p-6 shadow-sm">
+            <div className="space-y-3 rounded bg-white p-6">
               <h3 className="mb-4 text-xl font-bold text-gray-900">Get In Touch</h3>
 
               <div className="flex items-start gap-3">

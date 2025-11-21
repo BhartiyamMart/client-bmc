@@ -1,4 +1,4 @@
-import AccountDelete from '@/components/shared/account-delete';
+import AccountDelete from '@/components/shared/ui/account-delete';
 
 const page = () => {
   return <AccountDelete />;

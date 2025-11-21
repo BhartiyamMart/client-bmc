@@ -2,11 +2,12 @@
 
 import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect, forwardRef } from 'react';
-import CategoryItem from '@/components/shared/utility-bar/category-item';
-import ShopByCategory from '@/components/shared/utility-bar/shop-by-category';
-import CategorySidebar from '@/components/shared/utility-bar/category-sidebar';
-import MembershipButton from '@/components/shared/utility-bar/membership-button';
-import Container from '../container';
+
+import Container from '@/components/shared/ui/container';
+import ShopByCategory from '@/components/shared/ui/utility-bar/shop-by-category';
+import CategoryItem from '@/components/shared/ui/utility-bar/category-item';
+import MembershipButton from '@/components/shared/ui/utility-bar/membership-button';
+import CategorySidebar from '@/components/shared/ui/utility-bar/category-sidebar';
 
 const CATEGORIES = [
   { name: 'Fruits & Vegetables', icon: '/temp/a.png' },

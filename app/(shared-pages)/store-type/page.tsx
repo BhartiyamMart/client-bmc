@@ -1,4 +1,4 @@
-import StoreType from '@/components/shared/storetype';
+import StoreType from '@/components/shared/ui/storetype';
 
 const page = () => {
   return <StoreType />;

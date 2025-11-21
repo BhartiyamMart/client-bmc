@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import Logo from '@/components/shared/logo';
-import Section from '@/components/shared/section';
+import Logo from '@/components/shared/ui/logo';
+import Section from '@/components/shared/ui/section';
 
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, forwardRef } from 'react';

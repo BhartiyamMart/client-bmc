@@ -1,4 +1,4 @@
-import ProductService from '@/components/shared/product-service';
+import ProductService from '@/components/shared/ui/product-service';
 
 const page = () => {
   return <ProductService />;

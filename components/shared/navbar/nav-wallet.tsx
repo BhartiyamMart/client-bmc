@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Icon from '@/components/shared/icon';
+import Icon from '@/components/shared/ui/icon';
 
 import { useCallback } from 'react';
 import { useAuthStore } from '@/stores/useAuth.store';

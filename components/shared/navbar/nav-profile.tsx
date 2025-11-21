@@ -1,6 +1,6 @@
 'use client';
 
-import Icon from '@/components/shared/icon';
+import Icon from '@/components/shared/ui/icon';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';

@@ -1,5 +1,5 @@
-import Logo from '@/components/shared/logo';
-import Section from '@/components/shared/section';
+import Logo from '@/components/shared/ui/logo';
+import Section from '@/components/shared/ui/section';
 import SearchBox from '@/components/pages/search/search-box';
 import NavCart from '@/components/shared/navbar/nav-cart';
 

@@ -12,8 +12,8 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import { IBanner } from '@/interfaces/shared.interface';
 import { getBanners } from '@/apis/content.api';
 import FeaturedBannerSkeleton from './featured-bannerSkeleton';
-import Section from '@/components/shared/section';
-import Container from '@/components/shared/container';
+import Section from '@/components/shared/ui/section';
+import Container from '@/components/shared/ui/container';
 
 const FeaturedBanner = () => {
   const [banners, setBanners] = useState<IBanner[]>([]);

@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import FaqAboutus from '../faq/service-faq';
+import FaqAboutus from '@/components/faq/service-faq';
 
-import { Mail, Phone } from './svg/svg-icon';
-import { ContactForm } from './contact/contact-form';
 import { Card, CardContent } from '@/components/ui/card';
+import { Mail, Phone } from '@/components/shared/svg/svg-icon';
+import { ContactForm } from '@/components/shared/contact/contact-form';
 
 const ProductService = () => {
   return (

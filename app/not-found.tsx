@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import ShopNavbar from '@/components/shared/navbar/shop-navbar';
 import Link from 'next/link';
 import { ArrowLeft } from '@/components/shared/svg/svg-icon';
-import ShopUtility from '@/components/shared/utility-bar/shop-utility';
+import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
 import { useRef } from 'react';
 import Footer from '@/components/shared/footer/footer';
 

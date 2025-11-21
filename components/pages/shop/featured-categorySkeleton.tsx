@@ -1,5 +1,5 @@
-import Container from '@/components/shared/container';
-import Section from '@/components/shared/section';
+import Container from '@/components/shared/ui/container';
+import Section from '@/components/shared/ui/section';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const FeaturedCategorySkeleton = () => {

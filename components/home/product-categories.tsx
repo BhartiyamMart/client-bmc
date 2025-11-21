@@ -1,4 +1,4 @@
-import SplitFeature from '@/components/shared/split-feature';
+import SplitFeature from '@/components/shared/ui/split-feature';
 
 const ProductCategories = () => {
   return (

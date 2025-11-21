@@ -8,8 +8,8 @@ import {
   HomeBottomNavIcon,
   WalletBottomNavIcon,
 } from '@/components/shared/svg/svg-icon';
-import Section from '../section';
-import Container from '../container';
+import Section from '../ui/section';
+import Container from '../ui/container';
 
 // Types
 type TabId = 'shop' | 'explore' | 'saveItems' | 'wallet';

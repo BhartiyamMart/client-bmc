@@ -1,8 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import Section from '@/components/shared/section';
-import Container from '@/components/shared/container';
+import Section from '@/components/shared/ui/section';
+import Container from '@/components/shared/ui/container';
 
 interface IBannerSkeletonProps {
   className?: string;

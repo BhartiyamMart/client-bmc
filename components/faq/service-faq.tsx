@@ -1,30 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Minus, Plus } from '../shared/svg/svg-icon';
-
-interface FaqAboutus {
-  question: string;
-  answer: string;
-}
-
-const faqs: FaqAboutus[] = [
-  {
-    question: 'Q1. What kind of products can I buy at Bhartiyam Mart?',
-    answer: 'A1. Groceries, fruits, vegetables, dairy, packaged food, beverages, household items, and more.',
-  },
-  {
-    question: 'Q2. Do you sell fresh fruits and vegetables daily?',
-    answer: 'A2. Yes! We stock farm-fresh fruits and vegetables every morning.',
-  },
-  {
-    question: 'Q3. Do you offer organic products?',
-    answer: 'A3. Yes, we have a dedicated section for organic and healthy living products.',
-  },
-  {
-    question: 'Q4. Can I order online?',
-    answer: 'A4. Yes, you can place your orders via our WhatsApp, website, or app.',
-  },
-];
+import { faqs } from '@/data/shared/landing-store';
 
 const FaqAboutus = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -34,7 +11,7 @@ const FaqAboutus = () => {
   };
 
   return (
-    <section className="bg-white px-5 py-0 sm:px-10 lg:px-20">
+    <section className="px-5">
       <h3 className="mb-8 text-3xl font-bold">FAQ&apos;s</h3>
       <div className="divide-y divide-gray-300">
         {faqs.map((faq, index) => (

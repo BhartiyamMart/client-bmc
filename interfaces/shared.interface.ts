@@ -78,3 +78,8 @@ export interface ISplitFeatureProps {
   image: string;
   onCtaClick?: () => void;
 }
+
+export interface IFaqData {
+  question: string;
+  answer: string;
+}

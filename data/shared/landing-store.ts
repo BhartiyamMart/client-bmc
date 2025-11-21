@@ -1,4 +1,4 @@
-import { IStoreType } from '@/interfaces/shared.interface';
+import { IFaqData, IStoreType } from '@/interfaces/shared.interface';
 
 export const storeTypes: IStoreType[] = [
   {
@@ -53,4 +53,23 @@ export const storeLogos = [
   { id: 22, src: '/images/partner-with-us/22.webp', alt: 'Snickers' },
   { id: 23, src: '/images/partner-with-us/23.webp', alt: 'Snickers' },
   { id: 24, src: '/images/partner-with-us/24.webp', alt: 'Snickers' },
+];
+
+export const faqs: IFaqData[] = [
+  {
+    question: 'Q1. What kind of products can I buy at Bhartiyam Mart?',
+    answer: 'A1. Groceries, fruits, vegetables, dairy, packaged food, beverages, household items, and more.',
+  },
+  {
+    question: 'Q2. Do you sell fresh fruits and vegetables daily?',
+    answer: 'A2. Yes! We stock farm-fresh fruits and vegetables every morning.',
+  },
+  {
+    question: 'Q3. Do you offer organic products?',
+    answer: 'A3. Yes, we have a dedicated section for organic and healthy living products.',
+  },
+  {
+    question: 'Q4. Can I order online?',
+    answer: 'A4. Yes, you can place your orders via our WhatsApp, website, or app.',
+  },
 ];

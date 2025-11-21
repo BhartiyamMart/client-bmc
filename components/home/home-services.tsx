@@ -43,7 +43,7 @@ const HomeServices = () => {
           {homeServices.map((s) => (
             <article
               key={s.title}
-              className="flex items-start gap-4 rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              className="flex cursor-pointer items-start gap-4 rounded border-2 bg-white p-5 transition hover:shadow"
             >
               <Image
                 src={s.icon || '/placeholder.svg'}

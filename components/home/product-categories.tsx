@@ -1,6 +1,6 @@
-import { SplitFeature } from '@/components/home/split-feature';
+import SplitFeature from '@/components/shared/split-feature';
 
-const HomeProductCategories = () => {
+const ProductCategories = () => {
   return (
     <SplitFeature
       title="Our Product Categories"
@@ -18,4 +18,4 @@ const HomeProductCategories = () => {
   );
 };
 
-export default HomeProductCategories;
+export default ProductCategories;

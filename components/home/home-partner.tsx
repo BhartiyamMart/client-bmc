@@ -1,4 +1,4 @@
-import { SplitFeature } from '@/components/home/split-feature';
+import SplitFeature from '../shared/split-feature';
 
 const HomePartner = () => {
   return (

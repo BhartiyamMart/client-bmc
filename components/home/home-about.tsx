@@ -32,7 +32,7 @@ const HomeAbout = () => {
           <div className="mt-8">
             <a
               href="/about-us"
-              className="inline-flex items-center justify-center rounded-md bg-orange-600 px-6 py-3 text-base font-medium text-white shadow-md transition-all duration-200 hover:bg-orange-700 hover:shadow-lg focus:ring-2 focus:ring-orange-600 focus:outline-none"
+              className="bg-primary hover:bg-primary/90 focus:ring-none inline-flex items-center justify-center rounded px-6 py-3 text-base font-medium text-white transition-all duration-200 focus:outline-none"
             >
               Learn More About Us
             </a>
@@ -41,7 +41,7 @@ const HomeAbout = () => {
 
         {/* Image Section */}
         <div className="flex justify-center md:col-span-5 md:justify-end">
-          <div className="w-full max-w-[420px] overflow-hidden rounded-xl shadow-lg md:max-w-[480px] lg:max-w-[520px]">
+          <div className="w-full max-w-[420px] overflow-hidden rounded md:max-w-[480px] lg:max-w-[520px]">
             <Image
               src="/images/about-us/ab_slide01.webp"
               alt="Bhartiyam store visuals"

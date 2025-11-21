@@ -2,7 +2,7 @@ import React from 'react';
 
 const DownloadApp: React.FC = () => {
   return (
-    <section className="mx-auto max-w-[1539px] overflow-hidden bg-orange-500">
+    <section className="bg-primary mx-auto max-w-[1539px] overflow-hidden">
       <div className="flex items-center justify-between px-6 py-10 md:px-20">
         {/* Marquee Text */}
         <div className="w-full overflow-hidden">

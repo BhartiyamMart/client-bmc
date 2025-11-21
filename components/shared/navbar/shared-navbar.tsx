@@ -6,6 +6,7 @@ import Section from '@/components/shared/section';
 
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, forwardRef } from 'react';
+import { SharedNavbarMenu } from '@/data/shared/navbar';
 
 interface SharedNavbarProps {
   shouldOverlay?: boolean;
@@ -15,15 +16,7 @@ const SharedNavbar = forwardRef<HTMLElement, SharedNavbarProps>(({ shouldOverlay
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const homeNavbarMenuLinks = [
-    { href: '/home', label: 'Home' },
-    { href: '/about-us', label: 'About Us' },
-    { href: '/store-type', label: 'Store Types' },
-    { href: '/product-service', label: 'Products & Services' },
-    { href: '/partner-bhartiyam', label: 'Partners With Us' },
-    { href: '/contact-us', label: 'Contact' },
-  ];
+  const [navbarHeight, setNavbarHeight] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,60 +34,90 @@ const SharedNavbar = forwardRef<HTMLElement, SharedNavbarProps>(({ shouldOverlay
     };
   }, [scrolled]);
 
+  // Measure navbar height for mobile menu positioning
+  useEffect(() => {
+    if (ref && typeof ref !== 'function' && ref.current) {
+      setNavbarHeight(ref.current.offsetHeight);
+    }
+  }, [ref, open]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   return (
-    <Section
-      ref={ref}
-      className={`fixed top-0 right-0 left-0 z-40 w-full transition-all duration-300 ${
-        scrolled || !shouldOverlay ? 'bg-primary-light' : 'bg-transparent'
-      }`}
-    >
-      <div className="flex w-full items-center justify-between gap-6">
-        <Logo href={'/home'} />
+    <>
+      <Section
+        ref={ref}
+        className={`fixed top-0 right-0 left-0 z-40 w-full transition-all duration-300 ${
+          scrolled || !shouldOverlay || open ? 'bg-primary-light' : 'bg-transparent'
+        }`}
+      >
+        <div className="flex w-full items-center justify-between gap-6">
+          <Logo href={'/home'} />
 
-        {/* Mobile toggle button */}
-        <button
-          aria-label="Toggle navigation"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className={`inline-flex items-center justify-center transition-colors lg:hidden`}
-        >
-          <span className="sr-only">Open menu</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
+          {/* Mobile toggle button */}
+          <button
+            aria-label="Toggle navigation"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className={`inline-flex items-center justify-center transition-colors lg:hidden`}
+          >
+            <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              {open ? (
+                <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              ) : (
+                <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              )}
+            </svg>
+          </button>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-7 lg:flex">
-          {homeNavbarMenuLinks.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`font-medium transition-colors ${
-                pathname === item.href
-                  ? 'text-orange-600'
-                  : scrolled || !shouldOverlay
-                    ? 'text-gray-900 hover:text-orange-600'
-                    : 'text-black hover:text-orange-400'
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-7 lg:flex">
+            {SharedNavbarMenu.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`font-medium transition-colors ${
+                  pathname === item.href
+                    ? 'text-primary'
+                    : scrolled || !shouldOverlay
+                      ? 'hover:text-primary text-black'
+                      : 'hover:text-primary text-black'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </Section>
 
-      {/* Mobile menu - FIXED BELOW HEADER */}
+      {/* Mobile menu - positioned below navbar using dynamic height */}
       {open && (
-        <div className="fixed top-16 right-0 left-0 z-30 border-t border-gray-200 bg-white shadow-lg lg:hidden">
+        <div
+          className="fixed right-0 left-0 z-30 border-t bg-white shadow-lg lg:hidden"
+          style={{ top: `${navbarHeight}px` }}
+        >
           <nav className="mx-auto max-w-6xl px-4 py-3">
             <ul className="flex flex-col gap-1">
-              {homeNavbarMenuLinks.map((item) => (
+              {SharedNavbarMenu.map((item) => (
                 <li key={item.label}>
                   <Link
                     href={item.href}
                     className={`block rounded-md px-3 py-2 text-base font-medium transition-colors ${
-                      pathname === item.href ? 'bg-orange-50 text-orange-600' : 'text-gray-700 hover:bg-gray-100'
+                      pathname === item.href
+                        ? 'bg-primary/10 text-primary'
+                        : 'hover:bg-primary/10 hover:text-primary text-black'
                     }`}
                     onClick={() => setOpen(false)}
                   >
@@ -106,7 +129,17 @@ const SharedNavbar = forwardRef<HTMLElement, SharedNavbarProps>(({ shouldOverlay
           </nav>
         </div>
       )}
-    </Section>
+
+      {/* Backdrop overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-20 bg-black/20 lg:hidden"
+          style={{ top: `${navbarHeight}px` }}
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+    </>
   );
 });
 

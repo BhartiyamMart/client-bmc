@@ -4,8 +4,8 @@ const HomeHero = () => {
       <div className="mx-auto mt-5 grid max-w-[1539px] grid-cols-1 items-center gap-0 px-0 py-6 sm:px-10 md:grid-cols-12 md:px-10 md:py-10 lg:px-20">
         {/* Left Content */}
         <div className="col-span-12 p-2 pt-10 text-center md:text-left lg:col-span-8">
-          <h1 className="text-lg font-medium tracking-wide text-gray-800 md:text-2xl xl:text-4xl">
-            <b>Bhartiyam</b> –<span className="text-orange-500"> Aapka Daily Needs Partner </span>
+          <h1 className="text-lg font-medium tracking-wide text-black md:text-2xl xl:text-4xl">
+            <b>Bhartiyam</b> –<span className="text-primary"> Aapka Daily Needs Partner </span>
           </h1>
 
           <p className="mt-2 text-2xl leading-snug font-bold text-gray-900 md:text-2xl md:leading-tight lg:text-4xl xl:text-5xl">

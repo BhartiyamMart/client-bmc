@@ -68,3 +68,13 @@ export interface IStoreType {
   img: string;
   para: string;
 }
+
+export interface ISplitFeatureProps {
+  title: string;
+  description: string;
+  bullets?: string[];
+  ctaLabel?: string;
+  ctaLink?: string;
+  image: string;
+  onCtaClick?: () => void;
+}

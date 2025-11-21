@@ -1,7 +1,7 @@
 'use client';
 
+import HomeHero from '@/components/home/home-hero';
 import HomeAbout from '@/components/home/home-about';
-import NavbarHero from '@/components/home/navbar-hero';
 import StoreTypes from '@/components/home/store-types';
 import HomePartner from '@/components/home/home-partner';
 import DownloadApp from '@/components/home/download-app';
@@ -13,7 +13,7 @@ import HomeProductCategories from '@/components/home/product-categories';
 const Home = () => {
   return (
     <main>
-      <NavbarHero />
+      <HomeHero />
       <DownloadApp />
       <HomeAbout />
       <StoreTypes />

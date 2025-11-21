@@ -2,46 +2,53 @@ import Image from 'next/image';
 
 const HomeAbout = () => {
   return (
-    <section className="m-auto max-w-[1539px] bg-white p-10 sm:px-10 md:px-10 lg:px-20">
-      <div className="mx-auto py-6 md:py-6">
-        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-12">
-          {/* Text Section */}
-          <div className="md:col-span-8">
-            <h2 className="text-2xl font-semibold text-black md:text-3xl">
-              About Bhartiyam – Aapka Daily Needs Partner
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-black md:text-lg">
-              <b>Bhartiyam,</b> a proud brand of <b> Kamna Mart Private Limited</b>, is revolutionizing the Indian
-              retail and <b> Fast Moving Consumer Goods (FMCG) market.</b> With a commitment to quality and
-              affordability, customer satisfaction is our motto. We want to offer the best to our customers, whether
-              packaged products, farm-fresh produced items, or authentic regional specialties. Our dedicated team works
-              relentlessly to explore what consumers prefer and try to procure the best at a special price. We patronize
-              a personalized shopping experience tailored to their needs. At{' '}
-              <b>Bhartyiam - Aapka Daily Needs Partner </b>, we curate our list of products according to the demands and
-              preferences of our customers. We ask questions to know them better - Do they prefer organic or traditional
-              ingredients? Are they looking for convenience or culinary exploration? We ensure that all products meet
-              their expectations in quality, taste, and value.
-            </p>
-            <p className="mt-2 text-base leading-relaxed text-black md:text-lg">
-              With options like express checkout, home delivery, and seasonal promotions, we don’t just stock shelves -
-              we craft solutions that make shopping joyful and memorable.
-            </p>
+    <section className="mx-auto max-w-[1539px] bg-white px-6 py-16 md:px-12 lg:px-20">
+      <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-12">
+        {/* Text Section */}
+        <div className="md:col-span-7">
+          <h2 className="text-3xl leading-snug font-bold text-gray-900 md:text-3xl">
+            Bhartiyam — Your Trusted Daily Needs Partner
+          </h2>
+
+          <p className="mt-6 text-lg leading-relaxed text-gray-700">
+            <b>Bhartiyam</b>, a proud initiative of
+            <b> Kamna Mart Private Limited</b>, is reshaping India’s
+            <b> retail and FMCG landscape</b> with an unwavering commitment to quality, affordability, and customer
+            delight.
+          </p>
+
+          <p className="mt-4 text-lg leading-relaxed text-gray-700">
+            From packaged essentials to farm-fresh produce and authentic regional specialties, our dedicated team
+            curates products that resonate with your lifestyle. We understand what consumers truly want — whether
+            organic staples, traditional ingredients, or exploratory flavors — and we bring the best to your doorstep at
+            the best prices.
+          </p>
+
+          <p className="mt-4 text-lg leading-relaxed text-gray-700">
+            With seamless express checkout, fast home delivery, and exciting seasonal offers, we don’t just deliver
+            products —<b> we deliver convenience, trust, and happiness.</b>
+          </p>
+
+          <div className="mt-8">
             <a
               href="/about-us"
-              className="mt-6 inline-flex items-center justify-center rounded-md bg-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-700 focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 focus:outline-none md:text-base"
+              className="inline-flex items-center justify-center rounded-md bg-orange-600 px-6 py-3 text-base font-medium text-white shadow-md transition-all duration-200 hover:bg-orange-700 hover:shadow-lg focus:ring-2 focus:ring-orange-600 focus:outline-none"
             >
-              View More
+              Learn More About Us
             </a>
           </div>
+        </div>
 
-          {/* Image Section */}
-          <div className="md:col-span-4">
+        {/* Image Section */}
+        <div className="flex justify-center md:col-span-5 md:justify-end">
+          <div className="w-full max-w-[420px] overflow-hidden rounded-xl shadow-lg md:max-w-[480px] lg:max-w-[520px]">
             <Image
-              width={500}
-              height={500}
               src="/images/about-us/ab_slide01.webp"
               alt="Bhartiyam store visuals"
-              className="h-auto w-full rounded-lg object-cover shadow-md"
+              width={600}
+              height={600}
+              className="h-auto w-full object-cover transition-transform duration-300"
+              sizes="(max-width: 768px) 80vw, (max-width: 1200px) 40vw, 500px"
             />
           </div>
         </div>

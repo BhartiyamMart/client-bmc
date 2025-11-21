@@ -1,19 +1,46 @@
+'use client';
+
+import { useRef, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Footer from '@/components/shared/footer/footer';
-import HomeNavbar from '@/components/shared/navbar/home-navbar';
+import SharedNavbar from '@/components/shared/navbar/shared-navbar';
 
 interface RoutesLayoutProps {
   children: React.ReactNode;
 }
 
-const CommonLayout: React.FC<RoutesLayoutProps> = ({ children }) => {
+const SharedPageLayout: React.FC<RoutesLayoutProps> = ({ children }) => {
+  const pathname = usePathname();
+  const navbarRef = useRef<HTMLElement>(null);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  // Define routes where navbar should overlay content (no padding)
+  const overlayRoutes = ['/home'];
+  const shouldOverlay = overlayRoutes.includes(pathname);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      setNavbarHeight(navbarRef.current.offsetHeight);
+    }
+
+    const handleResize = () => {
+      if (navbarRef.current) {
+        setNavbarHeight(navbarRef.current.offsetHeight);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <main>
-      <HomeNavbar />
-      <div>{children}</div>
+      <SharedNavbar ref={navbarRef} shouldOverlay={shouldOverlay} />
+      {!shouldOverlay && <div style={{ paddingTop: `${navbarHeight}px` }} />}
+      {children}
       <Footer />
-      {/* <ScrollToTop /> */}
     </main>
   );
 };
 
-export default CommonLayout;
+export default SharedPageLayout;

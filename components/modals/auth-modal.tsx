@@ -386,7 +386,7 @@ const AuthModal = () => {
                   disabled={phoneNumber.length !== PHONE_LENGTH || isLoading}
                   className={`w-full rounded-lg py-2.5 text-sm font-medium transition-colors ${
                     phoneNumber.length === PHONE_LENGTH && !isLoading
-                      ? 'bg-orange-500 text-white hover:bg-orange-600'
+                      ? 'bg-primary hover:bg-primary/90 text-white'
                       : 'cursor-not-allowed bg-gray-200 text-gray-400'
                   }`}
                 >
@@ -533,7 +533,7 @@ const AuthModal = () => {
                   disabled={!firstName.trim() || isLoading}
                   className={`w-full rounded-lg py-2.5 text-sm font-medium transition-colors ${
                     firstName.trim() && !isLoading
-                      ? 'bg-orange-500 text-white hover:bg-orange-600'
+                      ? 'bg-primary hover:bg-primary/90 text-white'
                       : 'cursor-not-allowed bg-gray-200 text-gray-400'
                   }`}
                 >

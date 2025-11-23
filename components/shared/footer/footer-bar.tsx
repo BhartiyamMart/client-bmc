@@ -109,8 +109,8 @@ const FooterBar = () => {
                   aria-current={isActive ? 'page' : undefined}
                   className={`group xs:gap-1 xs:px-3 xs:py-2 relative flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full px-2 py-1.5 transition-all duration-300 active:scale-95 sm:flex-row sm:gap-2 sm:px-4 sm:py-2.5 md:py-3 ${
                     isActive
-                      ? 'bg-orange-500 text-white shadow-sm hover:bg-orange-600'
-                      : 'bg-transparent text-gray-600 hover:bg-orange-50 hover:text-orange-600'
+                      ? 'bg-primary hover:bg-primary/90 text-white shadow-sm'
+                      : 'hover:text-primabg-primary/90 bg-transparent text-gray-600 hover:bg-orange-50'
                   }`}
                   style={{
                     minHeight: '48px',

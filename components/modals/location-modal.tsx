@@ -388,7 +388,7 @@ const LocationModal = () => {
                 )}
 
                 {isSearching && (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+                  <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
                 )}
               </div>
             </div>
@@ -396,7 +396,7 @@ const LocationModal = () => {
             <button
               onClick={handleDetectLocation}
               disabled={isDetecting || isCheckingStore || !isScriptLoaded}
-              className="flex cursor-pointer items-center justify-center gap-2 rounded bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70"
+              className="bg-primaborder-primary hover:bg-primary/90 flex cursor-pointer items-center justify-center gap-2 rounded px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-70"
             >
               <LocateFixed className={`h-4 w-4 ${isDetecting ? 'animate-pulse' : ''}`} />
               <span>{isDetecting ? 'Detecting...' : 'Detect'}</span>

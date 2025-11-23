@@ -11,7 +11,7 @@ const ServiceFaq = () => {
   };
 
   return (
-    <section className="px-5">
+    <section className="">
       <h3 className="mb-8 text-3xl font-bold">FAQ&apos;s</h3>
       <div className="divide-y divide-gray-300">
         {serviceFaqs.map((faq, index) => (

@@ -1,35 +1,12 @@
 import Image from 'next/image';
-const homeServices = [
-  {
-    title: 'Online Shopping Platform',
-    description: 'Shop anytime, anywhere',
-    iconAlt: 'Shopping cart',
-    icon: '/images/our-services/shopping-cart.gif',
-  },
-  {
-    title: 'Offline Retail Stores',
-    description: 'Experience our products firsthand',
-    iconAlt: 'Store front',
-    icon: '/images/our-services/store.gif',
-  },
-  {
-    title: 'Fast Delivery Services',
-    description: 'Quick and reliable order fulfillment',
-    iconAlt: 'Delivery truck',
-    icon: '/images/our-services/truck.gif',
-  },
-  {
-    title: 'B2C Support',
-    description: 'Wholesale and business solutions available',
-    iconAlt: 'Headset support',
-    icon: '/images/our-services/helpdesk.gif',
-  },
-];
+import Container from '@/components/shared/ui/container';
+
+import { homeServices } from '@/data/shared/common';
 
 const HomeServices = () => {
   return (
-    <section className="w-full bg-gray-50 px-4 py-12 sm:px-6 sm:py-16 lg:px-20 lg:py-20">
-      <div className="mx-auto max-w-7xl">
+    <section className="w-full bg-gray-50 px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <Container className="mx-auto">
         {/* Header */}
         <header className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">Our Services</h2>
@@ -60,7 +37,7 @@ const HomeServices = () => {
             </article>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

@@ -1,9 +1,10 @@
 import React from 'react';
+import Container from '@/components/shared/ui/container';
 
 const DownloadApp: React.FC = () => {
   return (
-    <section className="bg-primary mx-auto max-w-[1539px] overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-10 md:px-20">
+    <div className="bg-primary flex items-center justify-center overflow-hidden">
+      <Container className="flex items-center justify-between px-6 py-10 md:px-20">
         {/* Marquee Text */}
         <div className="w-full overflow-hidden">
           <h2 className="animate-marquee text-lg font-bold whitespace-nowrap text-white md:text-2xl">
@@ -18,7 +19,7 @@ const DownloadApp: React.FC = () => {
         >
           Shop Now
         </a> */}
-      </div>
+      </Container>
       {/* CSS inside page */}
       <style jsx>{`
         @keyframes marquee {
@@ -34,7 +35,7 @@ const DownloadApp: React.FC = () => {
           animation: marquee 12s linear infinite;
         }
       `}</style>
-    </section>
+    </div>
   );
 };
 

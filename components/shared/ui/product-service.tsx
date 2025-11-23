@@ -3,34 +3,35 @@ import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import ServiceFaq from '@/components/faq/service-faq';
 import HomeContact from '@/components/home/home-contact';
+import Container from '@/components/shared/ui/container';
 
 const ProductService = () => {
   return (
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">
             Products & Services
           </h1>
-        </div>
+        </Container>
       </section>
 
       {/* Introduction Section */}
       <section className="w-full bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <p className="text-base leading-relaxed text-gray-700">
             At <strong>Bhartiyam</strong>, we offer a <strong>diverse portfolio of retail and FMCG products</strong>{' '}
             designed to meet the everyday needs of Indian households and businesses. From{' '}
             <strong>daily groceries to digital lifestyle essentials</strong>, our products combine quality,
             affordability, and reliability, making us your one-stop destination for smarter shopping.
           </p>
-        </div>
+        </Container>
       </section>
 
       {/* Products Grid Section */}
       <section className="bg-gray-50 py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2">
             <Card className="overflow-hidden rounded border bg-white hover:shadow">
               <CardContent className="p-6">
@@ -85,12 +86,12 @@ const ProductService = () => {
               </CardContent>
             </Card>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* Our Services Section */}
       <section className="bg-gray-100 py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="order-2 lg:order-1">
               <Image
@@ -134,12 +135,12 @@ const ProductService = () => {
               </ul>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* Why Shop with Bhartiyam Section */}
       <section className="bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
             <div>
               <h2 className="mb-4 text-2xl font-semibold text-gray-900">Why Shop with Bhartiyam?</h2>
@@ -183,14 +184,14 @@ const ProductService = () => {
               />
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* FAQ Section */}
       <section className="bg-gray-50 py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <ServiceFaq />
-        </div>
+        </Container>
       </section>
 
       {/* Contact Section */}

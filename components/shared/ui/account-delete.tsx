@@ -1,18 +1,20 @@
+import Container from '@/components/shared/ui/container';
+
 const AccountDelete = () => {
   return (
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">
             Bhartiyam – Account Deletion Policy
           </h1>
-        </div>
+        </Container>
       </section>
 
       {/* Content Section */}
       <section className="bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <h2 className="text-lg font-semibold text-gray-900">1. Purpose</h2>
           <p className="mt-4 text-base leading-relaxed text-gray-700">
             This policy explains how users of Bhartiyam can delete their account, what happens when they do so, what
@@ -208,7 +210,7 @@ const AccountDelete = () => {
               <span>We provide confirmation when the deletion is complete.</span>
             </li>
           </ul>
-        </div>
+        </Container>
       </section>
     </>
   );

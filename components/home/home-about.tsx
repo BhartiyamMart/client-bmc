@@ -1,8 +1,9 @@
 import Image from 'next/image';
+import Container from '@/components/shared/ui/container';
 
 const HomeAbout = () => {
   return (
-    <section className="mx-auto max-w-[1539px] bg-white px-6 py-16 md:px-12 lg:px-20">
+    <Container className="mx-auto bg-white px-5 py-16 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-12">
         {/* Text Section */}
         <div className="md:col-span-7">
@@ -12,7 +13,7 @@ const HomeAbout = () => {
 
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
             <b>Bhartiyam</b>, a proud initiative of
-            <b> Kamna Mart Private Limited</b>, is reshaping India’s
+            <b> Kamna Mart Private Limited</b>, is reshaping India&apos;s
             <b> retail and FMCG landscape</b> with an unwavering commitment to quality, affordability, and customer
             delight.
           </p>
@@ -25,7 +26,7 @@ const HomeAbout = () => {
           </p>
 
           <p className="mt-4 text-lg leading-relaxed text-gray-700">
-            With seamless express checkout, fast home delivery, and exciting seasonal offers, we don’t just deliver
+            With seamless express checkout, fast home delivery, and exciting seasonal offers, we don&apos;t just deliver
             products —<b> we deliver convenience, trust, and happiness.</b>
           </p>
 
@@ -53,7 +54,7 @@ const HomeAbout = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Container>
   );
 };
 

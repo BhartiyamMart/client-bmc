@@ -1,3 +1,5 @@
+import Container from '@/components/shared/ui/container';
+
 import { ContactForm } from './contact-form';
 import { Mail, Phone, Clock } from '@/components/shared/svg/svg-icon';
 
@@ -6,14 +8,14 @@ const Contact = () => {
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">Contact Us</h1>
-        </div>
+        </Container>
       </section>
 
       {/* Contact Content Section */}
       <section className="w-full bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-7 lg:gap-12">
             {/* Contact Information */}
             <div className="space-y-8 lg:col-span-4">
@@ -71,7 +73,7 @@ const Contact = () => {
               <ContactForm email={process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? ''} />
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* Google Maps */}

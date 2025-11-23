@@ -83,3 +83,14 @@ export interface IFaqData {
   question: string;
   answer: string;
 }
+
+export interface ISocialLinkData {
+  href: string;
+  label: string;
+  svg: string;
+}
+
+export interface INavLinkData {
+  href: string;
+  label: string;
+}

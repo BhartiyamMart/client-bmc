@@ -1,16 +1,18 @@
+import Container from '@/components/shared/ui/container';
+
 const ReturnPolicy = () => {
   return (
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">Return Policy</h1>
-        </div>
+        </Container>
       </section>
 
       {/* Content Section */}
       <section className="bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <p className="text-base leading-relaxed text-gray-700">
             Customer's satisfaction is of utmost importance to us at Bhartiyam. We value our customer and try to resolve
             your problem within 30-minutes from receiving your complaint. Please have a look at our returning policy.
@@ -52,7 +54,7 @@ const ReturnPolicy = () => {
           <p className="mt-4 text-sm text-gray-600 italic">
             (The names of the section are suggested and are subjected to discussion for final take.)
           </p>
-        </div>
+        </Container>
       </section>
     </>
   );

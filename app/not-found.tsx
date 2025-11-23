@@ -1,12 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import ShopNavbar from '@/components/shared/navbar/shop-navbar';
 import Link from 'next/link';
-import { ArrowLeft } from '@/components/shared/svg/svg-icon';
-import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
-import { useRef } from 'react';
 import Footer from '@/components/shared/footer/footer';
+import ShopNavbar from '@/components/shared/navbar/shop-navbar';
+import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
+
+import { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowLeft } from '@/components/shared/svg/svg-icon';
 
 const Notfound = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -21,14 +22,14 @@ const Notfound = () => {
           transition={{ duration: 0.4 }}
           className="flex flex-col items-center"
         >
-          <h1 className="mb-4 text-5xl font-extrabold text-orange-500">Oops! Page Not Found</h1>
+          <h1 className="text-primary mb-4 text-5xl font-extrabold">Oops! Page Not Found</h1>
           <p className="mb-8 max-w-md text-gray-600">
             The page you&apos;re looking for doesn&apos;t exist or might have been moved. Let&apos;s get you back to
             shopping!
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-700"
+            className="bg-primary hover:bg-primary/90 inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition"
           >
             <ArrowLeft className="h-5 w-5" /> Go Back Home
           </Link>

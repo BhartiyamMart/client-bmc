@@ -2,11 +2,12 @@ import Image from 'next/image';
 
 import { storeTypes } from '@/data/shared/landing-store';
 import Link from 'next/link';
+import Container from '@/components/shared/ui/container';
 
 const StoreTypes = () => {
   return (
     <section className="bg-gray-100 pt-5 pb-10">
-      <div className="mx-auto max-w-[1539px] px-5 py-6 sm:px-4 md:px-10 md:py-6 lg:px-20">
+      <Container className="mx-auto px-5 py-6 sm:px-6 md:py-6 lg:px-8">
         <header className="mb-8">
           <h2 className="text-2xl font-semibold text-black md:text-3xl">Store Types</h2>
         </header>
@@ -39,7 +40,7 @@ const StoreTypes = () => {
             </article>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

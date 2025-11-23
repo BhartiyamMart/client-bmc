@@ -14,7 +14,7 @@ export function LogosScroller() {
   return (
     <Carousel
       plugins={[plugin.current]}
-      className="mx-auto w-full max-w-7xl"
+      className="mx-auto w-full max-w-[1530px]"
       onMouseEnter={plugin.current.stop}
       onMouseLeave={plugin.current.reset}
     >

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import PartnerFaq from '@/components/faq/faq-partner';
 import HomeContact from '@/components/home/home-contact';
+import Container from '@/components/shared/ui/container';
 
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -9,16 +10,16 @@ const PartnerBhartiyam = () => {
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">
             Partners With Us – Bhartiyam
           </h1>
-        </div>
+        </Container>
       </section>
 
       {/* About Section */}
       <section className="w-full bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <p className="text-base leading-relaxed text-gray-700">
             At <strong>Bhartiyam</strong>, we believe in the power of collaboration. We are a{' '}
             <strong>Fast Moving Consumer Goods (FMCG) brand in India</strong>. We look forward to building strong,
@@ -74,12 +75,12 @@ const PartnerBhartiyam = () => {
               />
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* Partnership Types Section */}
       <section className="bg-gray-50 py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2">
             <Card className="overflow-hidden rounded border bg-white hover:shadow">
               <CardContent className="p-6">
@@ -121,12 +122,12 @@ const PartnerBhartiyam = () => {
               </CardContent>
             </Card>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* How to Partner Section */}
       <section className="bg-gray-100 py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="order-2 lg:order-1">
               <Image
@@ -167,14 +168,14 @@ const PartnerBhartiyam = () => {
               </ul>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* FAQ Section */}
       <section className="bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <PartnerFaq />
-        </div>
+        </Container>
       </section>
 
       {/* Contact Section */}

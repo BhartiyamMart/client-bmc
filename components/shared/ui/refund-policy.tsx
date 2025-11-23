@@ -1,18 +1,20 @@
+import Container from '@/components/shared/ui/container';
+
 const RefundPolicy = () => {
   return (
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">
             Bhartiyam – Refund Policy
           </h1>
-        </div>
+        </Container>
       </section>
 
       {/* Content Section */}
       <section className="bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <p className="text-base leading-relaxed text-gray-700">
             At <strong>Bhartiyam Mart</strong>, customer satisfaction is our top priority. We work hard to provide
             fresh, quality products and a smooth shopping experience. If you are not fully satisfied with your purchase,
@@ -181,7 +183,7 @@ const RefundPolicy = () => {
               </span>
             </li>
           </ul>
-        </div>
+        </Container>
       </section>
     </>
   );

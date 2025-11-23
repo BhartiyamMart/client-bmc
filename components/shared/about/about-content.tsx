@@ -1,8 +1,9 @@
 import Image from 'next/image';
+import Container from '@/components/shared/ui/container';
 
 const AboutContent = () => {
   return (
-    <main id="about" className="mx-auto max-w-7xl">
+    <Container id="about" className="mx-auto">
       {/* Intro and Story */}
       <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
@@ -172,7 +173,7 @@ const AboutContent = () => {
           </div>
         </div>
       </section>
-    </main>
+    </Container>
   );
 };
 

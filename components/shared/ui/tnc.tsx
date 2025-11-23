@@ -1,16 +1,18 @@
+import Container from '@/components/shared/ui/container';
+
 const TermsCondition = () => {
   return (
     <>
       {/* Header Section */}
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">Terms of Use</h1>
-        </div>
+        </Container>
       </section>
 
       {/* Content Section */}
       <section className="bg-white py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="prose prose-gray max-w-none">
             <p className="text-base leading-relaxed text-gray-700">
               Welcome to Bhartiyam, a proud brand of Kamna Mart Private Limited ('Company', 'we', 'our', 'us'). By
@@ -210,7 +212,7 @@ const TermsCondition = () => {
               </a>
             </p>
           </div>
-        </div>
+        </Container>
       </section>
     </>
   );

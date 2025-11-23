@@ -1,10 +1,12 @@
+import Container from '@/components/shared/ui/container';
+
 import { Mail, Phone } from '@/components/shared/svg/svg-icon';
 import { ContactForm } from '@/components/shared/contact/contact-form';
 
 const HomeContact = () => {
   return (
     <section className="w-full bg-[url('/images/contactus/contact_bg.webp')] bg-cover bg-fixed bg-center bg-no-repeat">
-      <div className="m-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+      <Container className="m-auto px-4 py-12 sm:px-6 md:py-16 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           {/* Left Column - Contact Info */}
           <div className="space-y-6">
@@ -46,7 +48,7 @@ const HomeContact = () => {
           {/* Right Column - Contact Form */}
           <ContactForm email={process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? ''} />
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

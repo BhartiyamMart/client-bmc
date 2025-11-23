@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import HomeContact from '@/components/home/home-contact';
+import Container from '@/components/shared/ui/container';
 
 import { storeTypes } from '@/data/shared/landing-store';
 
@@ -7,13 +8,13 @@ const StoreType = () => {
   return (
     <>
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-7xl px-5 pt-10 pb-10 sm:px-10 xl:px-8">
+        <Container className="mx-auto px-5 pt-10 pb-10 sm:px-10 xl:px-8">
           <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">Store Types</h1>
-        </div>
+        </Container>
       </section>
 
-      <section className="bg-gray-10 w-full px-4 sm:px-6 md:px-12 lg:px-20">
-        <div className="mx-auto max-w-7xl px-5 py-12 sm:px-0 md:py-16">
+      <section className="bg-gray-10 w-full px-5 sm:px-10 xl:px-8">
+        <Container className="mx-auto py-12 sm:px-0 md:py-16">
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
             {storeTypes.map((card) => (
               <article key={card.title} className="relative overflow-hidden rounded border">
@@ -32,7 +33,7 @@ const StoreType = () => {
               </article>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
       <HomeContact />
     </>

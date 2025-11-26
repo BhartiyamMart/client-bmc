@@ -20,7 +20,7 @@ const Contact = () => {
             {/* Contact Information */}
             <div className="space-y-8 lg:col-span-4">
               <div>
-                <h2 className="mb-2 text-2xl font-semibold text-gray-900">Office</h2>
+                <h2 className="mb-2 text-2xl font-semibold text-gray-900">Office:</h2>
                 <p className="text-base leading-relaxed text-gray-600">New Delhi, India</p>
               </div>
 

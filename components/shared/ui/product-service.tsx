@@ -152,23 +152,24 @@ const ProductService = () => {
                 , Bhartiyam has it all. Start shopping today with Bhartiyam – Where Quality Meets Affordability.
               </p>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3">
+                <li className="flex items-center gap-3">
                   <span className="text-orange-600">✓</span>
-                  <span className="text-base leading-relaxed text-gray-700">High-quality FMCG and retail products</span>
+                  <span className="text-base text-gray-700">High-quality FMCG and retail products</span>
                 </li>
-                <li className="flex items-start gap-3">
+
+                <li className="flex items-center gap-3">
                   <span className="text-orange-600">✓</span>
-                  <span className="text-base leading-relaxed text-gray-700">Affordable pricing for every budget</span>
+                  <span className="text-base text-gray-700">Affordable pricing for every budget</span>
                 </li>
-                <li className="flex items-start gap-3">
+
+                <li className="flex items-center gap-3">
                   <span className="text-orange-600">✓</span>
-                  <span className="text-base leading-relaxed text-gray-700">
-                    Easy access across online and offline platforms
-                  </span>
+                  <span className="text-base text-gray-700">Easy access across online and offline platforms</span>
                 </li>
-                <li className="flex items-start gap-3">
+
+                <li className="flex items-center gap-3">
                   <span className="text-orange-600">✓</span>
-                  <span className="text-base leading-relaxed text-gray-700">
+                  <span className="text-base text-gray-700">
                     Trusted by thousands of families and businesses nationwide
                   </span>
                 </li>

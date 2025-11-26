@@ -18,7 +18,11 @@ const PartnerFaq = () => {
           <div key={index} className="py-4">
             <button className="flex w-full items-center justify-between text-left" onClick={() => toggleFAQ(index)}>
               <span className="text-lg font-medium text-black">{faq.question}</span>
-              {openIndex === index ? <Minus className="h-5 w-5 text-black" /> : <Plus className="h-5 w-5 text-black" />}
+              {openIndex === index ? (
+                <Minus className="h-5 w-5 cursor-pointer text-black" />
+              ) : (
+                <Plus className="h-5 w-5 cursor-pointer text-black" />
+              )}
             </button>
             {openIndex === index && <p className="mt-3 text-base leading-relaxed text-gray-700">{faq.answer}</p>}
           </div>

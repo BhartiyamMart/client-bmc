@@ -69,8 +69,17 @@ export function ContactForm({ email }: ContactFormProps) {
             value={mobile}
             inputMode="numeric"
             maxLength={10}
-            onChange={(e) => setMobile(e.target.value)}
-            pattern="[0-9]*"
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, ''); // allow only digits
+              setMobile(value);
+            }}
+            onPaste={(e) => {
+              const pasted = e.clipboardData.getData('text');
+              if (!/^\d+$/.test(pasted)) {
+                e.preventDefault(); // block paste
+                toast.error('Only numbers are allowed');
+              }
+            }}
             className="focus:border-primary focus:ring-none w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-2 focus:outline-none"
             placeholder="Enter your mobile number"
           />

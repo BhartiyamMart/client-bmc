@@ -32,7 +32,7 @@ const DownloadApp: React.FC = () => {
         }
         .animate-marquee {
           display: inline-block;
-          animation: marquee 12s linear infinite;
+          animation: marquee 6s linear infinite;
         }
       `}</style>
     </div>

@@ -25,7 +25,7 @@ const PrivacyPolicy = () => {
             </p>
 
             <h2 className="mt-8 text-xl font-semibold text-gray-900">
-              We will require your personal information to provide the best of our Services
+              We will require your personal information to provide the best of our Services.
             </h2>
 
             <p className="mt-4 text-base leading-relaxed text-gray-700">
@@ -50,20 +50,12 @@ const PrivacyPolicy = () => {
               your prior consent. Please take a glace at the Privacy policy:
             </p>
 
-            <ul className="mt-4 space-y-2 pl-6 text-base leading-relaxed text-gray-700">
-              <li className="flex gap-2">
-                <span className="mt-1.5 text-black">•</span>
-                <span>
-                  The information collected by Bhartiyam from you directly or through any automated mode when you access
-                  or use its website, application, and other online services (collectively referred to as "Services").
-                </span>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-700">
+              <li>
+                The information collected by Bhartiyam from you directly or through any automated mode when you access
+                or use its website, application, and other online services (collectively referred to as "Services").
               </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 text-black">•</span>
-                <span>
-                  Its practices for collecting, using, maintaining, protecting, and disclosing that information.
-                </span>
-              </li>
+              <li>Its practices for collecting, using, maintaining, protecting, and disclosing that information.</li>
             </ul>
 
             <p className="mt-6 text-base leading-relaxed text-gray-700">
@@ -302,7 +294,7 @@ const PrivacyPolicy = () => {
               to you. We use the information we collect from and about you for a variety of purposes.
             </p>
 
-            <ul className="mt-4 space-y-3 pl-6 text-base leading-relaxed text-gray-700">
+            <ul className="mt-4 space-y-3 text-base leading-relaxed text-gray-700">
               <li className="flex gap-2">
                 <span className="mt-1.5 text-black">•</span>
                 <span>
@@ -389,6 +381,69 @@ const PrivacyPolicy = () => {
                   to others without limitation.
                 </span>
               </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 text-black">•</span>
+                <span>
+                  We may also use your information to contact you to market our own and third-party goods and services
+                  that may be of interest to you. We may use the information we have collected from you to enable us to
+                  display advertisements to third party advertisers/service providers target audiences. We shall not
+                  share your personal information without your consent, if you click on or otherwise interact with an
+                  advertisement, the advertiser may assume that you meet its target criteria.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 text-black">•</span>
+                <span>
+                  <b> Analytics & tailored advertising:</b> We may use third-party web analytics on our Services like
+                  Google Analytics to help us understand your preferences in using our Services better. The information
+                  collected by this technology will be disclosed to or collected directly by these service providers,
+                  who use the information to evaluate our users use of the Services.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 text-black">•</span>
+                <span>
+                  <b> Tailored advertising: </b> Third-parties whose products or services are accessible or advertised
+                  via the Services may also use cookies or similar technologies to collect information about your use of
+                  the Services. This enables them to report how our ad impressions, other uses of ad services, and
+                  interactions with these ad impressions. We also allow other third parties (ad networks and ad servers
+                  such as Google Analytics, OpenX, Pubmatic, DoubleClick etc.) to serve tailored ads to you on the
+                  Services, and to access their own cookies or similar technologies on your computer, mobile phone, or
+                  any other device you use to access the Services. We neither have access to, nor does this Privacy
+                  Policy govern, the use of cookies or other tracking technologies that may be placed by such third
+                  parties. When accessing the Services from a mobile application you may also receive tailored
+                  in-application advertisements. Payment Card Information.{' '}
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 text-black">•</span>
+                <span>For any other purpose required to administer the Services, with your consent.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 text-black">•</span>
+                <span>
+                  To use certain aspects of our Services, such as completing transactions, we may require your credit or
+                  debit card account information. By submitting your credit or debit card account information through
+                  our Services, you consent to the sharing of your information with third-party payment processors, and
+                  other third-party service providers (including but not limited to service providers who provide fraud
+                  detection services to us and other third parties).{' '}
+                </span>
+              </li>
+
+              <li className="flex gap-2">
+                <span className="mt-1.5 text-black">•</span>
+                <span>
+                  <b> Applicants:</b> The information shared by you with Bhartiyam, when applying for a position with
+                  our company, including as a delivery partner or in-store staff, such information will be used to
+                  consider your application. We may retain your information for any period of time as may be required
+                  for administrative purposes. This information may be shared with other companies for the purpose of
+                  evaluating your candidature for the particular position or other available positions, background
+                  verifications, as well as with third-party service providers retained by us to collect, maintain and
+                  analyze candidate submissions for job postings. We may also collect, process and store various other
+                  information necessary for administrative purposes, governed by this Privacy Policy, if candidature is
+                  accepted or processed by us.
+                </span>
+              </li>
             </ul>
 
             <h2 className="mt-10 text-xl font-semibold text-gray-900">How we share the information we collect</h2>
@@ -401,29 +456,77 @@ const PrivacyPolicy = () => {
 
             <h3 className="mt-8 text-lg font-semibold text-gray-900">General Information Disclosures</h3>
 
-            <ul className="mt-4 space-y-3 pl-6 text-base leading-relaxed text-gray-700">
-              <li className="flex gap-2">
-                <span className="mt-1.5 text-black">•</span>
-                <span>
-                  To our subsidiaries and affiliates, which are entities under common ownership or control of our
-                  ultimate parent company Kamna Mart Private Limited.
-                </span>
+            <ul className="mt-4 list-disc space-y-3 pl-6 text-base leading-relaxed text-gray-700">
+              <li>
+                To our subsidiaries and affiliates, which are entities under common ownership or control of our ultimate
+                parent company Kamna Mart Private Limited.
               </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 text-black">•</span>
-                <span>
-                  To contractors, sellers, suppliers, advertisers/service providers who are typically bound by
-                  contractual obligations to keep personal information confidential and use it only for the purposes for
-                  which we disclose it to them.
-                </span>
+
+              <li>
+                To contractors, sellers, suppliers, advertisers/service providers who are typically bound by contractual
+                obligations to keep personal information confidential and use it only for the purposes for which we
+                disclose it to them.
               </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 text-black">•</span>
-                <span>
-                  To third-parties, including suppliers, to market their products or services to you if you have
-                  consented to receive the promotional updates. We contractually require these third-parties to keep
-                  personal information confidential and use it only for the purposes for which we disclose it to them.
-                </span>
+
+              <li>
+                To an actual or potential buyer or other successor in the event of a merger, divestiture, restructuring,
+                reorganization, dissolution or other sale or transfer of some or all of Bhartiyam's assets, whether as a
+                going concern or as part of bankruptcy, liquidation or similar proceeding, in which personal information
+                held by Bhartiyam about the users of our Services are among the assets transferred.
+              </li>
+
+              <li>
+                To third-parties, including suppliers, to market their products or services to you if you have consented
+                to receive the promotional updates. We contractually require these third-parties to keep personal
+                information confidential and use it only for the purposes for which we disclose it to them.
+              </li>
+
+              <li>
+                <b>Sellers & brands:</b> We may share your feedback regarding the quality of products or services, with
+                the relevant brand/seller or other third party along with your personal data. This is done to ensure
+                timely grievance redressal and preventing recurrence of similar issues. We may also run contests and
+                campaigns on the platform in collaboration with or on behalf of brands. Participation in such campaigns
+                is voluntary, and customer details may be shared with the brand to administer such events, additionally
+                subject to their terms and conditions and privacy policy.
+              </li>
+
+              <li>
+                <b>Service Providers:</b> We may share your information with third party service providers that we use
+                for a variety of purposes, such as to send you communications via emails, messages or tele-call to
+                inform you about our products and Services that may be of interest to you, push notifications to your
+                mobile device on our behalf, provide voice recognition services to process your spoken queries and
+                questions, help us analyze use of our Services, and process and collect payments. Some of our products,
+                Services and databases are hosted by third party hosting services providers. We may also use third party
+                service providers for other projects, such as conducting surveys, organizing sweepstakes or providing
+                services and business / commercial solutions for us whether permanently or on an ad hoc basis. We may
+                share information about you with these service providers to enable them to perform their services.
+              </li>
+
+              <li>
+                <b>Legal Authorities:</b> To investigate and prevent, take action against any illegal activities or to
+                comply with legal processes, Bhartiyam may share your information with law enforcement, government
+                agencies, courts, and/or other organizations on account of legal requests such as notices, summons,
+                court order or government demand to comply with applicable laws.
+              </li>
+
+              <li>
+                <b>Audit and assurance purposes:</b> We may also share your information to investigate and address
+                threats or potential threats to the safety of any person, to investigate and address violations of this
+                Privacy Policy or the Terms of Service, or to investigate and address violations of the rights of third
+                parties and/or to protect the rights, property and safety of Bhartiyam, our employees, other users, or
+                the public. We may also share information with internal and external audit teams and various
+                stakeholders across our ecosystem, including affiliated entities, payment gateways, banks and other
+                financial entities for fraud detection, prevention, mitigation, auditing and assurance purposes.
+              </li>
+
+              <li>
+                We may share information with other companies and organizations, in exceptional cases, incase the
+                disclosure is required or appropriate to protect the rights, property, or safety of Bhartiyam, our
+                customers or others we may share limited data to the extent necessary to ensure safety of the platform.
+              </li>
+              <li>
+                With your consent, we may additionally share your information with third parties in any other
+                circumstances.
               </li>
             </ul>
 
@@ -445,8 +548,24 @@ const PrivacyPolicy = () => {
               enforcing our legal rights and fraud/risk mitigation purposes.
             </p>
 
+            <p className="mt-4 text-base leading-relaxed text-gray-700">
+              <strong>Limitation: </strong>Your rights regarding your personal information may be limited, subject to
+              the law of your jurisdiction.
+              <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-700">
+                <li>Incase your requests are abusive or unreasonably excessive.</li>
+                <li>Where the rights or safety of another person or persons would be encroached upon.</li>
+                <li>
+                  If the information or material you request relates to existing or anticipated legal proceedings
+                  between you and us, or providing access to you would prejudice negotiations between us or an
+                  investigation of possible unlawful activity. Your right to review, update, correct, and delete your
+                  information is subject to our records retention policies and applicable law, including any statutory
+                  retention requirements.
+                </li>
+              </ul>
+            </p>
+
             <h2 className="mt-10 text-xl font-semibold text-gray-900">
-              How we protect your personal information shared with us
+              How we protect your personal information shared with us:
             </h2>
 
             <p className="mt-4 text-base leading-relaxed text-gray-700">
@@ -492,8 +611,8 @@ const PrivacyPolicy = () => {
             <h2 className="mt-10 text-2xl font-semibold text-gray-900">Contact Us</h2>
 
             <p className="mt-4 text-base leading-relaxed text-gray-700">
-              If you have any queries relating to the processing/usage of information provided by you or Bhartiyam's
-              Privacy Policy, you may email us at{' '}
+              If you have any queries relating to the processing/usage of information provided by you or Bhariyam's
+              Privacy Policy, you may email the Data Protection Officer (DPO) at ______{' '}
               <a href="mailto:care@bhartiyam.in" className="font-semibold text-black hover:text-orange-700">
                 care@bhartiyam.in
               </a>

@@ -169,10 +169,11 @@ const ProductService = () => {
 
                 <li className="flex items-center gap-3">
                   <span className="text-orange-600">✓</span>
-                  <span className="text-base text-gray-700">Trusted by thousands of families and businesses nationwide</span>
+                  <span className="text-base text-gray-700">
+                    Trusted by thousands of families and businesses nationwide
+                  </span>
                 </li>
               </ul>
-
             </div>
             <div>
               <Image

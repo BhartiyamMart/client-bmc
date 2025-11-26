@@ -27,9 +27,7 @@ const StoreTypes = () => {
               {/* Overlay Text Card */}
               <div className="absolute right-0 bottom-0 left-0 rounded-t bg-white p-4 shadow-md">
                 <h3 className="text-lg font-bold text-gray-900">{card.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-gray-600 line-clamp-2">
-                  {card.para}
-                </p>
+                <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-600">{card.para}</p>
                 <p className="pt-5">
                   <Link
                     href="/store-type"

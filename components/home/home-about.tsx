@@ -13,17 +13,24 @@ const HomeAbout = () => {
 
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
             <b>Bhartiyam</b>, a proud brand of
-            <b> Kamna Mart Private Limited</b>, is revolutionizing the Indian retail and 
-            <b> Fast Moving Consumer Goods (FMCG) market. </b>  With a commitment to quality and affordability, customer satisfaction is our motto. We want to offer the best to our customers, whether packaged products, farm-fresh produced items, or authentic regional specialties. Our dedicated team works relentlessly to explore what consumers prefer and try to procure the best at a special price.
+            <b> Kamna Mart Private Limited</b>, is revolutionizing the Indian retail and
+            <b> Fast Moving Consumer Goods (FMCG) market. </b> With a commitment to quality and affordability, customer
+            satisfaction is our motto. We want to offer the best to our customers, whether packaged products, farm-fresh
+            produced items, or authentic regional specialties. Our dedicated team works relentlessly to explore what
+            consumers prefer and try to procure the best at a special price.
           </p>
 
           <p className="mt-4 text-lg leading-relaxed text-gray-700">
             We patronize a personalized shopping experience tailored to their needs. At
-            <b> Bhartyiam - Aapka Daily Needs Partner </b> , we curate our list of products according to the demands and preferences of our customers. We ask questions to know them better - Do they prefer organic or traditional ingredients? Are they looking for convenience or culinary exploration? We ensure that all products meet their expectations in quality, taste, and value.
+            <b> Bhartyiam - Aapka Daily Needs Partner </b> , we curate our list of products according to the demands and
+            preferences of our customers. We ask questions to know them better - Do they prefer organic or traditional
+            ingredients? Are they looking for convenience or culinary exploration? We ensure that all products meet
+            their expectations in quality, taste, and value.
           </p>
 
           <p className="mt-4 text-lg leading-relaxed text-gray-700">
-            With options like express checkout, home delivery, and seasonal promotions, we don’t just stock shelves - we craft solutions that make shopping joyful and memorable.
+            With options like express checkout, home delivery, and seasonal promotions, we don’t just stock shelves - we
+            craft solutions that make shopping joyful and memorable.
           </p>
 
           <div className="mt-8">

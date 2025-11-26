@@ -121,7 +121,7 @@ const AboutContent = () => {
 
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="text-black w-3 flex justify-center">•</span>
+                <span className="flex w-3 justify-center text-black">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Quality First</span> – Every product goes through strict
                   quality checks.
@@ -129,7 +129,7 @@ const AboutContent = () => {
               </li>
 
               <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="text-black w-3 flex justify-center">•</span>
+                <span className="flex w-3 justify-center text-black">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Affordability for All</span> – Making premium products
                   accessible at the best prices.
@@ -137,7 +137,7 @@ const AboutContent = () => {
               </li>
 
               <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="text-black w-3 flex justify-center">•</span>
+                <span className="flex w-3 justify-center text-black">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Customer Satisfaction</span> – Building long-lasting
                   relationships with trust.
@@ -145,7 +145,7 @@ const AboutContent = () => {
               </li>
 
               <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="text-black w-3 flex justify-center">•</span>
+                <span className="flex w-3 justify-center text-black">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Innovation</span> – Integrating digital solutions for a
                   smarter shopping experience.
@@ -153,7 +153,6 @@ const AboutContent = () => {
               </li>
             </ul>
           </div>
-
 
           <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">Why Bhartiyam?</h2>

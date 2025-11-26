@@ -40,7 +40,6 @@ export function ContactForm({ email }: ContactFormProps) {
       <h2 className="mb-6 text-2xl font-bold text-gray-900">Submit Your Enquiry</h2>
 
       <form onSubmit={onSubmit} className="space-y-4">
-
         {/* Name Field */}
         <div>
           <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -71,20 +70,19 @@ export function ContactForm({ email }: ContactFormProps) {
             inputMode="numeric"
             maxLength={10}
             onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, ""); // allow only digits
+              const value = e.target.value.replace(/\D/g, ''); // allow only digits
               setMobile(value);
             }}
             onPaste={(e) => {
-              const pasted = e.clipboardData.getData("text");
+              const pasted = e.clipboardData.getData('text');
               if (!/^\d+$/.test(pasted)) {
                 e.preventDefault(); // block paste
-                toast.error("Only numbers are allowed");
+                toast.error('Only numbers are allowed');
               }
             }}
             className="focus:border-primary focus:ring-none w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-2 focus:outline-none"
             placeholder="Enter your mobile number"
           />
-
         </div>
 
         {/* Message Field */}

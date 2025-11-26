@@ -19,8 +19,8 @@ const StoreTypes = () => {
               <Image
                 src={card.img || '/placeholder.svg'}
                 alt={card.title}
-                width={1000}
-                height={800}
+                width={500}
+                height={400}
                 className="h-80 w-full object-cover md:h-80"
               />
 

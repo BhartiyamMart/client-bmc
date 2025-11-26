@@ -35,31 +35,31 @@ const PartnerBhartiyam = () => {
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    A strong and expanding customer base across India
+                    A strong and expanding customer base across India.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    Omni-channel presence with online and offline retail formats
+                    Omni-channel presence with online and offline retail formats.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    Trusted brand reputation under Kamna Mart Private Limited
+                    Trusted brand reputation under Kamna Mart Private Limited.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    Growth opportunities in one of the fastest-growing FMCG sectors
+                    Growth opportunities in one of the fastest-growing FMCG sectors.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    A partnership built on transparency, innovation, and mutual success
+                    A partnership built on transparency, innovation, and mutual success.
                   </span>
                 </li>
               </ul>
@@ -144,25 +144,25 @@ const PartnerBhartiyam = () => {
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    Fill the Partnership Inquiry Form (or contact us directly)
+                    Fill the Partnership Inquiry Form (or contact us directly).
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    Our team will evaluate the opportunity
+                    Our team will evaluate the opportunity.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    We align on terms, vision, and growth strategy
+                    We align on terms, vision, and growth strategy.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-black">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
-                    Start working together to create value-driven success
+                    Start working together to create value-driven success.
                   </span>
                 </li>
               </ul>

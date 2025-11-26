@@ -11,20 +11,27 @@ const PartnerFaq = () => {
   };
 
   return (
-    <section className="">
+    <section>
       <h3 className="mb-8 text-3xl font-bold">FAQ&apos;s</h3>
+
       <div className="divide-y divide-gray-300">
         {partnerFaqs.map((faq, index) => (
           <div key={index} className="py-4">
+            {/* Question Row */}
             <button className="flex w-full items-center justify-between text-left" onClick={() => toggleFAQ(index)}>
-              <span className="text-lg font-medium text-black">{faq.question}</span>
-              {openIndex === index ? (
-                <Minus className="h-5 w-5 cursor-pointer text-black" />
-              ) : (
-                <Plus className="h-5 w-5 cursor-pointer text-black" />
-              )}
+              <span className="flex-1 pr-4 text-lg font-medium text-black">{faq.question}</span>
+
+              <div className="flex-shrink-0 p-2">
+                {openIndex === index ? (
+                  <Minus className="h-5 w-5 text-black" />
+                ) : (
+                  <Plus className="h-5 w-5 text-black" />
+                )}
+              </div>
             </button>
-            {openIndex === index && <p className="mt-3 text-base leading-relaxed text-gray-700">{faq.answer}</p>}
+
+            {/* Answer will always fall below(full width) */}
+            {openIndex === index && <p className="mt-3 pr-2 text-base leading-relaxed text-gray-700">{faq.answer}</p>}
           </div>
         ))}
       </div>

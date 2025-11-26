@@ -21,6 +21,7 @@ const StoreTypes = () => {
                 alt={card.title}
                 width={500}
                 height={400}
+                quality={70}
                 className="h-80 w-full object-cover md:h-80"
               />
 

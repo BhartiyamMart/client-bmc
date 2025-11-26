@@ -8,26 +8,22 @@ const HomeAbout = () => {
         {/* Text Section */}
         <div className="md:col-span-7">
           <h2 className="text-3xl leading-snug font-bold text-gray-900 md:text-3xl">
-            Bhartiyam — Your Trusted Daily Needs Partner
+            Bhartiyam — Apka Daily Needs Partner
           </h2>
 
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            <b>Bhartiyam</b>, a proud initiative of
-            <b> Kamna Mart Private Limited</b>, is reshaping India&apos;s
-            <b> retail and FMCG landscape</b> with an unwavering commitment to quality, affordability, and customer
-            delight.
+            <b>Bhartiyam</b>, a proud brand of
+            <b> Kamna Mart Private Limited</b>, is revolutionizing the Indian retail and 
+            <b> Fast Moving Consumer Goods (FMCG) market. </b>  With a commitment to quality and affordability, customer satisfaction is our motto. We want to offer the best to our customers, whether packaged products, farm-fresh produced items, or authentic regional specialties. Our dedicated team works relentlessly to explore what consumers prefer and try to procure the best at a special price.
           </p>
 
           <p className="mt-4 text-lg leading-relaxed text-gray-700">
-            From packaged essentials to farm-fresh produce and authentic regional specialties, our dedicated team
-            curates products that resonate with your lifestyle. We understand what consumers truly want — whether
-            organic staples, traditional ingredients, or exploratory flavors — and we bring the best to your doorstep at
-            the best prices.
+            We patronize a personalized shopping experience tailored to their needs. At
+            <b> Bhartyiam - Aapka Daily Needs Partner </b> , we curate our list of products according to the demands and preferences of our customers. We ask questions to know them better - Do they prefer organic or traditional ingredients? Are they looking for convenience or culinary exploration? We ensure that all products meet their expectations in quality, taste, and value.
           </p>
 
           <p className="mt-4 text-lg leading-relaxed text-gray-700">
-            With seamless express checkout, fast home delivery, and exciting seasonal offers, we don&apos;t just deliver
-            products —<b> we deliver convenience, trust, and happiness.</b>
+            With options like express checkout, home delivery, and seasonal promotions, we don’t just stock shelves - we craft solutions that make shopping joyful and memorable.
           </p>
 
           <div className="mt-8">
@@ -35,7 +31,7 @@ const HomeAbout = () => {
               href="/about-us"
               className="bg-primary hover:bg-primary/90 focus:ring-none inline-flex items-center justify-center rounded px-6 py-3 text-base font-medium text-white transition-all duration-200 focus:outline-none"
             >
-              Learn More About Us
+              View More
             </a>
           </div>
         </div>

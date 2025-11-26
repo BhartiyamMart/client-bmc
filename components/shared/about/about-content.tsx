@@ -76,7 +76,7 @@ const AboutContent = () => {
       {/* Mission & Vision */}
       <section className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
-          <div className="rounded border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
+          <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <div className="flex flex-col items-center">
               <Image
                 src="/images/about-us/impact.gif"
@@ -94,7 +94,7 @@ const AboutContent = () => {
             </div>
           </div>
 
-          <div className="rounded border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
+          <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <div className="flex flex-col items-center">
               <Image
                 src="/images/about-us/strategy.gif"
@@ -116,32 +116,36 @@ const AboutContent = () => {
       {/* Core Values & Why Bhartiyam */}
       <section className="px-4 pb-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
-          <div className="rounded border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
+          <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">Our Core Values</h2>
+
             <ul className="space-y-4">
-              <li className="flex gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="mt-1 text-black">•</span>
+              <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
+                <span className="text-black w-3 flex justify-center">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Quality First</span> – Every product goes through strict
                   quality checks.
                 </span>
               </li>
-              <li className="flex gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="mt-1 text-black">•</span>
+
+              <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
+                <span className="text-black w-3 flex justify-center">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Affordability for All</span> – Making premium products
                   accessible at the best prices.
                 </span>
               </li>
-              <li className="flex gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="mt-1 text-black">•</span>
+
+              <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
+                <span className="text-black w-3 flex justify-center">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Customer Satisfaction</span> – Building long-lasting
                   relationships with trust.
                 </span>
               </li>
-              <li className="flex gap-3 text-base leading-7 text-gray-700 sm:leading-8">
-                <span className="mt-1 text-black">•</span>
+
+              <li className="flex items-start gap-3 text-base leading-7 text-gray-700 sm:leading-8">
+                <span className="text-black w-3 flex justify-center">•</span>
                 <span>
                   <span className="font-semibold text-gray-900">Innovation</span> – Integrating digital solutions for a
                   smarter shopping experience.
@@ -150,7 +154,8 @@ const AboutContent = () => {
             </ul>
           </div>
 
-          <div className="rounded border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
+
+          <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">Why Bhartiyam?</h2>
             <ul className="space-y-4">
               <li className="flex gap-3 text-base leading-7 text-gray-700 sm:leading-8">

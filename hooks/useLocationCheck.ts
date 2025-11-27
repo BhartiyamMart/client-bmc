@@ -15,8 +15,8 @@ export const useLocationCheck = () => {
 
       const hasValidLocation = Boolean(
         state?.location?.lattitude?.trim() &&
-          state?.location?.longitude?.trim() &&
-          state?.location?.display_address?.trim()
+        state?.location?.longitude?.trim() &&
+        state?.location?.display_address?.trim()
       );
 
       if (!hasValidLocation) {
@@ -32,8 +32,8 @@ export const useLocationCheck = () => {
 
       const hasValidLocation = Boolean(
         state.location?.lattitude?.trim() &&
-          state.location?.longitude?.trim() &&
-          state.location?.display_address?.trim()
+        state.location?.longitude?.trim() &&
+        state.location?.display_address?.trim()
       );
 
       if (!hasValidLocation) {

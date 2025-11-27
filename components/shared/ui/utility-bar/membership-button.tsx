@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 
 const MembershipButton = () => {
   return (
@@ -12,7 +12,7 @@ const MembershipButton = () => {
           className="flex h-9 items-center gap-2 rounded-full bg-[#FFF4C9] px-3 text-sm font-semibold text-[#9E7F04] transition-colors hover:bg-[#FFF0B3]"
         >
           <div className="relative h-4 w-4">
-            <Image src="/temp/e.png" alt="" fill className="object-contain select-none" sizes="16px" />
+            <OptimizedImage src="/temp/e.png" alt="" fill className="object-contain select-none" sizes="16px" />
           </div>
           <span className="whitespace-nowrap">Join Membership</span>
         </Link>

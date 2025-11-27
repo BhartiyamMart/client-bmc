@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import ServiceFaq from '@/components/faq/service-faq';
 import HomeContact from '@/components/home/home-contact';
 import Container from '@/components/shared/ui/container';
@@ -94,7 +94,7 @@ const ProductService = () => {
         <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="order-2 lg:order-1">
-              <Image
+              <OptimizedImage
                 width={1000}
                 height={1000}
                 src="/images/product-service/img_10.webp"
@@ -176,7 +176,7 @@ const ProductService = () => {
               </ul>
             </div>
             <div>
-              <Image
+              <OptimizedImage
                 width={1000}
                 height={1000}
                 src="/images/product-service/bgimg.webp"

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import Container from '@/components/shared/ui/container';
 
 const HomeAbout = () => {
@@ -46,7 +46,7 @@ const HomeAbout = () => {
         {/* Image Section */}
         <div className="flex justify-center md:col-span-5 md:justify-end">
           <div className="w-full max-w-[420px] overflow-hidden rounded md:max-w-[480px] lg:max-w-[520px]">
-            <Image
+            <OptimizedImage
               src="/images/about-us/ab_slide01.webp"
               alt="Bhartiyam store visuals"
               width={600}

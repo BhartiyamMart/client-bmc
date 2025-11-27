@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -357,7 +357,7 @@ const AuthModal = () => {
               {/* Logo */}
               <div className="text-center">
                 <div className="mb-4 inline-block rounded-xl bg-orange-100 p-3">
-                  <Image src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
+                  <OptimizedImage src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
                 </div>
                 <h2 className="mb-2 text-xl font-semibold text-gray-900">India&apos;s healthy and fresh grocery</h2>
                 <p className="text-sm text-gray-600">Log in or Sign up</p>
@@ -489,7 +489,7 @@ const AuthModal = () => {
               {/* Title */}
               <div className="text-center">
                 <div className="mb-4 inline-block rounded-xl bg-orange-100 p-3">
-                  <Image src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
+                  <OptimizedImage src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
                 </div>
                 <h2 className="mb-2 text-lg font-semibold text-gray-900">Complete Your Profile</h2>
                 <p className="text-sm text-gray-600">Please complete your profile to continue</p>

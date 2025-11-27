@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
       {/* Header Section */}
       <section className="bg-gray-100">
         <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">
+          <h1 className="text-2xl font-bold text-balance text-black sm:text-2xl md:text-3xl">
             Privacy Policy of Bhartiyam
           </h1>
         </Container>

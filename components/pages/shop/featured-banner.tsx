@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import { useEffect, useState } from 'react';
 
 // Swiper imports
@@ -105,7 +105,7 @@ const FeaturedBanner = () => {
                 <Link href={banner.bannerUrl} className="block">
                   {/* Mobile/Tablet Image (< 1024px) - Aspect Ratio 2.58:1 */}
                   <div className="relative block w-full lg:hidden" style={{ aspectRatio: '2.58/1' }}>
-                    <Image
+                    <OptimizedImage
                       src={banner.imageUrlSmall}
                       alt={banner.title || 'Featured Banner'}
                       fill
@@ -117,7 +117,7 @@ const FeaturedBanner = () => {
 
                   {/* Desktop Image (>= 1024px) - Aspect Ratio 5.45:1 */}
                   <div className="relative hidden w-full lg:block" style={{ aspectRatio: '5.45/1' }}>
-                    <Image
+                    <OptimizedImage
                       src={banner.imageUrlLarge}
                       alt={banner.title || 'Featured Banner'}
                       fill

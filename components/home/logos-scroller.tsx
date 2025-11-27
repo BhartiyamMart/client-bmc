@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import Autoplay from 'embla-carousel-autoplay';
 
 import { useRef } from 'react';
@@ -23,7 +23,7 @@ export function LogosScroller() {
           <CarouselItem key={logo.id} className="basis-1/5">
             <Card className="border-0 shadow-none">
               <CardContent className="flex items-center justify-center p-2">
-                <Image src={logo.src} alt={logo.alt} width={140} height={70} className="object-contain" />
+                <OptimizedImage src={logo.src} alt={logo.alt} width={140} height={70} className="object-contain" />
               </CardContent>
             </Card>
           </CarouselItem>

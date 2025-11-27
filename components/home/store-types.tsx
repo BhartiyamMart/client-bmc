@@ -1,5 +1,4 @@
-import Image from 'next/image';
-
+import OptimizedImage from '@/components/shared/optimizeImage';
 import { storeTypes } from '@/data/shared/landing-store';
 import Link from 'next/link';
 import Container from '@/components/shared/ui/container';
@@ -16,12 +15,13 @@ const StoreTypes = () => {
           {storeTypes.map((card) => (
             <article key={card.title} className="relative overflow-hidden rounded shadow">
               {/* Background Image */}
-              <Image
-                src={card.img || '/placeholder.svg'}
+              <OptimizedImage
+                src={card.img}
                 alt={card.title}
                 width={500}
                 height={400}
-                className="h-80 w-full object-cover md:h-80"
+                className="h-80 w-full object-cover"
+                blurDataURL={card.img}
               />
 
               {/* Overlay Text Card */}

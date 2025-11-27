@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import { useEffect, useState } from 'react';
 import { ICategory } from '@/interfaces/shared.interface';
 import { CategoryData } from '@/data/temp';
@@ -59,7 +59,7 @@ const FeaturedCategory = () => {
             </div>
 
             <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4 pb-2">
-              <Image
+              <OptimizedImage
                 src={cat.img}
                 alt={cat.name}
                 width={200}

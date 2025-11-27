@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import Container from '@/components/shared/ui/container';
 
 import { homeServices } from '@/data/shared/common';
@@ -22,7 +22,7 @@ const HomeServices = () => {
               key={s.title}
               className="flex cursor-pointer items-start gap-4 rounded border-2 bg-white p-5 transition hover:shadow"
             >
-              <Image
+              <OptimizedImage
                 src={s.icon || '/placeholder.svg'}
                 height={100000}
                 width={100000}
@@ -30,6 +30,7 @@ const HomeServices = () => {
                 className="w-14 shrink-0 sm:w-16"
                 priority
               />
+
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 sm:text-xl">{s.title}</h3>
                 <p className="mt-1 text-sm text-gray-600 sm:text-base">{s.description}</p>

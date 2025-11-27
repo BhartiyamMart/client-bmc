@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 
 interface CategoryItemProps {
   name: string;
@@ -13,7 +13,7 @@ const CategoryItem = ({ name, icon }: CategoryItemProps) => {
       aria-label={`View ${name} category`}
     >
       <div className="relative h-5 w-5 shrink-0">
-        <Image src={icon} alt="" fill className="object-contain" sizes="20px" />
+        <OptimizedImage src={icon} alt="" fill className="object-contain" sizes="20px" />
       </div>
       <span className="whitespace-nowrap">{name}</span>
     </button>

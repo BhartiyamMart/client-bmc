@@ -6,7 +6,7 @@ const ReturnPolicy = () => {
       {/* Header Section */}
       <section className="bg-gray-100">
         <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">Return Policy</h1>
+          <h1 className="text-2xl font-bold text-balance text-black sm:text-2xl md:text-3xl">Return Policy:</h1>
         </Container>
       </section>
 
@@ -19,7 +19,7 @@ const ReturnPolicy = () => {
           </p>
 
           <h2 className="mt-8 text-xl font-semibold text-gray-900">
-            Bhartiyam offers a 30-minute return and exchange service for all products
+            Bhartiyam offers a 30-minute return and exchange service for all products.
           </h2>
 
           <p className="mt-4 text-base leading-relaxed text-gray-700">
@@ -51,7 +51,7 @@ const ReturnPolicy = () => {
             Orders' section of the Bhartiyam website.
           </p>
 
-          <p className="mt-4 text-sm text-gray-600 italic">
+          <p className="text-md mt-4 text-gray-900">
             (The names of the section are suggested and are subjected to discussion for final take.)
           </p>
         </Container>

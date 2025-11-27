@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import Container from '@/components/shared/ui/container';
 
 const AboutContent = () => {
@@ -9,7 +9,7 @@ const AboutContent = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Image Section (first on mobile, second on large screens) */}
           <div className="order-1 flex items-start justify-center lg:order-2 lg:col-span-5">
-            <Image
+            <OptimizedImage
               src="/images/about-us/img011.webp"
               width={1000}
               height={1000}
@@ -78,7 +78,7 @@ const AboutContent = () => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <div className="flex flex-col items-center">
-              <Image
+              <OptimizedImage
                 src="/images/about-us/impact.gif"
                 width={96}
                 height={96}
@@ -96,7 +96,7 @@ const AboutContent = () => {
 
           <div className="rounded-md border-2 bg-white p-6 transition-shadow hover:shadow sm:p-10 lg:p-12">
             <div className="flex flex-col items-center">
-              <Image
+              <OptimizedImage
                 src="/images/about-us/strategy.gif"
                 width={96}
                 height={96}

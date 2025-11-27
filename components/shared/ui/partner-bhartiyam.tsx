@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import PartnerFaq from '@/components/faq/faq-partner';
 import HomeContact from '@/components/home/home-contact';
 import Container from '@/components/shared/ui/container';
@@ -66,7 +66,7 @@ const PartnerBhartiyam = () => {
             </div>
 
             <div className="lg:col-span-5">
-              <Image
+              <OptimizedImage
                 width={1000}
                 height={1000}
                 src="/images/partner-with-us/p_img01.webp"
@@ -130,7 +130,7 @@ const PartnerBhartiyam = () => {
         <Container className="mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="order-2 lg:order-1">
-              <Image
+              <OptimizedImage
                 width={1000}
                 height={1000}
                 src="/images/partner-with-us/img_10.webp"

@@ -6,7 +6,7 @@ const RefundPolicy = () => {
       {/* Header Section */}
       <section className="bg-gray-100">
         <Container className="mx-auto px-5 py-10 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-semibold text-balance text-black sm:text-2xl md:text-3xl">
+          <h1 className="text-2xl font-bold text-balance text-black sm:text-2xl md:text-3xl">
             Bhartiyam – Refund Policy
           </h1>
         </Container>
@@ -130,13 +130,13 @@ const RefundPolicy = () => {
                 <span>Refunds may be issued as:</span>
                 <ul className="mt-2 space-y-2 pl-4">
                   <li className="flex gap-2">
-                    <span className="text-orange-600">◦</span>
+                    <span className="text-black">•</span>
                     <span>
                       <strong>Original Payment Method</strong> (UPI, card, wallet, etc.)
                     </span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="text-orange-600">◦</span>
+                    <span className="text-black">•</span>
                     <span>
                       <strong>Store Credit / Wallet Balance</strong> (usable for future purchases)
                     </span>

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import OptimizedImage from '@/components/shared/optimizeImage';
 import HomeContact from '@/components/home/home-contact';
 import Container from '@/components/shared/ui/container';
 
@@ -18,7 +18,7 @@ const StoreType = () => {
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
             {storeTypes.map((card) => (
               <article key={card.title} className="relative overflow-hidden rounded border">
-                <Image
+                <OptimizedImage
                   height={1000}
                   width={1000}
                   src={card.img || '/placeholder.svg'}

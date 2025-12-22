@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 
+import BestSellerPicks from './best-seller-picks';
 import Footer from '@/components/shared/footer/footer';
 import FooterBar from '@/components/shared/footer/footer-bar';
 import ShopNavbar from '@/components/shared/navbar/shop-navbar';
@@ -11,13 +12,13 @@ import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
 
 const ShopPage = () => {
   const navbarRef = useRef<HTMLElement>(null);
-
   return (
     <main className="">
       <ShopNavbar ref={navbarRef} />
       <ShopUtility navbarRef={navbarRef} />
       <FeaturedBanner />
       <FeaturedCategory />
+      <BestSellerPicks />
       <FooterBar />
       <Footer />
     </main>

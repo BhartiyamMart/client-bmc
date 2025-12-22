@@ -52,7 +52,7 @@ const FeaturedCategory = () => {
       <Link href={`/category/${cat.link}`}>
         <div className="relative flex h-full flex-col items-center">
           <div className="relative flex h-full w-full flex-col rounded-xl border text-center transition-all duration-200">
-            <div className="flex h-[50px] items-center justify-center rounded-t-xl bg-[#FFE6CB] px-1">
+            <div className="bg-primary-light flex h-[50px] items-center justify-center rounded-t-xl px-1">
               <h3 className="text-center text-[14px] leading-[17px] font-semibold text-[#7F3200] sm:text-[15px] md:text-[15px] lg:text-[17px]">
                 {cat.name}
               </h3>

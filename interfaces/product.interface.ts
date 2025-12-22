@@ -7,6 +7,7 @@ export interface IProductVariant {
   discount?: string;
   image: string;
   category: string;
+  stock?: number;
 }
 
 export interface IProduct {
@@ -25,6 +26,7 @@ export interface IProduct {
   isFavorite?: boolean;
   onAdd?: () => void;
   onShare?: () => void;
+  stock?: number;
 }
 
 export interface IModalProduct {

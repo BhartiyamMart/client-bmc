@@ -23,4 +23,5 @@ export interface IDiscount {
   title: string;
   subtitle: string;
   img: string;
+  link?: string;
 }

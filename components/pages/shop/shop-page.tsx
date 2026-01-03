@@ -11,6 +11,7 @@ import FeaturedCategory from '@/components/pages/shop/featured-category';
 import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
 import LimitedOffer from './limited-offer';
 import CategoryBanner from '@/components/banners/category-banner';
+import SpecialDiscounts from './special-discounts';
 
 const ShopPage = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -23,6 +24,7 @@ const ShopPage = () => {
       <BestSellerPicks />
       <LimitedOffer />
       <CategoryBanner />
+      <SpecialDiscounts />
       <FooterBar />
       <Footer />
     </main>

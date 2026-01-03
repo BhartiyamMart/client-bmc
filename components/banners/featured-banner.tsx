@@ -1,19 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import Section from '@/components/shared/ui/section';
+import Container from '@/components/shared/ui/container';
 import OptimizedImage from '@/components/shared/optimizeImage';
-import { useEffect, useState } from 'react';
+import FeaturedBannerSkeleton from './featured-bannerSkeleton';
 
 // Swiper imports
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
-import { IBanner } from '@/interfaces/shared.interface';
-import { getBanners } from '@/apis/content.api';
-import Section from '@/components/shared/ui/section';
-import Container from '@/components/shared/ui/container';
-import FeaturedBannerSkeleton from './featured-bannerSkeleton';
 import { useTopBanners } from '@/hooks/useBanners';
 
 const FeaturedBanner = () => {

@@ -1,4 +1,5 @@
 import { IProduct } from '@/interfaces/product.interface';
+import { IDiscount } from '@/interfaces/root.interface';
 
 export const CategoryData = [
   { id: 1, name: 'Fruits & Vagetables', img: '/temp/f.png', link: 'fruits-vegies' },
@@ -320,5 +321,29 @@ export const productData: IProduct[] = [
     labelValue: 35,
     category: 'Beverages',
     stock: 65,
+  },
+];
+
+export const discountData: IDiscount[] = [
+  {
+    id: 1,
+    title: 'Cosmetics',
+    subtitle: 'UP TO 50% OFF',
+    img: '/temp/cosmetic.svg',
+    link: '/category/cosmetics',
+  },
+  {
+    id: 2,
+    title: 'Bread and Milk',
+    subtitle: 'UP TO 50% OFF',
+    img: '/temp/bread_and_milk.svg',
+    link: '/category/dairy',
+  },
+  {
+    id: 3,
+    title: 'Wellness Products',
+    subtitle: 'UP TO 50% OFF',
+    img: '/temp/wellness_product.svg',
+    link: '/category/wellness',
   },
 ];

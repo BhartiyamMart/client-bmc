@@ -219,20 +219,21 @@ const ProductCard: React.FC<IProduct> = ({
                 </div>
               )
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-start gap-2">
                 <FavoriteButton isFavorite={favoriteStatus} onToggle={handleFavoriteToggle} />
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 cursor-pointer rounded-sm border border-orange-500 bg-orange-50 py-2.5 text-sm font-medium text-orange-600 transition-colors hover:bg-orange-100"
-                >
-                  Add
-                </button>
+                <div className="mt-2 flex w-full flex-col">
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 cursor-pointer rounded-sm border border-orange-500 bg-orange-50 py-2.5 text-sm font-medium text-orange-600 transition-colors hover:bg-orange-100"
+                  >
+                    Add
+                  </button>
+                  <div className="mt-2 flex h-4 justify-center text-center">
+                    {hasVariants && <span className="text-xs text-gray-500">{variants?.length} variants</span>}
+                  </div>
+                </div>
               </div>
             )}
-
-            <div className="flex h-4 justify-center text-center">
-              {hasVariants && <span className="text-xs text-gray-500">{variants?.length} variants</span>}
-            </div>
           </div>
         </div>
 

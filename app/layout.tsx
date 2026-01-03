@@ -1,5 +1,5 @@
-import './cstyle.css';
-import './globals.css';
+import '@/stylesheets/cstyle.css';
+import '@/stylesheets/globals.css';
 
 import Script from 'next/script';
 import NextTopLoader from 'nextjs-toploader';

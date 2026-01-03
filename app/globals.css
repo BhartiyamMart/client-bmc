@@ -46,6 +46,9 @@
   --color-primary: #ee7c00;
   --color-primary-dark: #7f3200;
   --color-text-secondary: #4a5565;
+
+  /* Specific component color */
+  --color-product-badge: #109441;
 }
 
 :root {

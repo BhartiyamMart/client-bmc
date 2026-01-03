@@ -84,16 +84,16 @@ const ProductCard: React.FC<IProduct> = ({
         {label && labelValue && (
           <div className="relative">
             <div
-              className="absolute top-0 left-0 z-10 flex flex-col items-center justify-center bg-left bg-no-repeat text-[12px] font-semibold text-white"
-              style={{
-                backgroundImage: 'url(/image/badg.svg)',
-                backgroundSize: 'contain',
-                width: '40px',
-                height: '40px',
-              }}
+              className="bg-product-badge absolute top-0 left-0 z-10 flex min-h-10 w-fit min-w-10 flex-col items-center justify-center bg-left bg-no-repeat px-2 text-[12px] font-medium text-white"
+              // style={{
+              //   backgroundImage: 'url(/images/product-service/badge.svg)',
+              //   backgroundSize: 'contain',
+              //   width: '40px',
+              //   height: '40px',
+              // }}
             >
-              <span className="leading-none">{label}</span>
-              <span className="leading-none">₹{labelValue}</span>
+              <span className="leading-none uppercase">{label}</span>
+              <span className="mt-0.5 leading-none uppercase">₹{labelValue}</span>
             </div>
           </div>
         )}
@@ -118,7 +118,7 @@ const ProductCard: React.FC<IProduct> = ({
                 <p className="text-xs font-semibold text-gray-500">{weight}</p>
                 <div className="flex w-fit items-center gap-1 rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5">
                   <Image
-                    src="/image/clock2.svg"
+                    src="/images/product-service/clock2.svg"
                     alt="Delivery time"
                     width={10}
                     height={10}
@@ -130,7 +130,7 @@ const ProductCard: React.FC<IProduct> = ({
             )}
           </div>
 
-          <div className="h-[38px] pt-1.5">
+          <div className="h-9.5 pt-1.5">
             <h3 className="line-clamp-2 text-[14px] leading-5 font-normal text-gray-800 md:text-[14px] lg:text-[15px]">
               <Link href={`/product/${id}`} className="hover:text-gray-600">
                 {name}

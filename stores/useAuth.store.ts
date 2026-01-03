@@ -40,23 +40,28 @@ export const useAuthStore = create<IAuthStore>()(
       userProfile: null,
       isAuthModalOpen: false,
       currentStep: 'phone',
-      protectedRoute: null, // Add this
+      protectedRoute: null,
       setToken: (token: string | null) => set({ token }),
       setUserProfile: (profile: UserProfile | null) => set({ userProfile: profile }),
       setAuthModalOpen: (open: boolean) => set({ isAuthModalOpen: open }),
       setCurrentStep: (step: AuthStep) => set({ currentStep: step }),
       setProtectedRoute: (route: string | null) => set({ protectedRoute: route }),
-      resetAuthFlow: () => set({ currentStep: 'phone' }),
+      resetAuthFlow: () => set({ currentStep: 'phone', isAuthModalOpen: false }),
       logout: () =>
         set({
           token: null,
           userProfile: null,
           currentStep: 'phone',
           isAuthModalOpen: false,
+          protectedRoute: null,
         }),
     }),
     {
       name: 'auth',
+      partialize: (state) => ({
+        token: state.token,
+        userProfile: state.userProfile,
+      }),
     }
   )
 );

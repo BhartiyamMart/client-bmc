@@ -36,6 +36,14 @@ const AuthModal = () => {
 
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isVerifyingRef = useRef(false); // ✅ Prevent multiple verifications
+
+  // ✅ Reset to phone step if on OTP/profile step without phone number (on reload)
+  useEffect(() => {
+    if ((currentStep === 'otp' || currentStep === 'profile') && !phoneNumber) {
+      setCurrentStep('phone');
+    }
+  }, [currentStep, phoneNumber, setCurrentStep]);
 
   // Start resend timer
   const startResendTimer = useCallback(() => {
@@ -65,6 +73,7 @@ const AuthModal = () => {
     setReferralCode('');
     setResendTimer(0);
     setIsLoading(false);
+    isVerifyingRef.current = false;
   }, [setAuthModalOpen, resetAuthFlow]);
 
   // Cleanup timer on unmount
@@ -81,11 +90,13 @@ const AuthModal = () => {
     }
   }, [currentStep, isLoading]);
 
-  // Auto-submit OTP when 6 digits entered
+  // ✅ Fixed: Auto-submit OTP when 6 digits entered (prevents infinite loop)
   useEffect(() => {
     const handleOtpVerification = async () => {
-      if (otp.length !== OTP_LENGTH || isLoading) return;
+      // ✅ Prevent duplicate calls
+      if (otp.length !== OTP_LENGTH || isLoading || isVerifyingRef.current) return;
 
+      isVerifyingRef.current = true;
       setIsLoading(true);
 
       try {
@@ -97,7 +108,10 @@ const AuthModal = () => {
 
         if (response.error) {
           toast.error(response.message);
-          setIsLoading(false);
+
+          // ✅ Clear OTP on error to allow retry
+          setOtp('');
+          setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
         } else {
           toast.success(response.message);
 
@@ -109,10 +123,8 @@ const AuthModal = () => {
           if (response.payload.isName === false) {
             // New user - show profile form
             setCurrentStep('profile');
-            setIsLoading(false);
           } else {
             // Existing user - close modal and redirect
-            setIsLoading(false);
             setAuthModalOpen(false);
             resetAuthFlow();
 
@@ -125,11 +137,17 @@ const AuthModal = () => {
         }
       } catch (error) {
         toast.error('Failed to verify OTP. Please try again.');
+
+        // ✅ Clear OTP on error
+        setOtp('');
+        setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
+      } finally {
         setIsLoading(false);
+        isVerifyingRef.current = false;
       }
     };
 
-    if (otp.length === OTP_LENGTH && currentStep === 'otp' && !isLoading) {
+    if (otp.length === OTP_LENGTH && currentStep === 'otp' && !isVerifyingRef.current) {
       handleOtpVerification();
     }
   }, [
@@ -161,15 +179,14 @@ const AuthModal = () => {
         const response = await sendOtp({ phoneNumber });
         if (response.error) {
           toast.error(response.message);
-          setIsLoading(false);
         } else {
           toast.success('OTP sent successfully');
           setCurrentStep('otp');
           startResendTimer();
-          setIsLoading(false);
         }
       } catch (error) {
         toast.error('Failed to send OTP. Please try again.');
+      } finally {
         setIsLoading(false);
       }
     },
@@ -226,16 +243,15 @@ const AuthModal = () => {
       const response = await sendOtp({ phoneNumber });
       if (response.error) {
         toast.error(response.message);
-        setIsLoading(false);
       } else {
         toast.success('OTP sent successfully');
         setOtp('');
         setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
         startResendTimer();
-        setIsLoading(false);
       }
     } catch (error) {
       toast.error('Failed to resend OTP. Please try again.');
+    } finally {
       setIsLoading(false);
     }
   }, [resendTimer, isLoading, phoneNumber, startResendTimer]);
@@ -260,7 +276,6 @@ const AuthModal = () => {
 
         if (response.error) {
           toast.error(response.message);
-          setIsLoading(false);
         } else {
           toast.success(response.message);
 
@@ -276,7 +291,6 @@ const AuthModal = () => {
             gender: null,
           });
 
-          setIsLoading(false);
           setAuthModalOpen(false);
           resetAuthFlow();
 
@@ -290,6 +304,7 @@ const AuthModal = () => {
         }
       } catch (error) {
         toast.error('Failed to create profile. Please try again.');
+      } finally {
         setIsLoading(false);
       }
     },
@@ -302,6 +317,7 @@ const AuthModal = () => {
     setOtp('');
     if (timerRef.current) clearInterval(timerRef.current);
     setResendTimer(0);
+    isVerifyingRef.current = false;
   }, [setCurrentStep]);
 
   // Format timer
@@ -317,15 +333,15 @@ const AuthModal = () => {
   if (!isAuthModalOpen) return null;
 
   return (
-    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center">
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
 
       {/* Modal Content */}
-      <div className="relative z-10 w-[min(450px,92%)] rounded-lg bg-white shadow-xl">
+      <div className="relative z-10 w-full max-w-112.5 rounded-lg bg-white shadow-xl">
         {/* Close Button - Only visible on phone step */}
         {currentStep === 'phone' && (
-          <div className="absolute top-4 right-4 z-10">
+          <div className="absolute top-3 right-3 z-10 sm:top-4 sm:right-4">
             <button
               aria-label="Close"
               onClick={close}
@@ -342,7 +358,7 @@ const AuthModal = () => {
           <button
             type="button"
             onClick={handleBack}
-            className="absolute top-4 left-4 z-10 cursor-pointer rounded-lg p-1 text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+            className="absolute top-3 left-3 z-10 cursor-pointer rounded-lg p-1 text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:top-4 sm:left-4"
             disabled={isLoading}
             aria-label="Go back"
           >
@@ -350,23 +366,25 @@ const AuthModal = () => {
           </button>
         )}
 
-        <div className="relative px-6 py-8">
+        <div className="relative px-4 py-6 sm:px-6 sm:py-8">
           {/* Phone Step */}
           {currentStep === 'phone' && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Logo */}
               <div className="text-center">
-                <div className="mb-4 inline-block rounded-xl bg-orange-100 p-3">
+                <div className="mb-3 inline-block rounded-xl bg-orange-100 p-2.5 sm:mb-4 sm:p-3">
                   <OptimizedImage src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
                 </div>
-                <h2 className="mb-2 text-xl font-semibold text-gray-900">India&apos;s healthy and fresh grocery</h2>
+                <h2 className="mb-2 text-lg font-semibold text-gray-900 sm:text-xl">
+                  India&apos;s healthy and fresh grocery
+                </h2>
                 <p className="text-sm text-gray-600">Log in or Sign up</p>
               </div>
 
               {/* Phone Form */}
               <form onSubmit={handlePhoneSubmit} className="space-y-4">
                 <div className="flex overflow-hidden rounded-lg border border-gray-300 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500">
-                  <span className="border-r border-gray-300 bg-gray-50 px-3 py-2.5 text-sm font-medium text-gray-700">
+                  <span className="border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
                     +91
                   </span>
                   <input
@@ -410,19 +428,19 @@ const AuthModal = () => {
 
           {/* OTP Step */}
           {currentStep === 'otp' && (
-            <div className="space-y-6 pt-6">
+            <div className="space-y-4 pt-6 sm:space-y-6">
               {/* Title */}
               <div className="text-center">
-                <h2 className="mb-3 text-lg font-semibold text-gray-900">OTP Verification</h2>
-                <div className="space-y-1 text-sm text-gray-600">
+                <h2 className="mb-2 text-base font-semibold text-gray-900 sm:mb-3 sm:text-lg">OTP Verification</h2>
+                <div className="space-y-1 text-xs text-gray-600 sm:text-sm">
                   <p>We have sent a verification code to</p>
                   <p className="font-medium text-gray-900">+91 {phoneNumber}</p>
                 </div>
               </div>
 
               {/* OTP Inputs */}
-              <div className="space-y-6">
-                <div className="flex justify-center gap-2">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="xs:gap-2 flex justify-center gap-1.5 px-2 sm:gap-2.5">
                   {Array.from({ length: OTP_LENGTH }, (_, index) => {
                     const filled = otp.length;
                     const nextAllowed = Math.min(filled, OTP_LENGTH - 1);
@@ -445,7 +463,7 @@ const AuthModal = () => {
                         ref={(el) => {
                           otpInputsRef.current[index] = el;
                         }}
-                        className={`h-12 w-12 rounded-lg border text-center text-lg font-semibold transition-all outline-none ${
+                        className={`xs:h-11 xs:w-11 xs:rounded-lg xs:text-lg h-10 w-10 shrink-0 rounded-md border text-center text-base font-semibold transition-all outline-none sm:h-12 sm:w-12 ${
                           otp[index] ? 'border-orange-500 bg-orange-50' : 'border-gray-300 focus:border-orange-500'
                         } ${isLoading || index > nextAllowed ? 'cursor-not-allowed bg-gray-50' : ''}`}
                         disabled={isLoading}
@@ -457,8 +475,8 @@ const AuthModal = () => {
                 {/* Loading */}
                 {isLoading && (
                   <div className="text-center">
-                    <div className="inline-flex items-center space-x-2 text-sm text-orange-600">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-orange-600 border-t-transparent" />
+                    <div className="inline-flex items-center space-x-2 text-xs text-orange-600 sm:text-sm">
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-orange-600 border-t-transparent sm:h-4 sm:w-4" />
                       <span>Verifying OTP...</span>
                     </div>
                   </div>
@@ -470,7 +488,7 @@ const AuthModal = () => {
                     type="button"
                     onClick={handleResendOtp}
                     disabled={!canResend}
-                    className={`text-sm font-medium ${
+                    className={`text-xs font-medium sm:text-sm ${
                       canResend
                         ? 'cursor-pointer text-orange-600 hover:text-orange-700'
                         : 'cursor-not-allowed text-gray-400'
@@ -485,14 +503,14 @@ const AuthModal = () => {
 
           {/* Profile Step */}
           {currentStep === 'profile' && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Title */}
               <div className="text-center">
-                <div className="mb-4 inline-block rounded-xl bg-orange-100 p-3">
+                <div className="mb-3 inline-block rounded-xl bg-orange-100 p-2.5 sm:mb-4 sm:p-3">
                   <OptimizedImage src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
                 </div>
-                <h2 className="mb-2 text-lg font-semibold text-gray-900">Complete Your Profile</h2>
-                <p className="text-sm text-gray-600">Please complete your profile to continue</p>
+                <h2 className="mb-2 text-base font-semibold text-gray-900 sm:text-lg">Complete Your Profile</h2>
+                <p className="text-xs text-gray-600 sm:text-sm">Please complete your profile to continue</p>
               </div>
 
               {/* Profile Form */}
@@ -505,7 +523,7 @@ const AuthModal = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     required
                     maxLength={50}
@@ -521,7 +539,7 @@ const AuthModal = () => {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                     placeholder="Enter referral code"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     maxLength={20}
                   />

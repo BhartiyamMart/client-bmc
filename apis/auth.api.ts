@@ -21,5 +21,5 @@ export const editProfile = async (data: IAUTH.ICreateProfileREQ) => {
 };
 
 export const logout = async () => {
-  return requestAPI<ApiResponse<IAUTH.IAuthTokenResponse>>('post', 'v1', 'auth', 'logout');
+  return requestAPI<ApiResponse<IAUTH.ILogoutRES>>('post', 'v1', 'auth', 'logout');
 };

@@ -49,10 +49,4 @@ export interface ICreateProfileRES {
   profileImageUrl: string;
 }
 
-export interface IAuthTokenResponse {
-  token: string;
-  user: {
-    userId: string;
-    phoneNumber: string;
-  };
-}
+export interface ILogoutRES {}

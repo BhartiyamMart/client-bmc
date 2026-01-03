@@ -19,3 +19,7 @@ export const editProfile = async (data: IAUTH.ICreateProfileREQ) => {
     data
   );
 };
+
+export const logout = async () => {
+  return requestAPI<ApiResponse<IAUTH.IAuthTokenResponse>>('post', 'v1', 'auth', 'logout');
+};

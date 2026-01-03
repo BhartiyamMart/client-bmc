@@ -1,3 +1,5 @@
+import AccountLayout from '@/components/account-layout/account-layout';
+import Footer from '@/components/shared/footer/footer';
 import ShopNavbar from '@/components/shared/navbar/shop-navbar';
 import { IPageLayoutProps } from '@/interfaces/shared.interface';
 
@@ -7,7 +9,8 @@ const PagesLayout: React.FC<IPageLayoutProps> = ({ children }) => {
   return (
     <main>
       <ShopNavbar />
-      {children}
+      <AccountLayout>{children}</AccountLayout>
+      <Footer />
     </main>
   );
 };

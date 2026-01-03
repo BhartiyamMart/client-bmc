@@ -48,3 +48,11 @@ export interface ICreateProfileRES {
   gender: string;
   profileImageUrl: string;
 }
+
+export interface IAuthTokenResponse {
+  token: string;
+  user: {
+    userId: string;
+    phoneNumber: string;
+  };
+}

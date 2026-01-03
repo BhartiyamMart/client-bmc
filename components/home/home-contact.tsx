@@ -33,9 +33,6 @@ const HomeContact = () => {
                 <div>
                   <p className="text-sm font-semibold text-gray-700">Email</p>
                   <div className="space-y-1">
-                    <a href="mailto:info@bhartiyam.in" className="hover:text-primary/90 block text-base text-gray-900">
-                      info@bhartiyam.in
-                    </a>
                     <a href="mailto:care@bhartiyam.in" className="hover:text-primary/90 block text-base text-gray-900">
                       care@bhartiyam.in
                     </a>
@@ -46,7 +43,7 @@ const HomeContact = () => {
           </div>
 
           {/* Right Column - Contact Form */}
-          <ContactForm email={process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? ''} />
+          <ContactForm email={process.env.NEXT_PUBLIC_CARE_EMAIL ?? 'care@bhartiyam.in'} />
         </div>
       </Container>
     </section>

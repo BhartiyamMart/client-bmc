@@ -27,8 +27,8 @@ const Contact = () => {
               <div>
                 <h3 className="mb-3 text-xl font-semibold text-gray-900">Talk to Us Directly</h3>
                 <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <Phone className="mt-1 w-4 shrink-0 text-orange-600" />
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 shrink-0 text-orange-600" />
                     <div>
                       <span className="text-base font-semibold text-gray-900">Phone:</span>{' '}
                       <a href="tel:+918800033044" className="text-base text-gray-900 hover:text-orange-600">
@@ -36,8 +36,8 @@ const Contact = () => {
                       </a>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <Clock className="mt-1 w-4 shrink-0 text-orange-600" />
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 shrink-0 text-orange-600" />
                     <span className="text-base text-gray-600">(Available: Mon–Sat | 06:30 AM – 10:00 PM)</span>
                   </div>
                 </div>
@@ -46,21 +46,12 @@ const Contact = () => {
               <div>
                 <h3 className="mb-3 text-xl font-semibold text-gray-900">Drop Us an Email</h3>
                 <div className="space-y-3">
-                  <div className="flex items-start gap-2">
-                    <Mail className="mt-1 w-4 shrink-0 text-orange-600" />
-                    <div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 shrink-0 text-orange-600" />
+                    <div className="">
                       <span className="text-base font-semibold text-gray-900">For Support:</span>{' '}
                       <a href="mailto:care@bhartiyam.in" className="text-base text-gray-900 hover:text-orange-600">
                         care@bhartiyam.in
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Mail className="mt-1 w-4 shrink-0 text-orange-600" />
-                    <div>
-                      <span className="text-base font-semibold text-gray-900">General Enquiry:</span>{' '}
-                      <a href="mailto:info@bhartiyam.in" className="text-base text-gray-900 hover:text-orange-600">
-                        info@bhartiyam.in
                       </a>
                     </div>
                   </div>
@@ -70,7 +61,7 @@ const Contact = () => {
 
             {/* Contact Form */}
             <div className="lg:col-span-3">
-              <ContactForm email={process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? ''} />
+              <ContactForm email={process.env.NEXT_PUBLIC_CARE_EMAIL ?? 'care@bhartiyam.in'} />
             </div>
           </div>
         </Container>

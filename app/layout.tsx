@@ -11,6 +11,7 @@ import { Work_Sans } from 'next/font/google';
 
 import ActiveModal from '@/components/modals/active-modal';
 import { ScrollToTop } from '@/components/shared/ui/scroll-to-top';
+import { Providers } from './providers';
 
 const globalFont = Work_Sans({
   subsets: ['latin'],
@@ -59,7 +60,7 @@ export default function RootLayout({
         <NextTopLoader color="#98FF98" height={2} showSpinner={false} />
         <Toaster position="top-right" reverseOrder={false} />
         <ActiveModal />
-        {children}
+        <Providers>{children}</Providers>
         <ScrollToTop />
       </body>
     </html>

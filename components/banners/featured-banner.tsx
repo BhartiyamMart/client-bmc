@@ -11,70 +11,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import { IBanner } from '@/interfaces/shared.interface';
 import { getBanners } from '@/apis/content.api';
-import FeaturedBannerSkeleton from './featured-bannerSkeleton';
 import Section from '@/components/shared/ui/section';
 import Container from '@/components/shared/ui/container';
+import FeaturedBannerSkeleton from './featured-bannerSkeleton';
+import { useTopBanners } from '@/hooks/useBanners';
 
 const FeaturedBanner = () => {
-  const [banners, setBanners] = useState<IBanner[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await getBanners();
-
-        if (!response.error && response.payload) {
-          const topBannerGroup = response.payload.banners.find((group) => group.tag.toUpperCase() === 'TOP');
-
-          if (topBannerGroup && topBannerGroup.banners.length > 0) {
-            const transformedBanners: IBanner[] = topBannerGroup.banners
-              .filter((banner) => {
-                const hasValidImage = banner.images.small && banner.images.large;
-                return hasValidImage;
-              })
-              .map((banner) => ({
-                id: banner.id,
-                title: banner.title,
-                priority: banner.priority,
-                imageUrlSmall: banner.images.small || '',
-                imageUrlLarge: banner.images.large || '',
-                bannerUrl: banner.bannerUrl.startsWith('/') ? banner.bannerUrl : `/${banner.bannerUrl}`,
-                description: banner.description,
-                tag: topBannerGroup.tag,
-              }))
-              .sort((a, b) => a.priority - b.priority);
-
-            setBanners(transformedBanners);
-          } else {
-            if (process.env.NODE_ENV === 'development') {
-              console.log('No TOP banners found in response');
-            }
-          }
-        } else {
-          const errorMessage = response.message || 'Failed to load banners';
-          if (process.env.NODE_ENV === 'development') {
-            console.log('Banner API error:', errorMessage, response.error);
-          }
-          setError(errorMessage);
-        }
-      } catch (err) {
-        if (process.env.NODE_ENV === 'development') {
-          const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-          console.error('Error fetching banners:', errorMessage);
-        }
-        setError('Failed to load banners');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBanners();
-  }, []);
+  const { banners, loading, error } = useTopBanners();
 
   if (loading) return <FeaturedBannerSkeleton dots={4} />;
   if (error || banners.length === 0) return null;

@@ -6,7 +6,7 @@ type ContainerProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const Container = ({ children, className = '', ...rest }: ContainerProps) => {
   return (
-    <div className={`w-full max-w-[1530px] ${className}`} {...rest}>
+    <div className={`w-full max-w-382.5 ${className}`} {...rest}>
       {children}
     </div>
   );

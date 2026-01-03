@@ -52,8 +52,8 @@ const FeaturedCategory = () => {
       <Link href={`/category/${cat.link}`}>
         <div className="relative flex h-full flex-col items-center">
           <div className="relative flex h-full w-full flex-col rounded-xl border text-center transition-all duration-200">
-            <div className="bg-primary-light flex h-[50px] items-center justify-center rounded-t-xl px-1">
-              <h3 className="text-center text-[14px] leading-[17px] font-semibold text-[#7F3200] sm:text-[15px] md:text-[15px] lg:text-[17px]">
+            <div className="bg-primary-light flex h-12.5 items-center justify-center rounded-t-xl px-1">
+              <h3 className="text-center text-[14px] leading-4.25 font-semibold text-[#7F3200] sm:text-[15px] md:text-[15px] lg:text-[17px]">
                 {cat.name}
               </h3>
             </div>
@@ -65,7 +65,7 @@ const FeaturedCategory = () => {
                 width={200}
                 height={200}
                 priority
-                className="h-[81px] w-[165px] object-contain sm:h-28 sm:w-[198px] md:h-32 md:w-[198px] lg:h-36 lg:w-36 xl:h-40 xl:w-40"
+                className="h-20.25 w-41.25 object-contain sm:h-28 sm:w-49.5 md:h-32 md:w-49.5 lg:h-36 lg:w-36 xl:h-40 xl:w-40"
               />
             </div>
           </div>

@@ -111,7 +111,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   return (
     <Section className="">
-      <Container className="relative flex rounded border bg-white">
+      <Container className="relative flex rounded overflow-hidden border bg-white">
         {/* Mobile Overlay */}
         {isSidebarOpen && (
           <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={closeSidebar} aria-label="Close sidebar" />

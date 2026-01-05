@@ -1,43 +1,51 @@
 'use client';
 
-import toast from 'react-hot-toast';
-
+import { logout } from '@/apis/auth.api';
 import { usePathname } from 'next/navigation';
-import { MenuItem } from '@/data/account-menu';
 import { useRouter } from 'nextjs-toploader/app';
 import { useState, useCallback, useEffect } from 'react';
-import { normalizePath, getLastSegment, getOrderIdFromPath } from '@/utils/route-utils';
 import { useAuthStore, useUserImage, useUserProfile } from '@/stores/useAuth.store';
-import SidebarProfile from '@/components/account-layout/sidebar-profile';
+import { normalizePath, getLastSegment } from '@/utils/route-utils';
+
+import toast from 'react-hot-toast';
+import Section from '@/components/shared/ui/section';
+import Container from '@/components/shared/ui/container';
 import SidebarMenu from '@/components/account-layout/sidebar-menu';
-import AccountHeader from '@/components/account-layout/account-header';
 import LogoutDialog from '@/components/account-layout/logout-dialog';
-import { logout } from '@/apis/auth.api';
-import Section from '../shared/ui/section';
-import Container from '../shared/ui/container';
+import AccountHeader from '@/components/account-layout/account-header';
+import SidebarProfile from '@/components/account-layout/sidebar-profile';
+import { IMenuItem } from '@/interfaces/shared.interface';
 
 interface AccountLayoutProps {
   children: React.ReactNode;
 }
 
 const AccountLayout = ({ children }: AccountLayoutProps) => {
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
 
-  // ✅ Local sidebar state (not persisted)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
-  // ✅ Use consolidated auth store
-  const userProfile = useUserProfile();
   const userImage = useUserImage();
+  const userProfile = useUserProfile();
   const { logout: logoutStore, setProtectedRoute } = useAuthStore();
 
-  // User data
-  const phoneNumber = userProfile?.phoneNumber || '';
   const fullName = userProfile?.firstName || '';
+  const phoneNumber = userProfile?.phoneNumber || '';
 
-  // ✅ Auto-close sidebar on desktop
+  // Check if we're on the base /account route
+  const isAccountRoot = pathname === '/account';
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+
+  // Auto-redirect on desktop if on /account
+  useEffect(() => {
+    if (isAccountRoot && !isMobile) {
+      router.replace('/account/profile');
+    }
+  }, [isAccountRoot, isMobile, router]);
+
+  // Auto-close sidebar on desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -78,7 +86,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const openSidebar = useCallback(() => setIsSidebarOpen(true), []);
 
   const handleMenuItemClick = useCallback(
-    (item: MenuItem) => {
+    (item: IMenuItem) => {
       if (item.name === 'Logout') {
         setIsLogoutOpen(true);
       }
@@ -99,6 +107,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const lastSegment = getLastSegment(pathname);
   const normalizedPathname = normalizePath(pathname);
 
+  const showOnlySidebar = isAccountRoot && isMobile;
+
   return (
     <Section className="">
       <Container className="relative flex rounded border bg-white">
@@ -110,29 +120,37 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
         {/* Sidebar */}
         <aside
           className={`${
-            isSidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-          } fixed top-0 left-0 z-50 flex h-screen w-full flex-col border-r bg-white shadow-xl transition-all duration-300 ease-in-out md:sticky md:top-20 md:z-auto md:h-[calc(100vh-80px)] md:w-64 md:translate-x-0 md:opacity-100 md:shadow-none`}
+            showOnlySidebar
+              ? 'relative w-full'
+              : isSidebarOpen
+                ? 'translate-x-0 opacity-100'
+                : '-translate-x-full opacity-0'
+          } ${
+            showOnlySidebar ? 'flex h-auto' : 'fixed top-0 left-0 z-50 flex h-screen w-full'
+          } flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out md:sticky md:top-20 md:z-auto md:h-[calc(100vh-80px)] md:w-64 md:translate-x-0 md:opacity-100 md:shadow-none`}
         >
           {/* Profile Section */}
           <SidebarProfile
             fullName={fullName}
             phoneNumber={phoneNumber}
             profileImage={userImage}
-            onClose={closeSidebar}
+            onClose={showOnlySidebar ? () => {} : closeSidebar}
           />
 
           {/* Navigation */}
           <SidebarMenu pathname={normalizedPathname} onItemClick={handleMenuItemClick} />
         </aside>
 
-        {/* Main Content */}
-        <main className="flex min-h-[calc(100vh-100px)] min-w-0 flex-1 flex-col overflow-y-auto md:h-[calc(100vh-80px)]">
-          {/* Header */}
-          <AccountHeader title={lastSegment || 'Account'} onBack={handleBack} />
+        {/* Main Content - Hidden on /account for mobile */}
+        {!showOnlySidebar && (
+          <main className="flex min-h-[calc(100vh-100px)] min-w-0 flex-1 flex-col overflow-y-auto md:h-[calc(100vh-80px)]">
+            {/* Header */}
+            <AccountHeader title={lastSegment || 'Account'} onBack={handleBack} />
 
-          {/* Page Content */}
-          <div className="flex-1 p-4 md:p-6">{children}</div>
-        </main>
+            {/* Page Content */}
+            <div className="flex-1 p-4 md:p-6">{children}</div>
+          </main>
+        )}
 
         {/* Logout Dialog */}
         <LogoutDialog isOpen={isLogoutOpen} onClose={() => setIsLogoutOpen(false)} onConfirm={handleLogout} />

@@ -81,7 +81,7 @@
 }
 
 .custom-pagination-dots .swiper-pagination-bullet-active {
-  background: #ea580c !important; /* orange-600 */
+  background: #ee7c00 !important; /* orange-600 */
   opacity: 1 !important;
   transform: scale(1.25);
 }

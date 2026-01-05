@@ -74,7 +74,7 @@ const VariantItem: React.FC<{
           {quantity > 0 && !outOfStock ? (
             <div className="flex items-center overflow-hidden rounded-lg">
               <button
-                className="flex h-8 w-8 cursor-pointer items-center justify-center bg-[#F0701E] font-medium text-white transition-colors hover:bg-orange-600 sm:h-9 sm:w-9"
+                className="hover:bg-primary flex h-8 w-8 cursor-pointer items-center justify-center bg-[#F0701E] font-medium text-white transition-colors sm:h-9 sm:w-9"
                 onClick={onRemove}
                 aria-label="Decrease quantity"
               >
@@ -84,7 +84,7 @@ const VariantItem: React.FC<{
                 {quantity}
               </span>
               <button
-                className="flex h-8 w-8 cursor-pointer items-center justify-center bg-[#F0701E] font-medium text-white transition-colors hover:bg-orange-600 sm:h-9 sm:w-9"
+                className="hover:bg-primary flex h-8 w-8 cursor-pointer items-center justify-center bg-[#F0701E] font-medium text-white transition-colors sm:h-9 sm:w-9"
                 onClick={onPlus}
                 aria-label="Increase quantity"
               >

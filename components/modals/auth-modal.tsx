@@ -475,7 +475,7 @@ const AuthModal = () => {
                 {/* Loading */}
                 {isLoading && (
                   <div className="text-center">
-                    <div className="inline-flex items-center space-x-2 text-xs text-orange-600 sm:text-sm">
+                    <div className="text-primary inline-flex items-center space-x-2 text-xs sm:text-sm">
                       <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-orange-600 border-t-transparent sm:h-4 sm:w-4" />
                       <span>Verifying OTP...</span>
                     </div>
@@ -490,7 +490,7 @@ const AuthModal = () => {
                     disabled={!canResend}
                     className={`text-xs font-medium sm:text-sm ${
                       canResend
-                        ? 'cursor-pointer text-orange-600 hover:text-orange-700'
+                        ? 'text-primary cursor-pointer hover:text-orange-700'
                         : 'cursor-not-allowed text-gray-400'
                     }`}
                   >

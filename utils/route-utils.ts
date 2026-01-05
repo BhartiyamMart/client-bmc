@@ -1,4 +1,4 @@
-import { MenuItem } from '@/data/account-menu';
+import { IMenuItem } from '@/interfaces/shared.interface';
 
 /**
  * Normalize path by removing trailing slash
@@ -10,7 +10,7 @@ export const normalizePath = (path: string): string => {
 /**
  * Check if a route is currently active
  */
-export const isActiveRoute = (pathname: string, item: MenuItem): boolean => {
+export const isActiveRoute = (pathname: string, item: IMenuItem): boolean => {
   const normalizedPath = normalizePath(pathname);
 
   if (item.exactMatch) {

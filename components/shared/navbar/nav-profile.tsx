@@ -26,7 +26,8 @@ const NavProfile = () => {
 
   const handleProfileClick = () => {
     if (signature) {
-      router.push('/account/profile');
+      const isMobile = window.innerWidth < 640;
+      router.push(isMobile ? '/account' : '/account/profile');
     } else {
       setAuthModalOpen(true);
     }

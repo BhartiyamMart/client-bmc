@@ -19,12 +19,12 @@ const SidebarProfile = ({ fullName, phoneNumber, profileImage, onClose }: Sideba
         height={48}
       />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-gray-800 capitalize">{fullName || 'Guest User'}</p>
-        <p className="truncate text-xs text-gray-500">{phoneNumber || 'No phone number'}</p>
+        <p className="truncate text-lg font-medium text-gray-800 capitalize">{fullName || 'Guest User'}</p>
+        <p className="truncate text-sm text-gray-500">{phoneNumber || 'No phone number'}</p>
       </div>
       <button
         onClick={onClose}
-        className="rounded-full p-2 transition-colors hover:bg-gray-100 md:hidden"
+        className="hidden rounded-full p-2 transition-colors hover:bg-gray-100"
         aria-label="Close sidebar"
       >
         <CloseIcon className="h-5 w-5 text-gray-600" />

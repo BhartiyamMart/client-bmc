@@ -111,25 +111,25 @@ const ProductService = () => {
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
-                  <span className="mt-1 text-orange-600">•</span>
+                  <span className="text-primary mt-1">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
                     <strong>Online Shopping Platform</strong> – Shop anytime, anywhere
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="mt-1 text-orange-600">•</span>
+                  <span className="text-primary mt-1">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
                     <strong>Offline Retail Stores</strong> – Experience our products firsthand
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="mt-1 text-orange-600">•</span>
+                  <span className="text-primary mt-1">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
                     <strong>Fast Delivery Services</strong> – Quick and reliable order fulfillment
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="mt-1 text-orange-600">•</span>
+                  <span className="text-primary mt-1">•</span>
                   <span className="text-base leading-relaxed text-gray-700">
                     <strong>B2B Support</strong> – Wholesale and business solutions available
                   </span>
@@ -155,22 +155,22 @@ const ProductService = () => {
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
-                  <span className="text-orange-600">✓</span>
+                  <span className="text-primary">✓</span>
                   <span className="text-base text-gray-700">High-quality FMCG and retail products</span>
                 </li>
 
                 <li className="flex items-center gap-3">
-                  <span className="text-orange-600">✓</span>
+                  <span className="text-primary">✓</span>
                   <span className="text-base text-gray-700">Affordable pricing for every budget</span>
                 </li>
 
                 <li className="flex items-center gap-3">
-                  <span className="text-orange-600">✓</span>
+                  <span className="text-primary">✓</span>
                   <span className="text-base text-gray-700">Easy access across online and offline platforms</span>
                 </li>
 
                 <li className="flex items-center gap-3">
-                  <span className="text-orange-600">✓</span>
+                  <span className="text-primary">✓</span>
                   <span className="text-base text-gray-700">
                     Trusted by thousands of families and businesses nationwide
                   </span>

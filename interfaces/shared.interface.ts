@@ -55,3 +55,11 @@ export interface INavLinkData {
   href: string;
   label: string;
 }
+
+export interface IMenuItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  activePatterns?: string[];
+  exactMatch?: boolean;
+}

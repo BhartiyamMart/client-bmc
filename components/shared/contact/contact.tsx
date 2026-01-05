@@ -28,16 +28,16 @@ const Contact = () => {
                 <h3 className="mb-3 text-xl font-semibold text-gray-900">Talk to Us Directly</h3>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 shrink-0 text-orange-600" />
+                    <Phone className="text-primary w-4 shrink-0" />
                     <div>
                       <span className="text-base font-semibold text-gray-900">Phone:</span>{' '}
-                      <a href="tel:+918800033044" className="text-base text-gray-900 hover:text-orange-600">
+                      <a href="tel:+918800033044" className="hover:text-primary text-base text-gray-900">
                         +91 8800033044
                       </a>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 shrink-0 text-orange-600" />
+                    <Clock className="text-primary w-4 shrink-0" />
                     <span className="text-base text-gray-600">(Available: Mon–Sat | 06:30 AM – 10:00 PM)</span>
                   </div>
                 </div>
@@ -47,10 +47,10 @@ const Contact = () => {
                 <h3 className="mb-3 text-xl font-semibold text-gray-900">Drop Us an Email</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 shrink-0 text-orange-600" />
+                    <Mail className="text-primary w-4 shrink-0" />
                     <div className="">
                       <span className="text-base font-semibold text-gray-900">For Support:</span>{' '}
-                      <a href="mailto:care@bhartiyam.in" className="text-base text-gray-900 hover:text-orange-600">
+                      <a href="mailto:care@bhartiyam.in" className="hover:text-primary text-base text-gray-900">
                         care@bhartiyam.in
                       </a>
                     </div>

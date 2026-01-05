@@ -179,7 +179,7 @@ const ProductCard: React.FC<IProduct> = ({
                   <div className="flex h-10 w-[80%] items-center justify-between rounded-md bg-[#F0701E] text-white">
                     <button
                       onClick={handleVariantModalClick}
-                      className="flex h-full w-10 cursor-pointer items-center justify-center rounded-l-md text-lg font-bold hover:bg-orange-600"
+                      className="hover:bg-primary flex h-full w-10 cursor-pointer items-center justify-center rounded-l-md text-lg font-bold"
                     >
                       −
                     </button>
@@ -188,7 +188,7 @@ const ProductCard: React.FC<IProduct> = ({
                     </button>
                     <button
                       onClick={handleVariantModalClick}
-                      className="flex h-full w-10 cursor-pointer items-center justify-center rounded-r-md text-lg font-bold hover:bg-orange-600"
+                      className="hover:bg-primary flex h-full w-10 cursor-pointer items-center justify-center rounded-r-md text-lg font-bold"
                     >
                       +
                     </button>
@@ -200,7 +200,7 @@ const ProductCard: React.FC<IProduct> = ({
                   <div className="flex h-10 w-[80%] items-center rounded-sm bg-[#F0701E] text-white">
                     <button
                       onClick={handleDecreaseQuantity}
-                      className="flex h-full w-10 cursor-pointer items-center justify-center rounded-l-md text-lg font-bold hover:bg-orange-600"
+                      className="hover:bg-primary flex h-full w-10 cursor-pointer items-center justify-center rounded-l-md text-lg font-bold"
                       aria-label="Decrease quantity"
                     >
                       −
@@ -210,7 +210,7 @@ const ProductCard: React.FC<IProduct> = ({
                     </span>
                     <button
                       onClick={handleIncreaseQuantity}
-                      className="flex h-full w-10 cursor-pointer items-center justify-center rounded-r-md text-lg font-bold hover:bg-orange-600"
+                      className="hover:bg-primary flex h-full w-10 cursor-pointer items-center justify-center rounded-r-md text-lg font-bold"
                       aria-label="Increase quantity"
                     >
                       +
@@ -224,7 +224,7 @@ const ProductCard: React.FC<IProduct> = ({
                 <div className="mt-2 flex w-full flex-col">
                   <button
                     onClick={handleAddToCart}
-                    className="flex-1 cursor-pointer rounded-sm border border-orange-500 bg-orange-50 py-2.5 text-sm font-medium text-orange-600 transition-colors hover:bg-orange-100"
+                    className="text-primary flex-1 cursor-pointer rounded-sm border border-orange-500 bg-orange-50 py-2.5 text-sm font-medium transition-colors hover:bg-orange-100"
                   >
                     Add
                   </button>

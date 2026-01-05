@@ -88,19 +88,19 @@ const RefundPolicy = () => {
                 <span>You can request through:</span>
                 <ul className="mt-2 space-y-2 pl-4">
                   <li className="flex gap-2">
-                    <span className="text-orange-600">◦</span>
+                    <span className="text-primary">◦</span>
                     <span>
                       <strong>App/Website:</strong> Go to "My Orders → Refund/Return Request"
                     </span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="text-orange-600">◦</span>
+                    <span className="text-primary">◦</span>
                     <span>
                       <strong>WhatsApp Support/Helpline</strong>
                     </span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="text-orange-600">◦</span>
+                    <span className="text-primary">◦</span>
                     <span>
                       <strong>In-Store Counter</strong> (for offline purchases)
                     </span>

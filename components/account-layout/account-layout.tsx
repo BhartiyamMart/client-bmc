@@ -4,8 +4,9 @@ import { logout } from '@/apis/auth.api';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
 import { useState, useCallback, useEffect } from 'react';
-import { useAuthStore, useUserImage, useUserProfile } from '@/stores/useAuth.store';
+import { IMenuItem } from '@/interfaces/shared.interface';
 import { normalizePath, getLastSegment } from '@/utils/route-utils';
+import { useAuthStore, useUserImage, useUserProfile } from '@/stores/useAuth.store';
 
 import toast from 'react-hot-toast';
 import Section from '@/components/shared/ui/section';
@@ -14,7 +15,6 @@ import SidebarMenu from '@/components/account-layout/sidebar-menu';
 import LogoutDialog from '@/components/account-layout/logout-dialog';
 import AccountHeader from '@/components/account-layout/account-header';
 import SidebarProfile from '@/components/account-layout/sidebar-profile';
-import { IMenuItem } from '@/interfaces/shared.interface';
 
 interface AccountLayoutProps {
   children: React.ReactNode;
@@ -127,7 +127,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
                 : '-translate-x-full opacity-0'
           } ${
             showOnlySidebar ? 'flex h-auto' : 'fixed top-0 left-0 z-50 flex h-screen w-full'
-          } flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out md:sticky md:top-20 md:z-auto md:h-[calc(100vh-80px)] md:w-64 md:translate-x-0 md:opacity-100 md:shadow-none`}
+          } w-full max-w-80 flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out md:sticky md:top-20 md:z-auto md:h-auto md:max-h-[calc(100vh-80px)] md:translate-x-0 md:opacity-100 md:shadow-none`}
         >
           {/* Profile Section */}
           <SidebarProfile
@@ -143,7 +143,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
         {/* Main Content - Hidden on /account for mobile */}
         {!showOnlySidebar && (
-          <main className="flex min-h-[calc(100vh-100px)] min-w-0 flex-1 flex-col overflow-y-auto md:h-[calc(100vh-80px)]">
+          <main className="flex min-h-[70vh] min-w-0 flex-1 flex-col overflow-y-auto md:h-auto md:max-h-[calc(100vh-80px)]">
             {/* Header */}
             <AccountHeader title={lastSegment || 'Account'} onBack={handleBack} />
 

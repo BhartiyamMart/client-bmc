@@ -10,7 +10,7 @@ interface SidebarProfileProps {
 
 const SidebarProfile = ({ fullName, phoneNumber, profileImage, onClose }: SidebarProfileProps) => {
   return (
-    <div className="flex items-center gap-3 border-b bg-white p-4">
+    <div className="flex max-h-20 items-center gap-3 bg-white p-4">
       <Image
         className="h-12 w-12 shrink-0 rounded-full bg-gray-400 object-cover"
         alt={fullName || 'User profile'}

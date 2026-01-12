@@ -3,11 +3,11 @@ import * as IAUTH from '@/interfaces/auth.interface';
 import { ApiResponse } from '@/interfaces/api.interface';
 
 export const sendOtp = async (data: IAUTH.IOtpREQ) => {
-  return requestAPI<ApiResponse<IAUTH.IOtpRES>, IAUTH.IOtpREQ>('post', 'v1', 'auth', 'send-otp', data);
+  return requestAPI<ApiResponse<IAUTH.IOtpRES>, IAUTH.IOtpREQ>('post', 'v1', 'auth', 'customer/send-otp', data);
 };
 
 export const verifyOtp = async (data: IAUTH.IVerifyOtpREQ) => {
-  return requestAPI<ApiResponse<IAUTH.IVerifyOtpRES>, IAUTH.IVerifyOtpREQ>('post', 'v1', 'auth', 'verify-otp', data);
+  return requestAPI<ApiResponse<IAUTH.IVerifyOtpRES>, IAUTH.IVerifyOtpREQ>('post', 'v1', 'auth', 'customer/verify-otp', data);
 };
 
 export const editProfile = async (data: IAUTH.ICreateProfileREQ) => {

@@ -3,12 +3,12 @@ import { CloseIcon } from '../shared/svg/svg-icon';
 
 interface SidebarProfileProps {
   fullName: string;
-  phoneNumber: string;
+  phone: string;
   profileImage: string;
   onClose: () => void;
 }
 
-const SidebarProfile = ({ fullName, phoneNumber, profileImage, onClose }: SidebarProfileProps) => {
+const SidebarProfile = ({ fullName, phone, profileImage, onClose }: SidebarProfileProps) => {
   return (
     <div className="flex max-h-20 items-center gap-3 bg-white p-4">
       <Image
@@ -20,7 +20,7 @@ const SidebarProfile = ({ fullName, phoneNumber, profileImage, onClose }: Sideba
       />
       <div className="min-w-0 flex-1">
         <p className="truncate text-lg font-medium text-gray-800 capitalize">{fullName || 'Guest User'}</p>
-        <p className="truncate text-sm text-gray-500">{phoneNumber || 'No phone number'}</p>
+        <p className="truncate text-sm text-gray-500">{phone || 'No phone number'}</p>
       </div>
       <button
         onClick={onClose}

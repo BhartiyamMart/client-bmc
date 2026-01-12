@@ -32,7 +32,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const { logout: logoutStore, setProtectedRoute } = useAuthStore();
 
   const fullName = userProfile?.firstName || '';
-  const phoneNumber = userProfile?.phoneNumber || '';
+  const phone = userProfile?.phone || '';
 
   // Check if we're on the base /account route
   const isAccountRoot = pathname === '/account';
@@ -132,7 +132,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
           {/* Profile Section */}
           <SidebarProfile
             fullName={fullName}
-            phoneNumber={phoneNumber}
+            phone={phone}
             profileImage={userImage}
             onClose={showOnlySidebar ? () => {} : closeSidebar}
           />

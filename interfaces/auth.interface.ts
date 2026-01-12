@@ -1,5 +1,7 @@
+import { UUID } from "node:crypto";
+
 export interface IOtpREQ {
-  phoneNumber: string;
+  phone: string;
 }
 
 export interface IOtpRES {
@@ -7,29 +9,29 @@ export interface IOtpRES {
 }
 
 export interface IVerifyOtpREQ {
-  phoneNumber: string;
+  phone: string;
   otp: string;
   deviceInfo: {
     deviceType: string;
   };
 }
 
+export interface UserProfile {
+  name: string;
+  photo?: string | null;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+}
+
 export interface IVerifyOtpRES {
   token: string;
-  isName: boolean;
-  profile: {
-    phoneNumber: string;
-    email?: string | null;
-    firstName?: string | null;
-    middleName?: string | null;
-    lastName?: string | null;
-    dateOfBirth?: string | null;
-    profilePicture?: string | null;
-    gender?: string | null;
-    rewardCoins?: number;
-    totalOrders?: number;
-    totalSpent?: string;
-    preferredPaymentMethod?: string;
+  expiresAt: Date;
+  user: {
+    id: UUID,
+    phone: string,
+    email: string,
+    role: number,
+    profile: UserProfile | null,
   };
 }
 

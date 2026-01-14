@@ -16,6 +16,13 @@ export const accountMenuItems: IMenuItem[] = [
     activePatterns: ['/account/orders', '/orders'],
   },
   {
+    name: 'Referrals',
+    href: '/account/referrals',
+    icon: HandBag,
+    activePatterns: ['/account/referral', '/orders'],
+    exactMatch: true,
+  },
+  {
     name: 'Logout',
     href: '#',
     icon: Logout,

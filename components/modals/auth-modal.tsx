@@ -1,6 +1,5 @@
 'use client';
 
-
 import OptimizedImage from '@/components/shared/optimizeImage';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useCallback, useState } from 'react';
@@ -9,17 +8,14 @@ import { ArrowLeft, CloseIcon } from '../shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
 import { editProfile, sendOtp, verifyOtp } from '@/apis/auth.api';
 
-
 // Constants
 const OTP_LENGTH = 6;
 const PHONE_LENGTH = 10;
 const RESEND_TIMER_SECONDS = 60;
 const DEVICE_INFO = { deviceType: 'web' };
 
-
 const AuthModal = () => {
   const router = useRouter();
-
 
   // Global state (persisted)
   const isAuthModalOpen = useAuthStore((s) => s.isAuthModalOpen);
@@ -27,9 +23,9 @@ const AuthModal = () => {
   const setAuthModalOpen = useAuthStore((s) => s.setAuthModalOpen);
   const setCurrentStep = useAuthStore((s) => s.setCurrentStep);
   const setToken = useAuthStore((s) => s.setToken);
+  const setPhone = useAuthStore((s) => s.setPhone);
   const setUserProfile = useAuthStore((s) => s.setUserProfile);
   const resetAuthFlow = useAuthStore((s) => s.resetAuthFlow);
-
 
   // Local state (NOT persisted - security & UX)
   const [phone, setphone] = useState('');
@@ -39,24 +35,21 @@ const AuthModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
 
-
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isVerifyingRef = useRef(false);
 
-
-  // Reset to phone step if on OTP/profile step without phone number (on reload)
+  // Reset to phone step if on OTP step without phone number (on reload)
+  // But keep profile step even without phone (user is completing profile after OTP verification)
   useEffect(() => {
-    if ((currentStep === 'otp' || currentStep === 'profile') && !phone) {
+    if (currentStep === 'otp' && !phone) {
       setCurrentStep('phone');
     }
   }, [currentStep, phone, setCurrentStep]);
 
-
   // Start resend timer
   const startResendTimer = useCallback(() => {
     setResendTimer(RESEND_TIMER_SECONDS);
-
 
     timerRef.current = setInterval(() => {
       setResendTimer((prev) => {
@@ -69,13 +62,14 @@ const AuthModal = () => {
     }, 1000);
   }, []);
 
-
   // Close modal
   const close = useCallback(() => {
+    // Don't close if on profile step (wait for form submission)
+    if (currentStep === 'profile') return;
+
     setAuthModalOpen(false);
     resetAuthFlow();
     if (timerRef.current) clearInterval(timerRef.current);
-
 
     // Reset all local state
     setphone('');
@@ -85,8 +79,7 @@ const AuthModal = () => {
     setResendTimer(0);
     setIsLoading(false);
     isVerifyingRef.current = false;
-  }, [setAuthModalOpen, resetAuthFlow]);
-
+  }, [setAuthModalOpen, resetAuthFlow, currentStep]);
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -95,7 +88,6 @@ const AuthModal = () => {
     };
   }, []);
 
-
   // Auto-focus first OTP input
   useEffect(() => {
     if (currentStep === 'otp' && !isLoading) {
@@ -103,16 +95,13 @@ const AuthModal = () => {
     }
   }, [currentStep, isLoading]);
 
-
   // Auto-submit OTP when 6 digits entered
   useEffect(() => {
     const handleOtpVerification = async () => {
       if (otp.length !== OTP_LENGTH || isLoading || isVerifyingRef.current) return;
 
-
       isVerifyingRef.current = true;
       setIsLoading(true);
-
 
       try {
         const response = await verifyOtp({
@@ -121,19 +110,15 @@ const AuthModal = () => {
           deviceInfo: DEVICE_INFO,
         });
 
-
         if (response.error) {
           toast.error(response.message);
           setOtp('');
           setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
         } else {
           toast.success(response.message);
-
-
           // Save token
           setToken(response.payload.token);
-
-
+          setPhone(response.payload.user.phone);
           // Check if profile exists
           if (response.payload.user.profile === null) {
             // No profile - show profile form
@@ -144,13 +129,11 @@ const AuthModal = () => {
             setAuthModalOpen(false);
             resetAuthFlow();
 
-
             // Clear sensitive data
             setphone('');
             setOtp('');
 
-
-            router.push('/profile');
+            router.push('account/profile');
           }
         }
       } catch (error) {
@@ -162,7 +145,6 @@ const AuthModal = () => {
         isVerifyingRef.current = false;
       }
     };
-
 
     if (otp.length === OTP_LENGTH && currentStep === 'otp' && !isVerifyingRef.current) {
       handleOtpVerification();
@@ -180,22 +162,21 @@ const AuthModal = () => {
     router,
   ]);
 
-
   // Handle phone submission
   const handlePhoneSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
 
-
       if (phone.length !== PHONE_LENGTH) {
-        toast.error('Please enter a valid 10-digit phone number');
+        toast.error('Phone number must be valid 10-digits');
         return;
       }
-
-
+      const first = Number(phone[0]);
+      if (first <= 4) {
+        toast.error('Phone number is not valid');
+        return;
+      }
       setIsLoading(true);
-
-
       try {
         const response = await sendOtp({ phone });
         if (response.error) {
@@ -214,21 +195,17 @@ const AuthModal = () => {
     [phone, setCurrentStep, startResendTimer]
   );
 
-
   // Handle OTP input change
   const handleOtpChange = useCallback(
     (value: string, index: number) => {
       if (!/^\d*$/.test(value)) return;
 
-
       const otpArray = otp.split('');
       const previousEmpty = otpArray.slice(0, index).some((digit) => !digit);
       if (previousEmpty) return;
 
-
       otpArray[index] = value.slice(-1);
       setOtp(otpArray.join(''));
-
 
       if (value && index < OTP_LENGTH - 1) {
         setTimeout(() => otpInputsRef.current[index + 1]?.focus(), 50);
@@ -237,16 +214,13 @@ const AuthModal = () => {
     [otp]
   );
 
-
   // Handle OTP backspace
   const handleOtpKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
       if (e.key !== 'Backspace') return;
 
-
       e.preventDefault();
       const otpArray = otp.split('');
-
 
       if (otpArray[index]) {
         otpArray[index] = '';
@@ -260,14 +234,36 @@ const AuthModal = () => {
     [otp]
   );
 
+  const handleOtpPaste = useCallback(
+    (e: React.ClipboardEvent<HTMLInputElement>, startIndex: number) => {
+      e.preventDefault();
+
+      const pasted = e.clipboardData.getData('text').replace(/\D/g, '');
+      if (!pasted) return;
+
+      const otpArray = otp.split('');
+
+      for (let i = 0; i < pasted.length && startIndex + i < OTP_LENGTH; i++) {
+        otpArray[startIndex + i] = pasted[i];
+      }
+
+      const newOtp = otpArray.join('');
+      setOtp(newOtp);
+
+      // focus last filled input
+      const lastIndex = Math.min(startIndex + pasted.length - 1, OTP_LENGTH - 1);
+      setTimeout(() => {
+        otpInputsRef.current[lastIndex]?.focus();
+      }, 0);
+    },
+    [otp]
+  );
 
   // Handle resend OTP
   const handleResendOtp = useCallback(async () => {
     if (resendTimer > 0 || isLoading) return;
 
-
     setIsLoading(true);
-
 
     try {
       const response = await sendOtp({ phone });
@@ -286,34 +282,28 @@ const AuthModal = () => {
     }
   }, [resendTimer, isLoading, phone, startResendTimer]);
 
-
   // Handle profile submission
   const handleProfileSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-
 
       if (!firstName.trim()) {
         toast.error('Please enter your full name');
         return;
       }
 
-
       setIsLoading(true);
-
 
       try {
         const response = await editProfile({
-          firstName: firstName.trim(),
+          name: firstName.trim(),
           referralCode: referralCode.trim() || undefined,
         });
-
 
         if (response.error) {
           toast.error(response.message);
         } else {
           toast.success(response.message);
-
 
           // Save the new profile
           setUserProfile({
@@ -323,10 +313,8 @@ const AuthModal = () => {
             gender: null,
           });
 
-
           setAuthModalOpen(false);
           resetAuthFlow();
-
 
           // Clear sensitive data
           setphone('');
@@ -334,8 +322,7 @@ const AuthModal = () => {
           setFirstName('');
           setReferralCode('');
 
-
-          router.push('/profile');
+          router.push('account/profile');
         }
       } catch (error) {
         toast.error('Failed to create profile. Please try again.');
@@ -346,7 +333,6 @@ const AuthModal = () => {
     [firstName, referralCode, setUserProfile, setAuthModalOpen, resetAuthFlow, router]
   );
 
-
   // Handle back button
   const handleBack = useCallback(() => {
     setCurrentStep('phone');
@@ -356,7 +342,6 @@ const AuthModal = () => {
     isVerifyingRef.current = false;
   }, [setCurrentStep]);
 
-
   // Format timer
   const formatTime = useCallback((seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -364,17 +349,13 @@ const AuthModal = () => {
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   }, []);
 
-
   const canResend = resendTimer === 0 && !isLoading;
 
-
   if (!isAuthModalOpen) return null;
-
 
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
-
 
       <div className="relative z-10 w-full max-w-112.5 rounded-lg bg-white shadow-xl">
         {currentStep === 'phone' && (
@@ -390,7 +371,6 @@ const AuthModal = () => {
           </div>
         )}
 
-
         {currentStep === 'otp' && (
           <button
             type="button"
@@ -402,7 +382,6 @@ const AuthModal = () => {
             <ArrowLeft />
           </button>
         )}
-
 
         <div className="relative px-4 py-6 sm:px-6 sm:py-8">
           {/* Phone Step */}
@@ -417,7 +396,6 @@ const AuthModal = () => {
                 </h2>
                 <p className="text-sm text-gray-600">Log in or Sign up</p>
               </div>
-
 
               <form onSubmit={handlePhoneSubmit} className="space-y-4">
                 <div className="flex overflow-hidden rounded-lg border border-gray-300 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500">
@@ -436,7 +414,6 @@ const AuthModal = () => {
                   />
                 </div>
 
-
                 <button
                   type="submit"
                   disabled={phone.length !== PHONE_LENGTH || isLoading}
@@ -449,7 +426,6 @@ const AuthModal = () => {
                   {isLoading ? 'Sending...' : 'Continue'}
                 </button>
               </form>
-
 
               <p className="text-center text-xs text-gray-500">
                 By continuing, you agree to our{' '}
@@ -464,7 +440,6 @@ const AuthModal = () => {
             </div>
           )}
 
-
           {/* OTP Step */}
           {currentStep === 'otp' && (
             <div className="space-y-4 pt-6 sm:space-y-6">
@@ -476,13 +451,11 @@ const AuthModal = () => {
                 </div>
               </div>
 
-
               <div className="space-y-4 sm:space-y-6">
                 <div className="xs:gap-2 flex justify-center gap-1.5 px-2 sm:gap-2.5">
                   {Array.from({ length: OTP_LENGTH }, (_, index) => {
                     const filled = otp.length;
                     const nextAllowed = Math.min(filled, OTP_LENGTH - 1);
-
 
                     return (
                       <input
@@ -493,6 +466,7 @@ const AuthModal = () => {
                         value={otp[index] || ''}
                         onChange={(e) => handleOtpChange(e.target.value, index)}
                         onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                        onPaste={(e) => handleOtpPaste(e, index)} // ⬅️ add this
                         onMouseDown={(e) => {
                           if (index > nextAllowed) {
                             e.preventDefault();
@@ -511,7 +485,6 @@ const AuthModal = () => {
                   })}
                 </div>
 
-
                 {isLoading && (
                   <div className="text-center">
                     <div className="text-primary inline-flex items-center space-x-2 text-xs sm:text-sm">
@@ -520,7 +493,6 @@ const AuthModal = () => {
                     </div>
                   </div>
                 )}
-
 
                 <div className="text-center">
                   <button
@@ -540,7 +512,6 @@ const AuthModal = () => {
             </div>
           )}
 
-
           {/* Profile Step */}
           {currentStep === 'profile' && (
             <div className="space-y-4 sm:space-y-6">
@@ -551,7 +522,6 @@ const AuthModal = () => {
                 <h2 className="mb-2 text-base font-semibold text-gray-900 sm:text-lg">Complete Your Profile</h2>
                 <p className="text-xs text-gray-600 sm:text-sm">Please complete your profile to continue</p>
               </div>
-
 
               <form onSubmit={handleProfileSubmit} className="space-y-4">
                 <div className="space-y-2">
@@ -569,7 +539,6 @@ const AuthModal = () => {
                   />
                 </div>
 
-
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Referral Code (Optional)</label>
                   <input
@@ -582,7 +551,6 @@ const AuthModal = () => {
                     maxLength={20}
                   />
                 </div>
-
 
                 <button
                   type="submit"
@@ -604,7 +572,6 @@ const AuthModal = () => {
                 </button>
               </form>
 
-
               <p className="text-center text-xs text-gray-500">
                 By continuing, you agree to our{' '}
                 <a href="/terms" className="text-gray-700 underline hover:text-gray-900">
@@ -622,6 +589,5 @@ const AuthModal = () => {
     </div>
   );
 };
-
 
 export default AuthModal;

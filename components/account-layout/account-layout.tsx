@@ -6,7 +6,7 @@ import { useRouter } from 'nextjs-toploader/app';
 import { useState, useCallback, useEffect } from 'react';
 import { IMenuItem } from '@/interfaces/shared.interface';
 import { normalizePath, getLastSegment } from '@/utils/route-utils';
-import { useAuthStore, useUserImage, useUserProfile } from '@/stores/useAuth.store';
+import { useAuthStore, usePhone, useUserImage, useUserProfile } from '@/stores/useAuth.store';
 
 import toast from 'react-hot-toast';
 import Section from '@/components/shared/ui/section';
@@ -29,10 +29,11 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   const userImage = useUserImage();
   const userProfile = useUserProfile();
+  const userPhone = usePhone();
   const { logout: logoutStore, setProtectedRoute } = useAuthStore();
 
-  const fullName = userProfile?.firstName || '';
-  const phone = userProfile?.phone || '';
+  const fullName = userProfile?.name || '';
+  const phone = userPhone || '';
 
   // Check if we're on the base /account route
   const isAccountRoot = pathname === '/account';
@@ -64,7 +65,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
       if (response.status === 200) {
         logoutStore();
-        localStorage.clear();
+        localStorage.removeItem('auth-storage');
 
         setTimeout(() => {
           setIsLogoutOpen(false);
@@ -111,7 +112,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   return (
     <Section className="">
-      <Container className="relative flex rounded overflow-hidden border bg-white">
+      <Container className="relative flex overflow-hidden rounded border bg-white">
         {/* Mobile Overlay */}
         {isSidebarOpen && (
           <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={closeSidebar} aria-label="Close sidebar" />

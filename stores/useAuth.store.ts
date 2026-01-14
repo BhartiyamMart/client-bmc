@@ -1,60 +1,52 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-
 // ==================== TYPES ====================
 
-
 export type AuthStep = 'phone' | 'otp' | 'profile';
-
 
 export interface UserProfile {
   name: string;
   photo?: string | null;
   dateOfBirth?: string | null;
   gender?: string | null;
+  referralCode?: string | null;
 }
-
 
 export interface AuthState {
   // Auth data
   token: string | null;
+  phone: string | null;
   userProfile: UserProfile | null;
   isAuthenticated: boolean;
-
 
   // Auth modal state
   isAuthModalOpen: boolean;
   currentStep: AuthStep;
   protectedRoute: string | null;
 
-
   // Loading & Error states
   isLoading: boolean;
   error: string | null;
 }
 
-
 export interface AuthActions {
   // Auth actions
   setToken: (token: string | null) => void;
+  setPhone: (phone: string | null) => void;
   setUserProfile: (profile: UserProfile | null) => void;
   updateUserProfile: (updates: Partial<UserProfile>) => void;
-
 
   // Modal actions
   setAuthModalOpen: (open: boolean) => void;
   setCurrentStep: (step: AuthStep) => void;
 
-
   // Protected route
   setProtectedRoute: (route: string | null) => void;
-
 
   // State management
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-
 
   // Reset actions
   resetAuthFlow: () => void;
@@ -62,15 +54,13 @@ export interface AuthActions {
   clearProfile: () => void;
 }
 
-
 export type AuthStore = AuthState & AuthActions;
-
 
 // ==================== INITIAL STATE ====================
 
-
 const initialState: AuthState = {
   token: null,
+  phone: null,
   userProfile: null,
   isAuthenticated: false,
   isAuthModalOpen: false,
@@ -80,9 +70,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-
 // ==================== STORE ====================
-
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -90,26 +78,26 @@ export const useAuthStore = create<AuthStore>()(
       // Initial state
       ...initialState,
 
-
       // ========== Auth Actions ==========
       setToken: (token) =>
         set({
           token,
           isAuthenticated: !!token,
         }),
-
+      setPhone: (phone) =>
+        set({
+          phone,
+        }),
 
       setUserProfile: (profile) =>
         set({
           userProfile: profile,
         }),
 
-
       updateUserProfile: (updates) =>
         set((state) => ({
           userProfile: state.userProfile ? { ...state.userProfile, ...updates } : null,
         })),
-
 
       // ========== Modal Actions ==========
       setAuthModalOpen: (open) =>
@@ -117,12 +105,10 @@ export const useAuthStore = create<AuthStore>()(
           isAuthModalOpen: open,
         }),
 
-
       setCurrentStep: (step) =>
         set({
           currentStep: step,
         }),
-
 
       // ========== Protected Route ==========
       setProtectedRoute: (route) =>
@@ -130,19 +116,16 @@ export const useAuthStore = create<AuthStore>()(
           protectedRoute: route,
         }),
 
-
       // ========== State Management ==========
       setLoading: (loading) =>
         set({
           isLoading: loading,
         }),
 
-
       setError: (error) =>
         set({
           error,
         }),
-
 
       // ========== Reset Actions ==========
       resetAuthFlow: () =>
@@ -152,12 +135,10 @@ export const useAuthStore = create<AuthStore>()(
           error: null,
         }),
 
-
       logout: () =>
         set({
           ...initialState,
         }),
-
 
       clearProfile: () =>
         set({
@@ -169,18 +150,21 @@ export const useAuthStore = create<AuthStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         token: state.token,
+        phone: state.phone,
+
         userProfile: state.userProfile,
         isAuthenticated: state.isAuthenticated,
+        isAuthModalOpen: state.isAuthModalOpen,
+        currentStep: state.currentStep,
       }),
     }
   )
 );
 
-
 // ==================== SELECTORS ====================
 
-
 export const useToken = () => useAuthStore((state) => state.token);
+export const usePhone = () => useAuthStore((state) => state.phone);
 export const useUserProfile = () => useAuthStore((state) => state.userProfile);
 export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
 export const useAuthModalState = () =>
@@ -189,13 +173,11 @@ export const useAuthModalState = () =>
     currentStep: state.currentStep,
   }));
 
-
 export const useUserName = () =>
   useAuthStore((state) => {
     const profile = state.userProfile;
     return profile?.name || 'Guest';
   });
-
 
 export const useUserImage = () =>
   useAuthStore((state) => {

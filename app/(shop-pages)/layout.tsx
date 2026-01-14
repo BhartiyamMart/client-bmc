@@ -1,3 +1,4 @@
+'use client';
 import Footer from '@/components/shared/footer/footer';
 import ShopNavbar from '@/components/shared/navbar/shop-navbar';
 import AccountLayout from '@/components/account-layout/account-layout';

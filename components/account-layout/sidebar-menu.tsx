@@ -32,12 +32,12 @@ const SidebarMenu = ({ pathname, onItemClick }: SidebarMenuProps) => {
             href={item.href}
             onClick={(e) => handleClick(e, item)}
             className={`group relative flex items-center gap-3 rounded px-4 py-3 font-medium transition-all duration-200 ${
-              active ? 'text-primary bg-primary-light' : 'text-gray-700 hover:bg-primary-light hover:text-primary'
+              active ? 'text-primary bg-primary-light' : 'hover:bg-primary-light hover:text-primary text-gray-700'
             }`}
           >
             <div
               className={`shrink-0 transition-colors ${
-                active ? 'text-primary' : 'text-gray-600 group-hover:text-primary'
+                active ? 'text-primary' : 'group-hover:text-primary text-gray-600'
               }`}
             >
               <Icon className="h-5 w-5" />

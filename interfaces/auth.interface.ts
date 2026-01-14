@@ -1,4 +1,4 @@
-import { UUID } from "node:crypto";
+import { UUID } from 'node:crypto';
 
 export interface IOtpREQ {
   phone: string;
@@ -15,40 +15,59 @@ export interface IVerifyOtpREQ {
     deviceType: string;
   };
 }
+export interface IVerifyOtpRES {
+  token: string;
+  expiresAt: Date;
+  user: {
+    id: UUID;
+    phone: string;
+    email: string;
+    role: number;
+    profile: IUserProfile | null;
+    referralInfo: IReferralInfo | null;
+  };
+}
 
-export interface UserProfile {
+export interface IReferralInfo {
+  referralCode: string;
+  totalReferrals: string;
+}
+
+export interface IUserProfile {
   name: string;
   photo?: string | null;
   dateOfBirth?: string | null;
   gender?: string | null;
 }
 
-export interface IVerifyOtpRES {
-  token: string;
-  expiresAt: Date;
-  user: {
-    id: UUID,
-    phone: string,
-    email: string,
-    role: number,
-    profile: UserProfile | null,
-  };
+export interface IProfile {
+  id: string;
+  name: string;
+  photo: string | null;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
 }
 
+export interface ICreateProfileData {
+  profile: IProfile;
+  myReferralCode: string;
+  referralApplied: boolean;
+  referralInfo: IReferralInfo | null;
+}
 export interface ICreateProfileREQ {
-  firstName: string;
+  name: string;
   referralCode?: string;
 }
 
 export interface ICreateProfileRES {
-  id: string;
-  userId?: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  dateOfBirth: null;
-  gender: string;
-  profileImageUrl: string;
+  statusCode: number;
+  message: string;
+  data: ICreateProfileData;
 }
+export interface IAccountDetailsRES {}
 
 export interface ILogoutRES {}
+
+export interface IReferralREQ {}
+export interface IReferralRES {
+  referralCode: string;
+}

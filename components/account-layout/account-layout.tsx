@@ -15,6 +15,8 @@ import SidebarMenu from '@/components/account-layout/sidebar-menu';
 import LogoutDialog from '@/components/account-layout/logout-dialog';
 import AccountHeader from '@/components/account-layout/account-header';
 import SidebarProfile from '@/components/account-layout/sidebar-profile';
+import SidebarWallet from './sidebar-wallet';
+import { useWalletStore } from '@/stores/useWallet.store';
 import { accountDetails } from '@/apis/profile.api';
 
 interface AccountLayoutProps {
@@ -28,7 +30,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-
+  const wallet = useWalletStore((state)=> state.amount)
+  const setWallet = useWalletStore((state)=>state.setAmount)
   const userImage = useUserImage();
   const userProfile = useUserProfile();
   const userPhone = usePhone();
@@ -72,6 +75,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
       if (response.status === 200) {
         // Successfully fetched account details
         // You can dispatch this to your store or state management if needed
+        setWallet(response.payload.wallet.amount)
       } else {
         toast.error(response.message || 'Failed to fetch account details');
       }
@@ -165,6 +169,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
             profileImage={userImage}
             onClose={showOnlySidebar ? () => {} : closeSidebar}
           />
+
+          <SidebarWallet amount={wallet} />
 
           {/* Navigation */}
           <SidebarMenu pathname={normalizedPathname} onItemClick={handleMenuItemClick} />

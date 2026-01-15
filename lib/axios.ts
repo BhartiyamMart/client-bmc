@@ -2,11 +2,16 @@ import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '@/stores/useAuth.store';
 
 // Define common error response types
+interface ApiErrorPayload {
+  isValidToken?: boolean;
+  [key: string]: unknown;
+}
+
 interface ApiErrorResponse {
   message: string;
-  statusCode: number;
+  status: number;
   error?: string;
-  details?: unknown;
+  payload: ApiErrorPayload;
 }
 
 const API = axios.create({
@@ -32,6 +37,27 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Token expiration interceptor
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<ApiErrorResponse>;
+
+      // Check for 401 status and token: false in payload
+      if (axiosError.response?.status === 401 && !axiosError.response.data?.payload?.isValidToken) {
+        // Clear localStorage and reset auth store
+        localStorage.removeItem('auth-storage');
+        window.location.reload();
+        console.warn('Token expired. Clearing localStorage and resetting auth.');
+        return;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 // Enhanced error handling function
 const handleApiError = (error: unknown): ApiErrorResponse => {
   // Check if it's an Axios error
@@ -46,8 +72,9 @@ const handleApiError = (error: unknown): ApiErrorResponse => {
     // If no response data, create a structured error
     return {
       message: axiosError.message || 'Network error occurred',
-      statusCode: axiosError.response?.status || 500,
+      status: axiosError.response?.status || 500,
       error: axiosError.code || 'NETWORK_ERROR',
+      payload: {},
     };
   }
 
@@ -55,16 +82,18 @@ const handleApiError = (error: unknown): ApiErrorResponse => {
   if (error instanceof Error) {
     return {
       message: error.message,
-      statusCode: 500,
+      status: 500,
       error: 'UNKNOWN_ERROR',
+      payload: {},
     };
   }
 
   // Fallback for unknown error types
   return {
     message: 'An unexpected error occurred',
-    statusCode: 500,
+    status: 500,
     error: 'UNEXPECTED_ERROR',
+    payload: {},
   };
 };
 

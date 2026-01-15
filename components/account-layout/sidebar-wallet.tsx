@@ -2,13 +2,11 @@
 import React from 'react';
 import { ChevronRight } from '../shared/svg/svg-icon';
 import { Button } from '../ui/button';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
+import { useWalletStore } from '@/stores/useWallet.store';
 
-interface SidebarWalletProps {
-  amount: number;
-}
-
-const SidebarWallet: React.FC<SidebarWalletProps> = ({ amount }) => {
+const SidebarWallet = () => {
+  const wallet = useWalletStore();
   const router = useRouter();
   return (
     <div className="mx-2 rounded border bg-white p-4 shadow-xs">
@@ -38,7 +36,7 @@ const SidebarWallet: React.FC<SidebarWalletProps> = ({ amount }) => {
       <div className="flex items-end justify-between">
         <div className="flex items-baseline gap-1">
           <span className="text-2xl font-bold text-gray-900">₹</span>
-          <span className="text-xl font-bold tracking-tight text-gray-900">{amount || '0'}</span>
+          <span className="text-xl font-bold tracking-tight text-gray-900">{wallet.amount || '0'}</span>
         </div>
 
         {/* Add Balance Button */}

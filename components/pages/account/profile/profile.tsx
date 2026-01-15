@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { accountDeleteReason, accountDelete } from '@/apis/auth.api';
 import { dateToDDMMYYYY, ddMMYYYYToDate } from '@/utils/date';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { Mail } from '@/components/shared/svg/svg-icon';
 import { CalendarIcon, Trash2, User } from '@/components/shared/svg/lucide-icon';
 import { editProfile, getGender, getProfile } from '@/apis/profile.api';

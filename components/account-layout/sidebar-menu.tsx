@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { isActiveRoute } from '@/utils/route-utils';
 import { IMenuItem } from '@/interfaces/shared.interface';
 import { accountMenuItems } from '@/data/account-menu';

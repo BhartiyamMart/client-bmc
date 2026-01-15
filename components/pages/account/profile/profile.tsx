@@ -3,20 +3,28 @@
 import { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { editProfile, getProfile, accountDeleteReason, accountDelete } from '@/apis/auth.api';
+import { accountDeleteReason, accountDelete } from '@/apis/auth.api';
 import { dateToDDMMYYYY, ddMMYYYYToDate } from '@/utils/date';
 import { useRouter } from 'next/navigation';
 import { Mail } from '@/components/shared/svg/svg-icon';
-import { CalendarIcon, PencilLine, Trash2, User } from '@/components/shared/svg/lucide-icon';
+import { CalendarIcon, Trash2, User } from '@/components/shared/svg/lucide-icon';
+import { editProfile, getGender, getProfile } from '@/apis/profile.api';
 
 interface FormData {
   name: string;
   email: string;
   dob: Date | undefined;
   gender: string;
+}
+
+interface GenderOption {
+  value: string;
+  label: string;
 }
 
 const Profile = () => {
@@ -34,10 +42,9 @@ const Profile = () => {
     gender: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [date, setDate] = useState<Date>();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [genderOptions, setGenderOptions] = useState<GenderOption[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteReasons, setDeleteReasons] = useState<string[]>([]);
   const [selectedReason, setSelectedReason] = useState<string>('');
@@ -49,6 +56,7 @@ const Profile = () => {
   // Fetch profile data on mount
   useEffect(() => {
     fetchProfileData();
+    fetchGenderOptions();
   }, []);
 
   const fetchProfileData = async () => {
@@ -67,12 +75,28 @@ const Profile = () => {
 
       setFormData(profileData);
       setOriginalData(profileData);
-      setDate(profileData.dob);
     } catch (error) {
       console.error('Profile fetch error:', error);
       toast.error('Failed to load profile data');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchGenderOptions = async () => {
+    try {
+      const response = await getGender();
+      if (response.status === 200 && Array.isArray(response.payload)) {
+        setGenderOptions(response.payload);
+      }
+    } catch (error) {
+      console.error('Gender fetch error:', error);
+      // Fallback to default options if API fails
+      setGenderOptions([
+        { value: 'MALE', label: 'Male' },
+        { value: 'FEMALE', label: 'Female' },
+        { value: 'OTHER', label: 'Other' },
+      ]);
     }
   };
 
@@ -106,7 +130,6 @@ const Profile = () => {
   const validateDeleteForm = () => {
     const newErrors: Record<string, string> = {};
     if (!selectedReason) newErrors.reason = 'Please select a reason';
-    // if (!deleteReasonText.trim()) newErrors.reasonText = 'Please provide additional details';
     setDeleteErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -119,18 +142,10 @@ const Profile = () => {
     try {
       const dateOfBirth = formData.dob ? format(formData.dob, 'dd-MM-yyyy') : '';
 
-      const genderMap: Record<string, string> = {
-        male: 'MALE',
-        female: 'FEMALE',
-        other: 'OTHER',
-        'prefer-not-to-say': 'PREFER_NOT_TO_SAY',
-      };
-      const apiGender = genderMap[formData.gender.toLowerCase()] || formData.gender.toUpperCase();
-
       const payload = {
         name: formData.name.trim(),
         dateOfBirth,
-        gender: apiGender,
+        gender: formData.gender,
         email: formData.email.trim(),
       };
 
@@ -143,7 +158,6 @@ const Profile = () => {
 
       toast.success('Profile updated successfully!');
       setOriginalData(formData);
-      setIsEditing(false);
     } catch (error) {
       console.error('Update error:', error);
       toast.error('Failed to update profile');
@@ -162,28 +176,21 @@ const Profile = () => {
 
     setIsDeletingAccount(true);
     try {
-      // Fix: Only include deleteReason if it has content, otherwise omit it
       const payload: any = {
         deleteTitle: selectedReason,
       };
 
-      // Only add deleteReason if user provided text
       if (deleteReasonText.trim()) {
         payload.deleteReason = deleteReasonText.trim();
       }
-      // Backend will use default "I am using another account" if deleteReason is omitted
 
-      console.log('Delete payload:', payload); // Debug log
+      console.log('Delete payload:', payload);
 
       const response = await accountDelete(payload);
 
       if (response.status === 200) {
         toast.success('Account deleted successfully');
-
-        // Remove auth storage
         localStorage.removeItem('auth-storage');
-
-        // Redirect to home
         setTimeout(() => {
           router.replace('/');
         }, 1000);
@@ -205,153 +212,129 @@ const Profile = () => {
 
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
 
+  // Year range for calendar
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear - 100;
+
   return (
     <div className="min-h-screen">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-12">
           {/* Name */}
           <div className="col-span-12 mb-6 px-2 md:col-span-6">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <User className="h-4 w-4" />
-              Full Name *
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => updateField('name', e.target.value)}
-              disabled={!isEditing}
-              className={`w-full rounded-md border px-4 py-2 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
-                errors.name ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
-              } ${!isEditing ? 'cursor-not-allowed bg-gray-50' : 'hover:bg-orange-50'}`}
-            />
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Full Name *</label>
+            <div className="relative">
+              <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => updateField('name', e.target.value)}
+                className={`w-full rounded-md border px-4 py-2 pl-10 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
+                  errors.name ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
+                } hover:bg-orange-50`}
+                placeholder="Enter your full name"
+              />
+            </div>
             {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
           </div>
 
           {/* Email */}
           <div className="col-span-12 mb-6 px-2 md:col-span-6">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <Mail className="h-4 w-4" />
-              Email *
-            </label>
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Email *</label>
             <div className="relative">
+              <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => updateField('email', e.target.value)}
-                disabled={!isEditing}
-                className={`w-full rounded-md border py-2 pr-4 pl-12 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
+                className={`w-full rounded-md border py-2 pr-4 pl-10 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
                   errors.email ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
-                } ${!isEditing ? 'cursor-not-allowed bg-gray-50' : 'hover:bg-orange-50'}`}
+                } hover:bg-orange-50`}
+                placeholder="Enter your email"
               />
-              <div className="absolute top-1/2 left-4 -translate-y-1/2 text-green-500">✓</div>
             </div>
             {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
           </div>
 
           {/* DOB */}
           <div className="col-span-12 mb-6 px-2 md:col-span-6">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <CalendarIcon className="h-4 w-4" />
-              Date of Birth *
-            </label>
-            <div className="space-y-2">
-              <button
-                type="button"
-                disabled={!isEditing}
-                onClick={() => setShowDatePicker(!showDatePicker)}
-                className={cn(
-                  'h-auto w-full justify-start rounded-md border px-4 py-2 text-left text-lg font-normal transition-all duration-200',
-                  !date && 'text-gray-500',
-                  !isEditing
-                    ? 'cursor-not-allowed border-gray-200 bg-gray-50'
-                    : 'border-gray-200 hover:bg-orange-50 focus:border-orange-500'
-                )}
-              >
-                <CalendarIcon className="mr-2 inline-block h-4 w-4" />
-                {date ? format(date, 'PPP') : 'Pick a date'}
-              </button>
-              {showDatePicker && isEditing && (
-                <div className="rounded-xl border-2 border-gray-200 bg-gray-50 p-4">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={(newDate) => {
-                      setDate(newDate);
-                      updateField('dob', newDate);
-                      setShowDatePicker(false);
-                    }}
-                    disabled={(date) => date > new Date()}
-                  />
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Date of Birth *</label>
+            <Popover open={showDatePicker} onOpenChange={setShowDatePicker}>
+              <PopoverTrigger asChild>
+                <div className="relative">
+                  <CalendarIcon className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <button
+                    type="button"
+                    className={cn(
+                      'h-auto w-full justify-start rounded-md border px-4 py-2 pl-10 text-left text-lg font-normal transition-all duration-200 hover:bg-orange-50 focus:border-orange-500',
+                      !formData.dob && 'text-gray-500',
+                      'border-gray-200'
+                    )}
+                  >
+                    {formData.dob ? format(formData.dob, 'PPP') : 'Pick a date'}
+                  </button>
                 </div>
-              )}
-            </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.dob}
+                  onSelect={(newDate) => {
+                    updateField('dob', newDate);
+                    setShowDatePicker(false);
+                  }}
+                  captionLayout="dropdown"
+                  startMonth={new Date(startYear, 0)}
+                  endMonth={new Date(currentYear, 11)}
+                  disabled={(date) => date > new Date() || date < new Date(startYear, 0, 1)}
+                  defaultMonth={formData.dob || new Date(currentYear - 25, 0)}
+                />
+              </PopoverContent>
+            </Popover>
             {errors.dob && <p className="text-xs text-red-500">{errors.dob}</p>}
           </div>
 
           {/* Gender */}
           <div className="col-span-12 mb-6 px-2 md:col-span-6">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
-              <CalendarIcon className="h-4 w-4" />
-              Gender *
-            </label>
-            <select
-              value={formData.gender}
-              onChange={(e) => updateField('gender', e.target.value)}
-              disabled={!isEditing}
-              className={`w-full rounded-md border px-4 py-2.5 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
-                errors.gender ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
-              } ${!isEditing ? 'cursor-not-allowed bg-gray-50' : 'hover:bg-orange-50'}`}
-            >
-              <option value="">Select Gender</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-              <option value="OTHER">Other</option>
-            </select>
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Gender *</label>
+            <div className="relative">
+              <User className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Select value={formData.gender} onValueChange={(value) => updateField('gender', value)}>
+                <SelectTrigger
+                  className={`w-full rounded-md border px-4 py-2.5 pl-10 text-lg font-medium transition-all duration-200 hover:bg-orange-50 focus:ring-4 focus:ring-orange-500/20 ${
+                    errors.gender ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
+                  }`}
+                >
+                  <SelectValue placeholder="Select Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  {genderOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {errors.gender && <p className="text-xs text-red-500">{errors.gender}</p>}
           </div>
 
-          {/* Action Buttons */}
-          <div className="col-span-12 mb-8 px-2 md:col-span-6">
-            {!isEditing ? (
-              <button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                disabled={isLoading}
-                className="flex cursor-pointer rounded-xl border border-gray-300 bg-white px-6 py-3 text-lg font-semibold text-gray-700 transition-all duration-200 hover:border-gray-400 hover:shadow-md disabled:opacity-50"
-              >
-                <PencilLine className="mr-2 w-5" /> Edit Profile
-              </button>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFormData(originalData);
-                    setDate(originalData.dob);
-                    setErrors({});
-                    setIsEditing(false);
-                  }}
-                  disabled={isLoading}
-                  className="flex-1 rounded-xl bg-gray-100 px-6 py-4 text-lg font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-200 disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isLoading || !hasChanges}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-600 to-orange-700 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:from-orange-700 hover:to-orange-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Saving...
-                    </>
-                  ) : (
-                    'Save Changes'
-                  )}
-                </button>
-              </>
-            )}
+          {/* Save Changes Button */}
+          <div className="col-span-12 mb-8 px-2">
+            <button
+              type="submit"
+              disabled={isLoading || !hasChanges}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-orange-700 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:from-orange-700 hover:to-orange-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isLoading ? (
+                <>
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </button>
           </div>
         </div>
       </form>
@@ -373,13 +356,13 @@ const Profile = () => {
         </p>
       </div>
 
-      {/* Delete Account Dialog - Inline */}
+      {/* Delete Account Dialog */}
       {isDeleteDialogOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-8 shadow-2xl">
             {/* Header */}
             <div className="mb-6 flex items-center gap-3">
-              <div className="shrink-0">{/* <AlertCircle className="h-6 w-6 text-red-600" /> */}</div>
+              <div className="shrink-0"></div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">Delete Your Account?</h2>
                 <p className="mt-1 text-sm text-gray-600">
@@ -436,7 +419,7 @@ const Profile = () => {
               {/* Additional Details */}
               <div className="space-y-2">
                 <label htmlFor="reason-text" className="block text-sm font-semibold text-gray-700">
-                  Please provide additional details *
+                  Please provide additional details (Optional)
                 </label>
                 <textarea
                   id="reason-text"

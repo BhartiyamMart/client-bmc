@@ -35,8 +35,8 @@ export interface IVerifyOtpRES {
 }
 
 export interface IReferralInfo {
-  wasReferred : boolean | null;
-  message : string | null;
+  wasReferred: boolean | null;
+  message: string | null;
   referralCode: string;
   totalReferrals: string;
 }
@@ -66,9 +66,9 @@ export interface ICreateProfileRES {
 export interface IAccountDetailsREQ {}
 
 export interface IGetProfileRES {
-  user : IUser,
-  profile : IUserProfile,
-  referralInfo : IReferralInfo
+  user: IUser;
+  profile: IUserProfile;
+  referralInfo: IReferralInfo;
 }
 
 export interface IGetProfileREQ {}
@@ -102,11 +102,9 @@ export interface IAccountDetailsRES {
 
 export interface ILogoutRES {}
 
-export interface IAccountDeleteRES {
+export interface IAccountDeleteRES {}
 
-}
-
-export interface IAccountDeleteREQ{
-  deleteTitle : string;
-  deleteReason? : string 
+export interface IAccountDeleteREQ {
+  deleteTitle: string;
+  deleteReason?: string;
 }

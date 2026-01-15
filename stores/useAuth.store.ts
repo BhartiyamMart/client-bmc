@@ -36,7 +36,6 @@ export interface AuthActions {
   setPhone: (phone: string | null) => void;
   setUserProfile: (profile: IUserProfile | null) => void;
   updateUserProfile: (updates: Partial<IUserProfile>) => void;
-  
 
   // Modal actions
   setAuthModalOpen: (open: boolean) => void;

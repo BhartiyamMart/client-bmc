@@ -26,11 +26,7 @@ export const ddMMYYYYToDate = (dateString: string): Date => {
   const date = new Date(year, month - 1, day);
 
   // Validate constructed date
-  if (
-    date.getFullYear() !== year ||
-    date.getMonth() !== month - 1 ||
-    date.getDate() !== day
-  ) {
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
     throw new Error('Invalid date values');
   }
 

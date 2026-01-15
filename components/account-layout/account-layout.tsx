@@ -70,7 +70,6 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
       if (response.status === 200) {
         // Successfully fetched account details
-        
         // You can dispatch this to your store or state management if needed
       } else {
         toast.error(response.message || 'Failed to fetch account details');

@@ -6,9 +6,12 @@ export interface ShopPagesLayout {
 }
 
 const ShopLayout = ({ children }: ShopPagesLayout) => {
-  return <>
-  <ShopNavbar/>
-  {children}</>;
+  return (
+    <>
+      <ShopNavbar />
+      {children}
+    </>
+  );
 };
 
 export default ShopLayout;

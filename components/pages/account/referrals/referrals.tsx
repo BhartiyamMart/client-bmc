@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Copy, Users, Share2, Gift, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { generateReferral, getReferralCode } from '@/apis/referrals.api';
+import { Copy, Gift, RefreshCw, Share2, Users } from '@/components/shared/svg/lucide-icon';
 
 const ReferralPage = () => {
   const [referralCode, setReferralCode] = useState('');
@@ -87,9 +87,9 @@ const ReferralPage = () => {
   // Loading state
   if (isFetching) {
     return (
-      <div className="min-h-screen bg-linear-to-br px-4 py-12 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br px-4 py-12">
         <div className="text-center">
-          <RefreshCw className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+          <RefreshCw className="text-primary mx-auto mb-4 h-12 w-12 animate-spin" />
           <p className="text-text-secondary text-lg">Loading referral information...</p>
         </div>
       </div>

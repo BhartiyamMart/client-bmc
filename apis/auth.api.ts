@@ -30,14 +30,13 @@ export const getProfile = async () => {
     'get',
     'v1',
     'profile/customer',
-    'get-profile',
+    'get-profile'
   );
 };
 
 export const logout = async () => {
   return requestAPI<ApiResponse<IAUTH.ILogoutRES>>('post', 'v1', 'auth/customer', 'logout');
 };
-
 
 export const accountDetails = async () => {
   return requestAPI<ApiResponse<IAUTH.IAccountDetailsRES>, IAUTH.IAccountDetailsREQ>(
@@ -48,7 +47,7 @@ export const accountDetails = async () => {
   );
 };
 
-export const accountDelete = async (data : IAUTH.IAccountDeleteREQ) => {
+export const accountDelete = async (data: IAUTH.IAccountDeleteREQ) => {
   return requestAPI<ApiResponse<IAUTH.IAccountDeleteRES>, IAUTH.IAccountDeleteREQ>(
     'post',
     'v1',

@@ -1,4 +1,4 @@
-import Wallet from '@/components/pages/wallet/wallet';
+import Wallet from '@/components/pages/account/wallet/wallet';
 import React from 'react';
 
 const page = () => {

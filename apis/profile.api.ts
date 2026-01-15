@@ -21,7 +21,7 @@ export const getProfile = async () => {
 };
 
 export const getGender = async () => {
-  return requestAPI<ApiResponse<IPROFILE.IAccountDeleteRES>, IPROFILE.IAccountDeleteREQ>(
+  return requestAPI<ApiResponse<IPROFILE.IGetGenderRES>, IPROFILE.IGetGenderREQ>(
     'get',
     'v1',
     'master/customer',

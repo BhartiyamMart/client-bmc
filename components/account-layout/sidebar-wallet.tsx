@@ -1,22 +1,21 @@
-'use client'
+'use client';
 import React from 'react';
 import { ChevronRight } from '../shared/svg/svg-icon';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-
 
 interface SidebarWalletProps {
   amount: number;
 }
 
 const SidebarWallet: React.FC<SidebarWalletProps> = ({ amount }) => {
-    const router = useRouter()
+  const router = useRouter();
   return (
-    <div className="mx-4 rounded border border-gray-100 bg-white p-4 shadow">
+    <div className="mx-2 rounded border bg-white p-4 shadow-xs">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="from-primary to-primary/50 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br">
+          <div className="from-primary to-primary/50 flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br">
             <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -30,7 +29,7 @@ const SidebarWallet: React.FC<SidebarWalletProps> = ({ amount }) => {
             <p className="text-xs font-medium text-gray-500">Available Balance</p>
           </div>
         </div>
-        <Button className=' bg-transparent hover:bg-transparent' onClick={()=> router.push('wallet')}>
+        <Button className="bg-transparent hover:bg-transparent" onClick={() => router.push('wallet')}>
           <ChevronRight className="cursor-pointer text-gray-400" />
         </Button>
       </div>

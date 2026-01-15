@@ -580,20 +580,20 @@ export default function ProductDetail() {
                   <div className="-mx-4 my-1 w-full border-t border-gray-300"></div>
                 </div>
                 <div className="mt-1 flex gap-4">
-                  <div className="flex w-[130px] flex-col justify-between items-center rounded-lg border border-[#FFF4E5] bg-[#FFF4E5] px-2 py-2 text-center">
+                  <div className="flex w-[130px] flex-col items-center justify-between rounded-lg border border-[#FFF4E5] bg-[#FFF4E5] px-2 py-2 text-center">
                     <RotateCCW />
                     <p className="font-poppins py-2 pt-2 text-[14px] leading-[100%] font-normal tracking-normal">
                       No Return
                     </p>
                   </div>
-                  <div className="flex w-[130px] flex-col justify-between items-center rounded-lg border border-[#FFF4E5] bg-[#FFF4E5] px-2 py-2 text-center">
+                  <div className="flex w-[130px] flex-col items-center justify-between rounded-lg border border-[#FFF4E5] bg-[#FFF4E5] px-2 py-2 text-center">
                     <Truck />
                     <p className="font-poppins py-2 pt-2 text-[14px] leading-[100%] font-normal tracking-normal">
                       Fast Delivery
                     </p>
                   </div>
-                  <div className="flex w-[130px] flex-col justify-between items-center rounded-lg border border-[#FFF4E5] bg-[#FFF4E5] px-2 py-2 text-center">
-                    <Package className=' h-12 w-12 font-light' />
+                  <div className="flex w-[130px] flex-col items-center justify-between rounded-lg border border-[#FFF4E5] bg-[#FFF4E5] px-2 py-2 text-center">
+                    <Package className="h-12 w-12 font-light" />
                     <p className="font-poppins py-2 pt-2 text-[14px] leading-[100%] font-normal tracking-normal">
                       Exchange
                     </p>

@@ -15,9 +15,7 @@ const AccountHeader = ({ title, showBackButton = true, onBack }: AccountHeaderPr
           <Link href="#">
             <button className="group flex cursor-pointer items-center gap-1" onClick={onBack} aria-label="Go back">
               <ChevronLeft className="h-6 w-6 transition-transform group-hover:-translate-x-1" />
-              <span className="truncate text-base font-semibold text-gray-700 capitalize transition-colors group-hover:text-gray-900">
-                {title}
-              </span>
+              <span className="truncate text-xl font-semibold capitalize">{title}</span>
             </button>
           </Link>
         )}

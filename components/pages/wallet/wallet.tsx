@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import MyWallet from './wallet-details';
 
-
 const Wallet = () => {
   const [showWallet, setShowWallet] = useState<boolean>(false);
   const [showTerms, setShowTerms] = useState<boolean>(true);

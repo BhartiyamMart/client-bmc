@@ -1,34 +1,64 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Copy, Users, Share2, Gift, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { generateReferral } from '@/apis/auth.api';
+import { generateReferral, getReferralCode } from '@/apis/referrals.api';
 
 const ReferralPage = () => {
   const [referralCode, setReferralCode] = useState('');
+  const [hasReferralCode, setHasReferralCode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [referredCount, setReferredCount] = useState(12);
+  const [isFetching, setIsFetching] = useState(true);
+  const [referredCount, setReferredCount] = useState(0);
   const [isCopied, setIsCopied] = useState(false);
+
+  // Fetch existing referral code on mount
+  useEffect(() => {
+    fetchReferralCode();
+  }, []);
+
+  const fetchReferralCode = async () => {
+    setIsFetching(true);
+    try {
+      const res = await getReferralCode();
+
+      if (res.status === 200) {
+        const { hasReferralCode: hasCode, code, totalReferrals } = res.payload;
+        setHasReferralCode(hasCode);
+        if (hasCode) {
+          setReferralCode(code);
+        }
+        setReferredCount(totalReferrals || 0);
+      } else {
+        toast.error(res.message || 'Failed to fetch referral code');
+      }
+    } catch (error) {
+      console.error('Fetch referral code error:', error);
+      toast.error('Failed to fetch referral code');
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const generateReferralCode = async () => {
     setIsLoading(true);
     try {
-      // Backend call
-      // const res = await fetch('/api/referral/generate', { method: 'POST' });
-      // const data = await res.json();
-      // setReferralCode(data.code);
       const res = await generateReferral();
 
-      if (res.status == 200) {
+      if (res.status === 200) {
         setReferralCode(res.payload.referralCode);
+        setHasReferralCode(true);
         toast.success('Referral code generated! 🎉');
+      } else {
+        toast.error(res.message || 'Failed to generate code');
       }
     } catch (error) {
+      console.error('Generate referral code error:', error);
       toast.error('Failed to generate code');
     } finally {
       setIsLoading(false);
@@ -54,8 +84,20 @@ const ReferralPage = () => {
     }
   };
 
+  // Loading state
+  if (isFetching) {
+    return (
+      <div className="min-h-screen bg-linear-to-br px-4 py-12 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-text-secondary text-lg">Loading referral information...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="f min-h-screen bg-linear-to-br px-4 py-12">
+    <div className="min-h-screen bg-linear-to-br px-4 py-12">
       <div className="mx-auto w-full space-y-8">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 text-center">
@@ -75,10 +117,9 @@ const ReferralPage = () => {
           className="mx-auto max-w-2xl"
         >
           <Card className="border-none shadow-none">
-            {/* <div className="absolute inset-0 bg-linear-to-r from-primary/10 to-orange-500/5" /> */}
             <CardContent className="">
               <AnimatePresence mode="wait">
-                {!referralCode ? (
+                {!hasReferralCode ? (
                   <motion.div
                     key="generate"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -99,7 +140,7 @@ const ReferralPage = () => {
                         </>
                       ) : (
                         <>
-                          <Gift className="h-3 w-3 transition-transform duration-300 group-hover:rotate-12 md:h-32 md:w-32" />
+                          <Gift className="h-6 w-6 transition-transform duration-300 group-hover:rotate-12 md:h-6 md:w-6" />
                           <span className="text-xs sm:text-lg md:text-xl">Generate My Code</span>
                         </>
                       )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { logout } from '@/apis/auth.api';
+import { logout, accountDetails } from '@/apis/auth.api';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
 import { useState, useCallback, useEffect } from 'react';
@@ -26,6 +26,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
   const userImage = useUserImage();
   const userProfile = useUserProfile();
@@ -56,6 +57,30 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  // Fetch account details
+  const handleChange = useCallback(async (item: IMenuItem) => {
+    if (item.name === 'Logout') {
+      return;
+    }
+
+    setIsLoadingDetails(true);
+    try {
+      const response = await accountDetails();
+
+      if (response.status === 200) {
+        // Successfully fetched account details
+        
+        // You can dispatch this to your store or state management if needed
+      } else {
+        toast.error(response.message || 'Failed to fetch account details');
+      }
+    } catch (error) {
+      console.error('Account details error:', error);
+      toast.error('Error fetching account details');
+    } finally {
+      setIsLoadingDetails(false);
+    }
   }, []);
 
   // Handle logout
@@ -88,12 +113,15 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   const handleMenuItemClick = useCallback(
     (item: IMenuItem) => {
+      // Call handleChange to fetch account details
+      handleChange(item);
+
       if (item.name === 'Logout') {
         setIsLogoutOpen(true);
       }
       closeSidebar();
     },
-    [closeSidebar]
+    [handleChange, closeSidebar]
   );
 
   // Navigation helpers

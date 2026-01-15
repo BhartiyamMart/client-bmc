@@ -1,4 +1,4 @@
-import ReferralPage from '@/components/pages/referrals/referrals';
+import ReferralPage from '@/components/pages/account/referrals/referrals';
 import React from 'react';
 
 const page = () => {

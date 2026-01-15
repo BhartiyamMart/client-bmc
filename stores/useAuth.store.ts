@@ -5,7 +5,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type AuthStep = 'phone' | 'otp' | 'profile';
 
-export interface UserProfile {
+export interface IUserProfile {
   name: string;
   photo?: string | null;
   dateOfBirth?: string | null;
@@ -17,7 +17,7 @@ export interface AuthState {
   // Auth data
   token: string | null;
   phone: string | null;
-  userProfile: UserProfile | null;
+  userProfile: IUserProfile | null;
   isAuthenticated: boolean;
 
   // Auth modal state
@@ -34,8 +34,9 @@ export interface AuthActions {
   // Auth actions
   setToken: (token: string | null) => void;
   setPhone: (phone: string | null) => void;
-  setUserProfile: (profile: UserProfile | null) => void;
-  updateUserProfile: (updates: Partial<UserProfile>) => void;
+  setUserProfile: (profile: IUserProfile | null) => void;
+  updateUserProfile: (updates: Partial<IUserProfile>) => void;
+  
 
   // Modal actions
   setAuthModalOpen: (open: boolean) => void;

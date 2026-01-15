@@ -219,7 +219,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-12">
           {/* Name */}
@@ -342,14 +342,13 @@ const Profile = () => {
       </form>
 
       {/* Danger Zone */}
-      <div className="mt-12 rounded-xl border border-gray-200 p-6 pt-10">
+      <div className="rounded border p-4 shadow-xs">
         <div className="grid grid-cols-1">
           <button
             type="button"
             onClick={handleDeleteClick}
             className="flex w-full cursor-pointer text-lg font-semibold text-red-500"
           >
-            <Trash2 className="mr-1 h-5 w-5" />
             Delete Account
           </button>
         </div>

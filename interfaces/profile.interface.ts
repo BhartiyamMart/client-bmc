@@ -25,7 +25,7 @@ export interface IUserProfile {
 }
 
 export interface IWalletData {
-  amount : number;
+  amount: number;
 }
 
 export interface IAccountDetailsREQ {}

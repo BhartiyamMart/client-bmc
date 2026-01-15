@@ -30,8 +30,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-  const wallet = useWalletStore((state)=> state.amount)
-  const setWallet = useWalletStore((state)=>state.setAmount)
+  const wallet = useWalletStore((state) => state.amount);
+  const setWallet = useWalletStore((state) => state.setAmount);
   const userImage = useUserImage();
   const userProfile = useUserProfile();
   const userPhone = usePhone();
@@ -75,7 +75,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
       if (response.status === 200) {
         // Successfully fetched account details
         // You can dispatch this to your store or state management if needed
-        setWallet(response.payload.wallet.amount)
+        setWallet(response.payload.wallet.amount);
       } else {
         toast.error(response.message || 'Failed to fetch account details');
       }
@@ -183,7 +183,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
             <AccountHeader title={lastSegment || 'Account'} onBack={handleBack} />
 
             {/* Page Content */}
-            <div className="flex-1 p-4 md:p-6">{children}</div>
+            <div className="flex-1 p-4 py-6">{children}</div>
           </main>
         )}
 

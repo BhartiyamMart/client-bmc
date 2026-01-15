@@ -24,11 +24,16 @@ export interface IUserProfile {
   gender?: string | null;
 }
 
+export interface IWalletData {
+  amount : number;
+}
+
 export interface IAccountDetailsREQ {}
 
 export interface IAccountDetailsRES {
   user: IUser;
   profile: ICustomerProfile;
+  wallet: IWalletData;
 }
 
 export interface ICreateProfileREQ {

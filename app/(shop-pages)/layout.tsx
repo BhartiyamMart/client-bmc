@@ -1,3 +1,4 @@
+import Footer from '@/components/shared/footer/footer';
 import ShopNavbar from '@/components/shared/navbar/shop-navbar';
 import React from 'react';
 
@@ -10,6 +11,7 @@ const ShopLayout = ({ children }: ShopPagesLayout) => {
     <>
       <ShopNavbar />
       {children}
+      <Footer />
     </>
   );
 };

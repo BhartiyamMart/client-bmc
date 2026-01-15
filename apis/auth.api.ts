@@ -16,35 +16,8 @@ export const verifyOtp = async (data: IAUTH.IVerifyOtpREQ) => {
   );
 };
 
-export const editProfile = async (data: IAUTH.ICreateProfileREQ) => {
-  return requestAPI<ApiResponse<IAUTH.ICreateProfileRES>, IAUTH.ICreateProfileREQ>(
-    'post',
-    'v1',
-    'profile/customer',
-    'edit-profile',
-    data
-  );
-};
-export const getProfile = async () => {
-  return requestAPI<ApiResponse<IAUTH.IGetProfileRES>, IAUTH.IGetProfileREQ>(
-    'get',
-    'v1',
-    'profile/customer',
-    'get-profile'
-  );
-};
-
 export const logout = async () => {
   return requestAPI<ApiResponse<IAUTH.ILogoutRES>>('post', 'v1', 'auth/customer', 'logout');
-};
-
-export const accountDetails = async () => {
-  return requestAPI<ApiResponse<IAUTH.IAccountDetailsRES>, IAUTH.IAccountDetailsREQ>(
-    'get',
-    'v1',
-    'details/customer',
-    'account'
-  );
 };
 
 export const accountDelete = async (data: IAUTH.IAccountDeleteREQ) => {

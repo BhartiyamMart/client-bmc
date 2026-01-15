@@ -1,6 +1,6 @@
 'use client';
 
-import { logout, accountDetails } from '@/apis/auth.api';
+import { logout } from '@/apis/auth.api';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
 import { useState, useCallback, useEffect } from 'react';
@@ -15,6 +15,7 @@ import SidebarMenu from '@/components/account-layout/sidebar-menu';
 import LogoutDialog from '@/components/account-layout/logout-dialog';
 import AccountHeader from '@/components/account-layout/account-header';
 import SidebarProfile from '@/components/account-layout/sidebar-profile';
+import { accountDetails } from '@/apis/profile.api';
 
 interface AccountLayoutProps {
   children: React.ReactNode;

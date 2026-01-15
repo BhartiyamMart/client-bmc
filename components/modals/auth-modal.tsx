@@ -6,7 +6,8 @@ import { useRef, useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CloseIcon } from '../shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
-import { editProfile, sendOtp, verifyOtp } from '@/apis/auth.api';
+import { sendOtp, verifyOtp } from '@/apis/auth.api';
+import { editProfile } from '@/apis/profile.api';
 
 // Constants
 const OTP_LENGTH = 6;
@@ -355,9 +356,9 @@ const AuthModal = () => {
 
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/70" aria-hidden="true" />
 
-      <div className="relative z-10 w-full max-w-112.5 rounded-lg bg-white shadow-xl">
+      <div className="relative z-10 w-full max-w-112.5 rounded bg-white">
         {currentStep === 'phone' && (
           <div className="absolute top-3 right-3 z-10 sm:top-4 sm:right-4">
             <button
@@ -375,7 +376,7 @@ const AuthModal = () => {
           <button
             type="button"
             onClick={handleBack}
-            className="absolute top-3 left-3 z-10 cursor-pointer rounded-lg p-1 text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:top-4 sm:left-4"
+            className="absolute top-3 left-3 z-10 cursor-pointer rounded-full p-1 text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:top-4 sm:left-4"
             disabled={isLoading}
             aria-label="Go back"
           >
@@ -388,7 +389,7 @@ const AuthModal = () => {
           {currentStep === 'phone' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="text-center">
-                <div className="mb-3 inline-block rounded-xl bg-orange-100 p-2.5 sm:mb-4 sm:p-3">
+                <div className="mb-3 inline-block rounded bg-orange-100 p-2.5 sm:mb-4 sm:p-3">
                   <OptimizedImage src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
                 </div>
                 <h2 className="mb-2 text-lg font-semibold text-gray-900 sm:text-xl">
@@ -398,7 +399,7 @@ const AuthModal = () => {
               </div>
 
               <form onSubmit={handlePhoneSubmit} className="space-y-4">
-                <div className="flex overflow-hidden rounded-lg border border-gray-300 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500">
+                <div className="flex overflow-hidden rounded border border-gray-300 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500">
                   <span className="border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
                     +91
                   </span>
@@ -417,7 +418,7 @@ const AuthModal = () => {
                 <button
                   type="submit"
                   disabled={phone.length !== PHONE_LENGTH || isLoading}
-                  className={`w-full rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                  className={`w-full rounded py-2.5 text-sm font-medium transition-colors ${
                     phone.length === PHONE_LENGTH && !isLoading
                       ? 'bg-primary hover:bg-primary/90 text-white'
                       : 'cursor-not-allowed bg-gray-200 text-gray-400'
@@ -476,7 +477,7 @@ const AuthModal = () => {
                         ref={(el) => {
                           otpInputsRef.current[index] = el;
                         }}
-                        className={`xs:h-11 xs:w-11 xs:rounded-lg xs:text-lg h-10 w-10 shrink-0 rounded-md border text-center text-base font-semibold transition-all outline-none sm:h-12 sm:w-12 ${
+                        className={`xs:h-11 xs:w-11 xs:rounded xs:text-lg h-10 w-10 shrink-0 rounded border text-center text-base font-semibold transition-all outline-none sm:h-12 sm:w-12 ${
                           otp[index] ? 'border-orange-500 bg-orange-50' : 'border-gray-300 focus:border-orange-500'
                         } ${isLoading || index > nextAllowed ? 'cursor-not-allowed bg-gray-50' : ''}`}
                         disabled={isLoading}

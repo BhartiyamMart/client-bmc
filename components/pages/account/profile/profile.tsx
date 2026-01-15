@@ -22,11 +22,6 @@ interface FormData {
   gender: string;
 }
 
-interface GenderOption {
-  value: string;
-  label: string;
-}
-
 const Profile = () => {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
@@ -43,8 +38,9 @@ const Profile = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [genderOptions, setGenderOptions] = useState<GenderOption[]>([]);
+  const [genderOptions, setGenderOptions] = useState<string[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteReasons, setDeleteReasons] = useState<string[]>([]);
   const [selectedReason, setSelectedReason] = useState<string>('');
@@ -53,52 +49,42 @@ const Profile = () => {
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
 
-  // Fetch profile data on mount
+  // Fetch profile data and gender options on mount
   useEffect(() => {
-    fetchProfileData();
-    fetchGenderOptions();
-  }, []);
+    const loadData = async () => {
+      try {
+        setIsPageLoading(true);
+        // Load both in parallel for faster loading
+        const [genderResponse, profileResponse] = await Promise.all([
+          getGender().catch(() => ({ status: 200, payload: ['MALE', 'FEMALE', 'OTHER'] })),
+          getProfile(),
+        ]);
 
-  const fetchProfileData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getProfile();
-      const data = response.payload;
-      console.log('profileData', data);
+        // Set gender options
+        if (genderResponse.status === 200 && Array.isArray(genderResponse.payload)) {
+          setGenderOptions(genderResponse.payload);
+        }
 
-      const profileData: FormData = {
-        name: data?.profile?.name || '',
-        email: data?.user?.email || '',
-        dob: data?.profile?.dateOfBirth ? ddMMYYYYToDate(data.profile.dateOfBirth) : undefined,
-        gender: data?.profile?.gender || '',
-      };
+        // Set profile data
+        const data = profileResponse.payload;
+        const profileData: FormData = {
+          name: data?.profile?.name || '',
+          email: data?.user?.email || '',
+          dob: data?.profile?.dateOfBirth ? ddMMYYYYToDate(data.profile.dateOfBirth) : undefined,
+          gender: data?.profile?.gender || '',
+        };
 
-      setFormData(profileData);
-      setOriginalData(profileData);
-    } catch (error) {
-      console.error('Profile fetch error:', error);
-      toast.error('Failed to load profile data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchGenderOptions = async () => {
-    try {
-      const response = await getGender();
-      if (response.status === 200 && Array.isArray(response.payload)) {
-        setGenderOptions(response.payload);
+        setFormData(profileData);
+        setOriginalData(profileData);
+      } catch (error) {
+        console.error('Load data error:', error);
+        toast.error('Failed to load profile data');
+      } finally {
+        setIsPageLoading(false);
       }
-    } catch (error) {
-      console.error('Gender fetch error:', error);
-      // Fallback to default options if API fails
-      setGenderOptions([
-        { value: 'MALE', label: 'Male' },
-        { value: 'FEMALE', label: 'Female' },
-        { value: 'OTHER', label: 'Other' },
-      ]);
-    }
-  };
+    };
+    loadData();
+  }, []);
 
   const fetchDeleteReasons = async () => {
     setIsLoadingReasons(true);
@@ -184,8 +170,6 @@ const Profile = () => {
         payload.deleteReason = deleteReasonText.trim();
       }
 
-      console.log('Delete payload:', payload);
-
       const response = await accountDelete(payload);
 
       if (response.status === 200) {
@@ -212,9 +196,27 @@ const Profile = () => {
 
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
 
+  // Helper function to format gender label
+  const formatGenderLabel = (gender: string) => {
+    if (!gender) return '';
+    return gender.charAt(0) + gender.slice(1).toLowerCase();
+  };
+
   // Year range for calendar
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 100;
+
+  // Show loading state
+  if (isPageLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-orange-500 border-t-transparent"></div>
+          <p className="mt-4 text-lg font-medium text-gray-700">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -308,9 +310,9 @@ const Profile = () => {
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  {genderOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                  {genderOptions.map((gender) => (
+                    <SelectItem key={gender} value={gender}>
+                      {formatGenderLabel(gender)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -324,7 +326,7 @@ const Profile = () => {
             <button
               type="submit"
               disabled={isLoading || !hasChanges}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-orange-700 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:from-orange-700 hover:to-orange-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-600 to-orange-700 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:from-orange-700 hover:to-orange-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 <>
@@ -386,7 +388,7 @@ const Profile = () => {
                   <div className="max-h-40 space-y-2 overflow-y-auto">
                     {deleteReasons.map((reason, index) => (
                       <label
-                        key={index}
+                        key={`reason-${index}`}
                         className="flex cursor-pointer items-start gap-3 rounded-lg border-2 p-3 transition-all duration-200 hover:bg-red-50"
                         style={{
                           borderColor: selectedReason === reason ? '#ef4444' : '#e5e7eb',
@@ -431,14 +433,9 @@ const Profile = () => {
                     }
                   }}
                   placeholder="Tell us more about your reason for leaving..."
-                  className={`w-full resize-none rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all duration-200 focus:ring-4 focus:ring-red-500/20 ${
-                    deleteErrors.reasonText
-                      ? 'border-red-300 focus:border-red-500'
-                      : 'border-gray-200 focus:border-red-500'
-                  }`}
+                  className="w-full resize-none rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-medium transition-all duration-200 focus:border-red-500 focus:ring-4 focus:ring-red-500/20"
                   rows={4}
                 />
-                {deleteErrors.reasonText && <p className="text-xs text-red-500">{deleteErrors.reasonText}</p>}
               </div>
             </div>
 

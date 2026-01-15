@@ -79,3 +79,7 @@ export interface IReferralInfo {
   referralCode: string;
   totalReferrals: string;
 }
+
+export interface IGetGenderREQ {}
+
+export interface IGetGenderRES extends Array<string> {}

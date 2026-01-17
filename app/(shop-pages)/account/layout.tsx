@@ -1,8 +1,8 @@
-import AccountLayout from '@/components/account-layout/account-layout';
 import ProtectedRoute from '@/components/shared/protected-route';
+import AccountLayout from '@/components/account-layout/account-layout';
+import AccountBootstrap from '@/components/bootstrap/account.bootstrap';
 
 import { IPageLayoutProps } from '@/interfaces/shared.interface';
-import AccountDetails from '../../../components/bootstrap/account.bootstrap';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ const PagesLayout: React.FC<IPageLayoutProps> = ({ children }) => {
     <ProtectedRoute>
       <main>
         <AccountLayout>
-          <AccountDetails />
+          <AccountBootstrap />
           {children}
         </AccountLayout>
       </main>

@@ -1,12 +1,9 @@
 import Footer from '@/components/shared/footer/footer';
 import ShopNavbar from '@/components/shared/navbar/shop-navbar';
-import React from 'react';
 
-export interface ShopPagesLayout {
-  children: React.ReactNode;
-}
+import { IPageLayoutProps } from '@/interfaces/shared.interface';
 
-const ShopLayout = ({ children }: ShopPagesLayout) => {
+const ShopLayout = ({ children }: IPageLayoutProps) => {
   return (
     <>
       <ShopNavbar />

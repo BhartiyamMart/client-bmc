@@ -10,6 +10,7 @@ interface CartItem {
   name: string;
   weight: string;
   image: string;
+  stock: number;
 }
 
 interface CartStore {
@@ -49,6 +50,7 @@ export const useCartStore = create<CartStore>()(
                 {
                   productId,
                   variantId,
+                  stock: product.stock ?? 0, // Use nullish coalescing with default value
                   quantity: 1,
                   price: product.price!,
                   name: product.name!,
@@ -103,9 +105,7 @@ export const useCartStore = create<CartStore>()(
   )
 );
 
-// SELECTOR HOOKS - YE BAHUT IMPORTANT HAIN!
-// Ye functions component ko re-render karenge jab items change honge
-
+// SELECTOR HOOKS
 export const useCartQuantity = (productId: number, variantId?: number) => {
   return useCartStore((state) => {
     const item = state.items.find((item) => item.productId === productId && item.variantId === variantId);

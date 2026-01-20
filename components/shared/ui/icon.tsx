@@ -98,7 +98,7 @@ const Icon = forwardRef<HTMLButtonElement | HTMLDivElement, IconProps>(
       .trim()
       .replace(/\s+/g, ' ');
 
-    const iconClasses = `${sizes[size].icon} flex-shrink-0`;
+    const iconClasses = `${sizes[size].icon} shrink-0`;
     const textClasses = `${sizes[size].text} font-medium whitespace-nowrap`;
 
     // Badge display logic

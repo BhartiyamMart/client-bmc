@@ -57,14 +57,14 @@ const ProductCard: React.FC<IProduct> = ({
     if (hasVariants) {
       setIsModalOpen(true);
     } else {
-      addToCart(productId, undefined, { name, weight, price, image });
+      addToCart(productId, undefined, { name, weight, price, image, stock });
       showPopCartTemporary();
     }
   };
 
   const handleIncreaseQuantity = () => {
     if (isOutOfStock) return;
-    addToCart(productId, undefined, { name, weight, price, image });
+    addToCart(productId, undefined, { name, weight, price, image, stock });
     showPopCartTemporary();
   };
 

@@ -1,6 +1,7 @@
 export interface IUser {
   phone: string;
   email: string | null;
+  autoMail : string | null;
 }
 
 export interface IProfile {
@@ -25,7 +26,8 @@ export interface IUserProfile {
 }
 
 export interface IWalletData {
-  amount: number;
+  balance: string;
+  hasWallet: boolean;
 }
 
 export interface IAccountDetailsREQ {}

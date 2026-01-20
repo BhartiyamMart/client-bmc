@@ -141,6 +141,7 @@ export default function ProductVariantsModal({
       weight: variant.weight,
       price: variant.price,
       image: variant.image,
+      stock : variant.stock
     });
     showPopCartTemporary();
   };

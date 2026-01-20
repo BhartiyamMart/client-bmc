@@ -77,6 +77,7 @@ const BestSellerPicks = () => {
                       labelValue={product.labelValue}
                       category={product.category}
                       variants={product.variants}
+                      stock={product.stock}
                     />
                   </div>
                 ))}

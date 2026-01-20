@@ -1,5 +1,6 @@
 import { IMenuItem } from '@/interfaces/shared.interface';
-import { HandBag, Logout, ProfileIcon } from '@/components/shared/svg/svg-icon';
+import { HandBag, Logout, MapPin, ProfileIcon } from '@/components/shared/svg/svg-icon';
+import { Share } from '@/components/shared/svg/lucide-icon';
 
 export const accountMenuItems: IMenuItem[] = [
   {
@@ -16,21 +17,15 @@ export const accountMenuItems: IMenuItem[] = [
     activePatterns: ['/account/orders', '/orders'],
   },
   {
-    name: 'Wallet',
-    href: '/account/wallet',
-    icon: HandBag,
-    activePatterns: ['/account/wallet', '/wallet'],
-  },
-  {
     name: 'Address',
     href: '/account/address',
-    icon: HandBag,
+    icon: MapPin,
     activePatterns: ['/account/address', '/address'],
   },
   {
     name: 'Referrals',
     href: '/account/referrals',
-    icon: HandBag,
+    icon: Share,
     activePatterns: ['/account/referral', '/orders'],
     exactMatch: true,
   },

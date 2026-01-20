@@ -8,22 +8,32 @@ import { IPageLayoutProps } from '@/interfaces/shared.interface';
 const ProtectedRoute = ({ children }: IPageLayoutProps) => {
   const router = useRouter();
   const token = useAuthStore((state) => state.token);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const [isAuthorized, setIsAuthorized] = useState(false);
-
+  // Wait for Zustand to hydrate from localStorage
   useEffect(() => {
-    if (!token) {
-      router.push('/');
-    } else {
-      setIsAuthorized(true);
-    }
-  }, [token, router]);
+    setIsHydrated(true);
+  }, []);
 
-  if (!isAuthorized) {
+  // Redirect after hydration is complete
+  useEffect(() => {
+    if (isHydrated && !token) {
+      router.push('/');
+    }
+  }, [isHydrated, token, router]);
+
+  // Don't render anything until hydration is complete
+  if (!isHydrated) {
     return null;
   }
 
-  return <>{children}</>;
+  // If token exists after hydration, render children
+  if (token) {
+    return <>{children}</>;
+  }
+
+  // If no token after hydration, render nothing (redirect will happen)
+  return null;
 };
 
 export default ProtectedRoute;

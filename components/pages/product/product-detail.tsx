@@ -143,7 +143,7 @@ export default function ProductDetail() {
               {currentScrollIndex > 0 && (
                 <button
                   onClick={() => scrollHorizontal('left')}
-                  className="flex-shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-2"
+                  className="shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-2"
                 >
                   {/* <ChevronLeft className="h-5 w-5" /> */}
 
@@ -184,7 +184,7 @@ export default function ProductDetail() {
               {currentScrollIndex < maxScrollIndex && (
                 <button
                   onClick={() => scrollHorizontal('right')}
-                  className="flex-shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-2"
+                  className="shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-2"
                 >
                   {/* <ChevronRight className="h-5 w-5" /> */}
 
@@ -397,7 +397,7 @@ export default function ProductDetail() {
                 {currentScrollIndex > 0 && (
                   <button
                     onClick={() => scrollHorizontal('left')}
-                    className="xs:p-1.5 flex-shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-1 sm:p-2"
+                    className="xs:p-1.5 shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-1 sm:p-2"
                   >
                     {/* <ChevronLeft className="xs:h-4 xs:w-4 h-4 w-4 sm:h-5 sm:w-5" /> */}
 
@@ -426,7 +426,7 @@ export default function ProductDetail() {
                       key={index}
                       src={img.thumb}
                       alt={`Product thumbnail ${index + 1}`}
-                      className={`xs:h-14 xs:w-14 xs:rounded-lg h-15 w-15 flex-shrink-0 cursor-pointer rounded-md border-1 transition-all duration-200 sm:h-16 sm:w-16 md:h-20 md:w-20 ${
+                      className={`xs:h-14 xs:w-14 xs:rounded-lg h-15 w-15 shrink-0 cursor-pointer rounded-md border-1 transition-all duration-200 sm:h-16 sm:w-16 md:h-20 md:w-20 ${
                         selectedImage === img.full ? 'border-[#F0701E]' : 'border-gray-300 hover:border-gray-400'
                       }`}
                       style={{ scrollSnapAlign: 'start' }}
@@ -438,7 +438,7 @@ export default function ProductDetail() {
                 {currentScrollIndex < maxScrollIndex && (
                   <button
                     onClick={() => scrollHorizontal('right')}
-                    className="xs:p-1.5 flex-shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-1 sm:p-2"
+                    className="xs:p-1.5 shrink-0 cursor-pointer rounded-full bg-[#F0701E] p-1 sm:p-2"
                   >
                     {/* <ChevronRight className="xs:h-4 xs:w-4 h-4 w-4 sm:h-5 sm:w-5" /> */}
 
@@ -563,7 +563,7 @@ export default function ProductDetail() {
                       viewBox="0 0 16 14"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="flex-shrink-0"
+                      className="shrink-0"
                     >
                       <path
                         d="M8.5002 12.9491C8.49974 12.8505 8.51896 12.7529 8.55674 12.6619C8.59451 12.5709 8.65009 12.4883 8.7202 12.4191L14.1902 6.94907L8.7202 1.47907C8.58772 1.33689 8.5156 1.14884 8.51903 0.954543C8.52245 0.760242 8.60117 0.574856 8.73858 0.437443C8.87599 0.30003 9.06138 0.221319 9.25568 0.21789C9.44998 0.214462 9.63803 0.286585 9.7802 0.419065L15.7802 6.41907C15.9207 6.55969 15.9995 6.75031 15.9995 6.94907C15.9995 7.14782 15.9207 7.33844 15.7802 7.47906L9.7802 13.4791C9.63958 13.6195 9.44895 13.6984 9.2502 13.6984C9.05145 13.6984 8.86083 13.6195 8.7202 13.4791C8.65009 13.4098 8.59451 13.3273 8.55674 13.2363C8.51896 13.1452 8.49974 13.0476 8.5002 12.9491Z"

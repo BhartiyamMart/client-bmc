@@ -4,7 +4,7 @@ import OptimizedImage from '@/components/shared/optimizeImage';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
-import { ArrowLeft, CloseIcon } from '../shared/svg/svg-icon';
+import { ArrowRight, CloseIcon } from '../shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
 import { sendOtp, verifyOtp } from '@/apis/auth.api';
 import { editProfile } from '@/apis/profile.api';
@@ -380,7 +380,7 @@ const AuthModal = () => {
             disabled={isLoading}
             aria-label="Go back"
           >
-            <ArrowLeft />
+            <ArrowRight />
           </button>
         )}
 

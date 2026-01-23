@@ -14,8 +14,8 @@ import { useContentStore } from '@/stores/useContent.store';
 
 const FeaturedCategory = () => {
   const [loading, setLoading] = useState(false);
-  const setCategories = useContentStore((state)=>state.setCategories)
-  const categories = useContentStore((state)=> state.categories)
+  const setCategories = useContentStore((state) => state.setCategories);
+  const categories = useContentStore((state) => state.categories);
 
   // Show skeleton while loading
   if (loading) {
@@ -40,7 +40,7 @@ const FeaturedCategory = () => {
 
             <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4 pb-2">
               <OptimizedImage
-                src={cat.imageUrl || ""}
+                src={cat.imageUrl || ''}
                 alt={cat.name}
                 width={200}
                 height={200}

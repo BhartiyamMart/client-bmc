@@ -47,8 +47,8 @@ export interface IAccountDetailsRES {
   profile: ICustomerProfile;
   wallet: IWalletData;
   addresses: {
-    hasAddresses : boolean,
-    allAddresses : IAddressData[]
+    hasAddresses: boolean;
+    allAddresses: IAddressData[];
   };
 }
 

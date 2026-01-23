@@ -150,14 +150,12 @@ const Cart = ({ onClose }: CartProps) => {
           </div>
           <Button className="bg-white text-blue-500 hover:cursor-pointer hover:bg-white">
             <Dialog>
-              <DialogTrigger className=' cursor-pointer'>Change</DialogTrigger>
+              <DialogTrigger className="cursor-pointer">Change</DialogTrigger>
               <DialogContent>
-                <DialogHeader>
-                  Choose your address
-                </DialogHeader>
-                  <DialogDescription>
-                    <AddressList />
-                  </DialogDescription>
+                <DialogHeader>Choose your address</DialogHeader>
+                <DialogDescription>
+                  <AddressList />
+                </DialogDescription>
               </DialogContent>
             </Dialog>
           </Button>
@@ -236,7 +234,7 @@ const Cart = ({ onClose }: CartProps) => {
                     key={`${item.productId}-${item.variantId}`}
                     className="flex items-center gap-3 rounded-lg bg-white p-3"
                   >
-                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-white">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-white">
                       <Image src={item.image} alt={item.name} fill className="object-contain" />
                     </div>
 

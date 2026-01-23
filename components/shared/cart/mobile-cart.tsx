@@ -19,22 +19,20 @@ export default function MobileCart() {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <div className="fixed right-4 bottom-24 left-4 z-30 mx-auto w-fit md:hidden">
         <SheetTrigger asChild>
-          <button
-            className="bg-primary flex w-full items-center justify-between rounded-full px-4 py-3 text-white shadow-lg transition-all duration-300 hover:shadow-xl active:scale-95"
-          >
+          <button className="bg-primary flex w-full items-center justify-between rounded-full px-4 py-3 text-white shadow-lg transition-all duration-300 hover:shadow-xl active:scale-95">
             <div className="flex items-center gap-3">
-              <div className="relative bg-white rounded-full px-1 py-1 h-10 w-10">
+              <div className="relative h-10 w-10 rounded-full bg-white px-1 py-1">
                 <Image
                   src={cart.items[0].image}
                   height={1080}
                   width={1080}
-                  alt='cart item'
-                  className='object-cover h-full w-full rounded-full'
+                  alt="cart item"
+                  className="h-full w-full rounded-full object-cover"
                 />
               </div>
-              <div className='flex flex-col justify-start items-start font-bold'>
+              <div className="flex flex-col items-start justify-start font-bold">
                 <span>View Cart</span>
-                <span className="sm:text-base text-xs">
+                <span className="text-xs sm:text-base">
                   {count} {count === 1 ? 'item' : 'items'}
                 </span>
               </div>

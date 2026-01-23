@@ -51,7 +51,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   // Auto-close sidebar on desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) { // Changed to lg breakpoint
+      if (window.innerWidth >= 1024) {
+        // Changed to lg breakpoint
         setIsSidebarOpen(false);
       }
     };
@@ -142,11 +143,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
       <Container className="relative flex flex-col overflow-hidden rounded border bg-white lg:flex-row">
         {/* Mobile Overlay */}
         {isSidebarOpen && (
-          <div 
-            className="fixed inset-0 z-40 bg-black/50 lg:hidden" 
-            onClick={closeSidebar} 
-            aria-label="Close sidebar" 
-          />
+          <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={closeSidebar} aria-label="Close sidebar" />
         )}
 
         {/* Sidebar */}
@@ -158,10 +155,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
                 ? 'translate-x-0 opacity-100'
                 : '-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100'
           } ${
-            showOnlySidebar 
-              ? 'flex h-auto' 
-              : 'fixed top-0 left-0 z-50 flex h-screen w-full lg:relative lg:h-auto'
-          } flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out lg:sticky lg:top-20 lg:z-auto lg:w-80 lg:max-w-80 lg:max-h-[calc(100vh-80px)] lg:shadow-none`}
+            showOnlySidebar ? 'flex h-auto' : 'fixed top-0 left-0 z-50 flex h-screen w-full lg:relative lg:h-auto'
+          } flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out lg:sticky lg:top-20 lg:z-auto lg:max-h-[calc(100vh-80px)] lg:w-80 lg:max-w-80 lg:shadow-none`}
         >
           {/* Profile Section */}
           <SidebarProfile
@@ -189,11 +184,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
         )}
 
         {/* Logout Dialog */}
-        <LogoutDialog 
-          isOpen={isLogoutOpen} 
-          onClose={() => setIsLogoutOpen(false)} 
-          onConfirm={handleLogout} 
-        />
+        <LogoutDialog isOpen={isLogoutOpen} onClose={() => setIsLogoutOpen(false)} onConfirm={handleLogout} />
       </Container>
     </Section>
   );

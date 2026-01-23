@@ -296,15 +296,15 @@ const Profile = () => {
               <User className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Select value={formData.gender} onValueChange={(value) => updateField('gender', value)}>
                 <SelectTrigger
-                  className={`focus:ring-primary/20 !h-12 !shadow-none w-full rounded border px-4 pl-10 text-base font-medium transition-all duration-200 hover:bg-orange-50 focus:ring-4 ${
+                  className={`focus:ring-primary/20 !h-12 w-full rounded border px-4 pl-10 text-base font-medium !shadow-none transition-all duration-200 hover:bg-orange-50 focus:ring-4 ${
                     errors.gender ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
                   }`}
                 >
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
-                <SelectContent className='!shadow-none !rounded'>
+                <SelectContent className="!rounded !shadow-none">
                   {genderOptions.map((gender) => (
-                    <SelectItem key={gender} value={gender} className='cursor-pointer rounded'>
+                    <SelectItem key={gender} value={gender} className="cursor-pointer rounded">
                       {formatGenderLabel(gender)}
                     </SelectItem>
                   ))}
@@ -319,7 +319,7 @@ const Profile = () => {
             <button
               type="submit"
               disabled={isLoading || !hasChanges}
-              className={`${isLoading || !hasChanges ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-primary hover:bg-primary/90 text-white "} flex h-12 w-fit cursor-pointer items-center justify-center gap-2 rounded px-6 text-base font-semibold transition-all duration-200 disabled:cursor-not-allowed`}
+              className={`${isLoading || !hasChanges ? 'cursor-not-allowed bg-gray-200 text-gray-400' : 'bg-primary hover:bg-primary/90 text-white'} flex h-12 w-fit cursor-pointer items-center justify-center gap-2 rounded px-6 text-base font-semibold transition-all duration-200 disabled:cursor-not-allowed`}
 
               // 'bg-primary hover:bg-primary/90 text-white'
               //         : 'cursor-not-allowed bg-gray-200 text-gray-400'
@@ -340,7 +340,7 @@ const Profile = () => {
       {/* Danger Zone */}
       <div className="">
         <div className="border"></div>
-        <div className="flex flex-col mt-8">
+        <div className="mt-8 flex flex-col">
           <button
             type="button"
             onClick={handleDeleteClick}
@@ -349,9 +349,7 @@ const Profile = () => {
             Delete Account
           </button>
         </div>
-        <p className="text-md left text-gray-500">
-          These actions are irreversible. Please contact support if needed.
-        </p>
+        <p className="text-md left text-gray-500">These actions are irreversible. Please contact support if needed.</p>
       </div>
 
       {/* Delete Account Dialog */}
@@ -446,7 +444,7 @@ const Profile = () => {
                   setDeleteErrors({});
                 }}
                 disabled={isDeletingAccount}
-                className="cursor-pointer flex h-12 flex-1 items-center justify-center rounded border border-gray-300 px-4 text-base font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 disabled:opacity-50"
+                className="flex h-12 flex-1 cursor-pointer items-center justify-center rounded border border-gray-300 px-4 text-base font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -454,7 +452,7 @@ const Profile = () => {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={isDeletingAccount}
-                className="cursor-pointer flex h-12 flex-1 items-center justify-center gap-2 rounded bg-primary px-4 text-base font-semibold text-white transition-all duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded px-4 text-base font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isDeletingAccount ? (
                   <>

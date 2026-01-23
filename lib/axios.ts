@@ -103,16 +103,16 @@ export const buildUrl = (
   params?: Record<string, string | number | boolean | string[] | number[] | null | undefined>
 ) => {
   let url = `${version}/${service}/${endpoint}`;
-  
+
   if (params && Object.keys(params).length > 0) {
     const queryString = new URLSearchParams();
-    
+
     Object.entries(params).forEach(([key, value]) => {
       // Skip undefined and null values
       if (value === undefined || value === null) {
         return;
       }
-      
+
       // Handle arrays
       if (Array.isArray(value)) {
         value.forEach((item) => {
@@ -122,20 +122,23 @@ export const buildUrl = (
         queryString.append(key, String(value));
       }
     });
-    
+
     const queryStringified = queryString.toString();
     if (queryStringified) {
       url += `?${queryStringified}`;
     }
   }
-  
+
   return url;
 };
 
 export const requestAPI = async <
-  TResponse, 
-  TData = unknown, 
-  TParams extends Record<string, string | number | boolean | string[] | number[] | null | undefined> = Record<string, string | number | boolean | string[] | number[] | null | undefined>
+  TResponse,
+  TData = unknown,
+  TParams extends Record<string, string | number | boolean | string[] | number[] | null | undefined> = Record<
+    string,
+    string | number | boolean | string[] | number[] | null | undefined
+  >,
 >(
   method: 'get' | 'post' | 'put' | 'patch' | 'delete',
   version: string,
@@ -144,7 +147,7 @@ export const requestAPI = async <
   data?: TData,
   params?: TParams
 ): Promise<TResponse> => {
-  console.log("params", params)
+  console.log('params', params);
   try {
     const url = buildUrl(version, service, endpoint, params);
     console.log('Built URL:', url); // Debug log to verify URL construction
@@ -154,7 +157,5 @@ export const requestAPI = async <
     throw handleApiError(error);
   }
 };
-
-
 
 export default API;

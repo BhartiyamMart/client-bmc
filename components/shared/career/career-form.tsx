@@ -54,7 +54,7 @@ const CareerForm = () => {
             value={formData.name}
             onChange={handleChange}
             maxLength={50}
-            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+            className="focus:border-primary focus:ring-primary/20 w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:outline-none"
             placeholder="Enter your name"
           />
         </div>
@@ -71,7 +71,7 @@ const CareerForm = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+            className="focus:border-primary focus:ring-primary/20 w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:outline-none"
             placeholder="Enter your email"
           />
         </div>
@@ -91,7 +91,7 @@ const CareerForm = () => {
             inputMode="numeric"
             maxLength={10}
             pattern="[0-9]{10}"
-            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+            className="focus:border-primary focus:ring-primary/20 w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:outline-none"
             placeholder="Enter 10-digit mobile number"
           />
         </div>

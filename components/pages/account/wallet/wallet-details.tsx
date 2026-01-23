@@ -403,7 +403,7 @@ const WalletDetails = () => {
                     disabled={loading}
                     className={`shrink-0 cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm ${
                       selectedQuickAmount === quickAmount
-                        ? 'border-primary bg-orange-50 text-primary'
+                        ? 'border-primary text-primary bg-orange-50'
                         : 'border-gray-300 bg-white text-gray-400'
                     }`}
                   >
@@ -416,7 +416,7 @@ const WalletDetails = () => {
           </div>
 
           <Button
-            className="h-10 w-full bg-primary text-sm font-semibold text-white hover:bg-orange-600 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
+            className="bg-primary h-10 w-full text-sm font-semibold text-white hover:bg-orange-600 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
             disabled={!amount || loading || !razorpayLoaded}
             onClick={handleRecharge}
           >
@@ -443,7 +443,7 @@ const WalletDetails = () => {
 
           {transactionsLoading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
             </div>
           ) : transactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">

@@ -1,11 +1,8 @@
-
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import * as IContent from '@/interfaces/content.interface'
+import * as IContent from '@/interfaces/content.interface';
 
 // ✅ Address data interface (from your API response)
-
 
 // ✅ Address state
 interface ContentState {
@@ -33,10 +30,8 @@ export const useContentStore = create<ContentStore>()(
 
       // Set all addresses (typically from API response)
       setCategories: (categories) => {
-        set({ categories});
+        set({ categories });
       },
-
-    
     }),
     {
       name: 'content-storage',

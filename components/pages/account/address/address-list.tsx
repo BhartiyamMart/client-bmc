@@ -11,7 +11,7 @@ import { IAddressData, useAddressStore } from '@/stores/useAddress.store';
 
 const AddressList = () => {
   const { addresses: storeAddresses, defaultAddress, setAddresses, deleteAddress } = useAddressStore();
-  
+
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -41,11 +41,11 @@ const AddressList = () => {
         if (response.status === 200) {
           const convertedAddresses = convertToStoreFormat(response.payload.addresses);
           setAddresses(convertedAddresses);
-          
+
           // ✅ Search in convertedAddresses (same format as rendered)
           const primary = convertedAddresses.find((a) => a.isDefault);
           const initialSelectedId = primary?.addressId ?? convertedAddresses[0]?.addressId ?? null;
-          
+
           setSelectedId(initialSelectedId);
         }
       } catch (error) {
@@ -87,7 +87,7 @@ const AddressList = () => {
         if (response.status === 200) {
           toast.success('Primary address updated');
           setSelectedId(address.addressId);
-          
+
           const freshAddresses = await getAllAddress();
           if (freshAddresses.status === 200) {
             const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
@@ -131,7 +131,7 @@ const AddressList = () => {
       if (response.status === 200 || response.status === 201) {
         setIsMapOpen(false);
         setEditingAddressId(null);
-        
+
         const freshAddresses = await getAllAddress();
         if (freshAddresses.status === 200) {
           const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
@@ -156,13 +156,13 @@ const AddressList = () => {
       if (response.status === 200) {
         deleteAddress(addressId);
         toast.success('Address deleted successfully');
-        
+
         if (selectedId === addressId) {
-          const remainingAddresses = storeAddresses.filter(a => a.addressId !== addressId);
-          const newDefault = remainingAddresses.find(a => a.isDefault) || remainingAddresses[0];
+          const remainingAddresses = storeAddresses.filter((a) => a.addressId !== addressId);
+          const newDefault = remainingAddresses.find((a) => a.isDefault) || remainingAddresses[0];
           setSelectedId(newDefault?.addressId ?? null);
         }
-        
+
         router.refresh();
       }
     } catch (error: any) {
@@ -208,13 +208,13 @@ const AddressList = () => {
                   <input
                     type="radio"
                     name="deliveryAddress"
-                    className="mt-1 h-4 w-4 flex-shrink-0 cursor-pointer accent-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                     checked={selectedId === address.addressId}
                     onChange={() => handleSelect(address)}
                   />
 
                   <div className="min-w-0 flex-1">
-                    <p className="break-words text-sm font-medium leading-snug md:text-base">
+                    <p className="text-sm leading-snug font-medium wrap-break-word md:text-base">
                       {formatAddress(address)}
                     </p>
                     <p className="mt-1 truncate text-xs text-gray-500 md:text-sm">
@@ -229,7 +229,7 @@ const AddressList = () => {
                   </div>
                 </div>
 
-                <div className="text-primary flex flex-shrink-0 items-center gap-1 md:gap-2">
+                <div className="text-primary flex shrink-0 items-center gap-1 md:gap-2">
                   <button
                     type="button"
                     className="cursor-pointer rounded-lg p-1 transition-colors hover:bg-orange-50 md:p-1.5"
@@ -257,7 +257,7 @@ const AddressList = () => {
           <button
             type="button"
             onClick={handleAddNew}
-            className="flex w-full items-center justify-center gap-2 rounded border px-4 py-3 text-sm text-primary transition-colors hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-60 md:px-6 md:py-4 md:text-base"
+            className="text-primary flex w-full items-center justify-center gap-2 rounded border px-4 py-3 text-sm transition-colors hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-60 md:px-6 md:py-4 md:text-base"
             disabled={loading}
           >
             <Plus className="h-4 w-4 md:h-5 md:w-5" />

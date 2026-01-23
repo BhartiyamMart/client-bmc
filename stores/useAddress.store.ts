@@ -8,8 +8,8 @@ export interface IAddressData {
   mapAddress: string;
   addressLineOne: string;
   addressLineTwo: string | null;
-  addressName : string;
-  addressPhone : string;
+  addressName: string;
+  addressPhone: string;
   isDefault: boolean;
   status: boolean;
 }
@@ -65,7 +65,7 @@ export const useAddressStore = create<AddressStore>()(
           const newAddresses = state.addresses.map((addr) =>
             addr.addressId === addressId ? { ...addr, ...updatedAddress } : addr
           );
-          
+
           // Update default address if the updated address is now default
           let newDefaultAddress = state.defaultAddress;
           if (updatedAddress.isDefault) {

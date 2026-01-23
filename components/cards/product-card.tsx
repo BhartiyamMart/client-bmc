@@ -224,7 +224,7 @@ const ProductCard: React.FC<IProduct> = ({
                 <div className="mt-2 flex w-full flex-col">
                   <button
                     onClick={handleAddToCart}
-                    className="text-primary flex-1 cursor-pointer rounded-sm border border-primary bg-orange-50 py-2.5 text-sm font-medium transition-colors hover:bg-orange-100"
+                    className="text-primary border-primary flex-1 cursor-pointer rounded-sm border bg-orange-50 py-2.5 text-sm font-medium transition-colors hover:bg-orange-100"
                   >
                     Add
                   </button>

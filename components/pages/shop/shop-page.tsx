@@ -26,7 +26,7 @@ const ShopPage = () => {
       <LimitedOffer />
       <CategoryBanner />
       <SpecialDiscounts />
-      <MobileCart/>
+      <MobileCart />
       <FooterBar />
       <Footer />
     </main>

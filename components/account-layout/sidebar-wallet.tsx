@@ -14,21 +14,21 @@ const SidebarWallet = () => {
   return (
     <div className="mx-2 rounded border bg-white p-4 shadow-xs">
       {/* Header */}
-      <div className=" flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-            <Wallet className="h-5 w-5 text-primary" />
+          <Wallet className="text-primary h-5 w-5" />
           <div>
-            <h3 className="font-semibold text-lg">Bhartiyam Wallet</h3>
+            <h3 className="text-lg font-semibold">Bhartiyam Wallet</h3>
           </div>
         </div>
         <Button
           className="cursor-pointer bg-transparent hover:bg-transparent"
           onClick={() => router.push('/account/wallet')}
         >
-          <ChevronRight className="cursor-pointer text-black h-6 w-6" />
+          <ChevronRight className="h-6 w-6 cursor-pointer text-black" />
         </Button>
       </div>
-      <div className='border'></div>
+      <div className="border"></div>
       {/* Balance Display */}
       <div className="flex items-end justify-between">
         <div className="flex items-baseline gap-1">

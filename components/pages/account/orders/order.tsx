@@ -247,7 +247,7 @@ const Orders = () => {
             {orderItems.map((item) => (
               <div key={item.id} className="flex items-center gap-4 px-4 py-4 hover:bg-gray-50">
                 {/* Checkbox */}
-                <button onClick={() => toggleItemSelection(item.id)} className="flex-shrink-0">
+                <button onClick={() => toggleItemSelection(item.id)} className="shrink-0">
                   <div
                     className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
                       item.isSelected ? 'border-primary bg-primary' : 'border-gray-300 bg-white'
@@ -258,7 +258,7 @@ const Orders = () => {
                 </button>
 
                 {/* Product Image */}
-                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-200">
                   <img src={item.image} alt={item.productName} className="h-full w-full object-contain p-1" />
                 </div>
 
@@ -271,12 +271,12 @@ const Orders = () => {
                 </div>
 
                 {/* Product ID */}
-                <div className="flex-shrink-0 text-right">
+                <div className="shrink-0 text-right">
                   <p className="text-sm text-gray-600">#{item.productId}</p>
                 </div>
 
                 {/* Price */}
-                <div className="flex-shrink-0 text-right">
+                <div className="shrink-0 text-right">
                   <p className="text-sm font-semibold text-gray-900">₹{item.price}</p>
                   {item.originalPrice && <p className="text-xs text-gray-400 line-through">₹{item.originalPrice}</p>}
                 </div>
@@ -362,14 +362,14 @@ const Orders = () => {
                 {order.items.slice(0, 10).map((item, itemIndex) => (
                   <div
                     key={`${item.id}-${itemIndex}`}
-                    className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white"
+                    className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white"
                   >
                     <img src={item.image} alt={item.productName} className="h-full w-full object-contain p-1" />
                   </div>
                 ))}
 
                 {order.itemCount > 10 && (
-                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
                     <span className="text-sm font-medium text-gray-600">+{order.itemCount - 10}</span>
                   </div>
                 )}

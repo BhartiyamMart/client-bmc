@@ -399,7 +399,7 @@ const AuthModal = () => {
               </div>
 
               <form onSubmit={handlePhoneSubmit} className="space-y-4">
-                <div className="flex overflow-hidden rounded border border-gray-300 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary">
+                <div className="focus-within:border-primary focus-within:ring-primary flex overflow-hidden rounded border border-gray-300 transition-colors focus-within:ring-2">
                   <span className="border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
                     +91
                   </span>
@@ -478,7 +478,7 @@ const AuthModal = () => {
                           otpInputsRef.current[index] = el;
                         }}
                         className={`xs:h-11 xs:w-11 xs:rounded xs:text-lg h-10 w-10 shrink-0 rounded border text-center text-base font-semibold transition-all outline-none sm:h-12 sm:w-12 ${
-                          otp[index] ? 'border-primary bg-orange-50' : 'border-gray-300 focus:border-primary'
+                          otp[index] ? 'border-primary bg-orange-50' : 'focus:border-primary border-gray-300'
                         } ${isLoading || index > nextAllowed ? 'cursor-not-allowed bg-gray-50' : ''}`}
                         disabled={isLoading}
                       />
@@ -532,7 +532,7 @@ const AuthModal = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
+                    className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     required
                     maxLength={50}
@@ -547,7 +547,7 @@ const AuthModal = () => {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                     placeholder="Enter referral code"
-                    className="w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
+                    className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     maxLength={20}
                   />

@@ -31,12 +31,12 @@ export const transformBannerGroup = (group: IBannerGroup): IBanner[] => {
  */
 export const normalizeBannerTag = (tag: string): keyof import('@/interfaces/content.interface').BannersByTag | null => {
   const upperTag = tag.toUpperCase();
-  
+
   // Match any tag containing "TOP" to 'top'
   if (upperTag.includes('TOP')) {
     return 'top';
   }
-  
+
   // Match category-related tags
   if (upperTag.includes('CATEGORY') || upperTag.includes('BOTTOM')) {
     return 'categoryBanner';

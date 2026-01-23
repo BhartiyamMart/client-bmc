@@ -18,37 +18,37 @@ export class BannerService {
    * Fetch all banners from API and organize by tag
    */
 
-  async fetchAllBanners(): Promise<BannersByTag> {
-    const banners: BannersByTag = {
-      top: [],
-      categoryBanner: [],
-    };
+  // async fetchAllBanners(): Promise<BannersByTag> {
+  //   const banners: BannersByTag = {
+  //     top: [],
+  //     categoryBanner: [],
+  //   };
 
-    try {
-      const response = await getBanners();
-      console.log('response', response);
+  //   try {
+  //     const response = await getBanners();
+  //     console.log('response', response);
 
-      if (!response.error && response.payload) {
-        // Group banners by tag manually
-        response.payload.forEach((banner: IBanner) => {
-          const normalizedTag = normalizeBannerTag(banner.tag);
+  //     if (!response.error && response.payload) {
+  //       // Group banners by tag manually
+  //       response.payload.forEach((banner: IBanner) => {
+  //         const normalizedTag = normalizeBannerTag(banner.tag);
 
-          if (normalizedTag) {
-            banners[normalizedTag].push(banner);
-          }
-        });
+  //         if (normalizedTag) {
+  //           banners[normalizedTag].push(banner);
+  //         }
+  //       });
 
-        // Sort each group by priority
-        banners.top.sort((a, b) => a.priority - b.priority);
-        banners.categoryBanner.sort((a, b) => a.priority - b.priority);
-      }
+  //       // Sort each group by priority
+  //       banners.top.sort((a, b) => a.priority - b.priority);
+  //       banners.categoryBanner.sort((a, b) => a.priority - b.priority);
+  //     }
 
-      return banners;
-    } catch (error) {
-      console.error('BannerService: Error fetching banners', error);
-      return banners;
-    }
-  }
+  //     return banners;
+  //   } catch (error) {
+  //     console.error('BannerService: Error fetching banners', error);
+  //     return banners;
+  //   }
+  // }
 
   /**
    * Fetch banners by specific tag

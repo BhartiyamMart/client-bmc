@@ -27,9 +27,9 @@ export const BannerProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       setError(null);
 
-      const fetchedBanners = await bannerService.fetchAllBanners();
-      console.log("fetchedBanners ", fetchBanners)
-      setBanners(fetchedBanners);
+      // const fetchedBanners = await bannerService.fetchAllBanners();
+      console.log('fetchedBanners ', fetchBanners);
+      // setBanners(fetchedBanners);
       setIsInitialized(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load banners';

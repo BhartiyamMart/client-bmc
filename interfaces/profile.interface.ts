@@ -1,7 +1,7 @@
 export interface IUser {
   phone: string;
   email: string | null;
-  autoMail : string | null;
+  autoMail: string | null;
 }
 
 export interface IProfile {
@@ -30,12 +30,26 @@ export interface IWalletData {
   hasWallet: boolean;
 }
 
+export interface IAddressData {
+  addressId: string;
+  label: string;
+  mapAddress: string;
+  addressLineOne: string;
+  addressLineTwo: string | null;
+  isDefault: boolean;
+  status: boolean;
+}
+
 export interface IAccountDetailsREQ {}
 
 export interface IAccountDetailsRES {
   user: IUser;
   profile: ICustomerProfile;
   wallet: IWalletData;
+  addresses: {
+    hasAddresses : boolean,
+    allAddresses : IAddressData[]
+  };
 }
 
 export interface ICreateProfileREQ {

@@ -49,23 +49,19 @@ const Profile = () => {
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
 
-  // Fetch profile data and gender options on mount
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsPageLoading(true);
-        // Load both in parallel for faster loading
         const [genderResponse, profileResponse] = await Promise.all([
           getGender().catch(() => ({ status: 200, payload: ['MALE', 'FEMALE', 'OTHER'] })),
           getProfile(),
         ]);
 
-        // Set gender options
         if (genderResponse.status === 200 && Array.isArray(genderResponse.payload)) {
           setGenderOptions(genderResponse.payload);
         }
 
-        // Set profile data
         const data = profileResponse.payload;
         const profileData: FormData = {
           name: data?.profile?.name || '',
@@ -196,22 +192,19 @@ const Profile = () => {
 
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
 
-  // Helper function to format gender label
   const formatGenderLabel = (gender: string) => {
     if (!gender) return '';
     return gender.charAt(0) + gender.slice(1).toLowerCase();
   };
 
-  // Year range for calendar
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 100;
 
-  // Show loading state
   if (isPageLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-orange-500 border-t-transparent"></div>
+          <div className="border-primary mx-auto h-12 w-12 animate-spin rounded-full border-4 border-t-transparent"></div>
           <p className="mt-4 text-lg font-medium text-gray-700">Loading profile...</p>
         </div>
       </div>
@@ -221,9 +214,9 @@ const Profile = () => {
   return (
     <div className="">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-12">
+        <div className="-mx-2 flex flex-wrap">
           {/* Name */}
-          <div className="col-span-12 mb-6 px-2 md:col-span-6">
+          <div className="mb-6 w-full px-2 md:w-1/2">
             <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Full Name *</label>
             <div className="relative">
               <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -231,17 +224,17 @@ const Profile = () => {
                 type="text"
                 value={formData.name}
                 onChange={(e) => updateField('name', e.target.value)}
-                className={`w-full rounded-md border px-4 py-2 pl-10 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
-                  errors.name ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
+                className={`focus:ring-primary/20 h-12 w-full rounded border px-4 pl-10 text-base font-medium transition-all duration-200 focus:ring-4 ${
+                  errors.name ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
                 } hover:bg-orange-50`}
                 placeholder="Enter your full name"
               />
             </div>
-            {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+            {errors.name && <p className="text-xs text-rose-400">{errors.name}</p>}
           </div>
 
           {/* Email */}
-          <div className="col-span-12 mb-6 px-2 md:col-span-6">
+          <div className="mb-6 w-full px-2 md:w-1/2">
             <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Email *</label>
             <div className="relative">
               <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -249,17 +242,17 @@ const Profile = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => updateField('email', e.target.value)}
-                className={`w-full rounded-md border py-2 pr-4 pl-10 text-lg font-medium transition-all duration-200 focus:ring-4 focus:ring-orange-500/20 ${
-                  errors.email ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
+                className={`focus:ring-primary/20 h-12 w-full rounded border px-4 pl-10 text-base font-medium transition-all duration-200 focus:ring-4 ${
+                  errors.email ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
                 } hover:bg-orange-50`}
                 placeholder="Enter your email"
               />
             </div>
-            {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+            {errors.email && <p className="text-xs text-rose-400">{errors.email}</p>}
           </div>
 
           {/* DOB */}
-          <div className="col-span-12 mb-6 px-2 md:col-span-6">
+          <div className="mb-6 w-full px-2 md:w-1/2">
             <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Date of Birth *</label>
             <Popover open={showDatePicker} onOpenChange={setShowDatePicker}>
               <PopoverTrigger asChild>
@@ -268,7 +261,7 @@ const Profile = () => {
                   <button
                     type="button"
                     className={cn(
-                      'h-auto w-full justify-start rounded-md border px-4 py-2 pl-10 text-left text-lg font-normal transition-all duration-200 hover:bg-orange-50 focus:border-orange-500',
+                      'focus:border-primary focus:ring-primary/20 h-12 w-full justify-start rounded border px-4 pl-10 text-left text-base font-medium transition-all duration-200 hover:bg-orange-50 focus:ring-4',
                       !formData.dob && 'text-gray-500',
                       'border-gray-200'
                     )}
@@ -293,40 +286,43 @@ const Profile = () => {
                 />
               </PopoverContent>
             </Popover>
-            {errors.dob && <p className="text-xs text-red-500">{errors.dob}</p>}
+            {errors.dob && <p className="text-xs text-rose-400">{errors.dob}</p>}
           </div>
 
           {/* Gender */}
-          <div className="col-span-12 mb-6 px-2 md:col-span-6">
+          <div className="mb-6 w-full px-2 md:w-1/2">
             <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Gender *</label>
             <div className="relative">
               <User className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Select value={formData.gender} onValueChange={(value) => updateField('gender', value)}>
                 <SelectTrigger
-                  className={`w-full rounded-md border px-4 py-2.5 pl-10 text-lg font-medium transition-all duration-200 hover:bg-orange-50 focus:ring-4 focus:ring-orange-500/20 ${
-                    errors.gender ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-orange-500'
+                  className={`focus:ring-primary/20 !h-12 !shadow-none w-full rounded border px-4 pl-10 text-base font-medium transition-all duration-200 hover:bg-orange-50 focus:ring-4 ${
+                    errors.gender ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
                   }`}
                 >
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className='!shadow-none !rounded'>
                   {genderOptions.map((gender) => (
-                    <SelectItem key={gender} value={gender}>
+                    <SelectItem key={gender} value={gender} className='cursor-pointer rounded'>
                       {formatGenderLabel(gender)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {errors.gender && <p className="text-xs text-red-500">{errors.gender}</p>}
+            {errors.gender && <p className="text-xs text-rose-400">{errors.gender}</p>}
           </div>
 
           {/* Save Changes Button */}
-          <div className="col-span-12 mb-8 px-2">
+          <div className="mb-8 flex w-full justify-end px-2">
             <button
               type="submit"
               disabled={isLoading || !hasChanges}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-600 to-orange-700 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:from-orange-700 hover:to-orange-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+              className={`${isLoading || !hasChanges ? "cursor-not-allowed bg-gray-200 text-gray-400" : "bg-primary hover:bg-primary/90 text-white "} flex h-12 w-fit cursor-pointer items-center justify-center gap-2 rounded px-6 text-base font-semibold transition-all duration-200 disabled:cursor-not-allowed`}
+
+              // 'bg-primary hover:bg-primary/90 text-white'
+              //         : 'cursor-not-allowed bg-gray-200 text-gray-400'
             >
               {isLoading ? (
                 <>
@@ -342,25 +338,26 @@ const Profile = () => {
       </form>
 
       {/* Danger Zone */}
-      <div className="rounded border p-4 shadow-xs">
-        <div className="grid grid-cols-1">
+      <div className="">
+        <div className="border"></div>
+        <div className="flex flex-col mt-8">
           <button
             type="button"
             onClick={handleDeleteClick}
-            className="flex w-full cursor-pointer text-lg font-semibold text-red-500"
+            className="flex w-full cursor-pointer text-lg font-semibold text-rose-400"
           >
             Delete Account
           </button>
         </div>
-        <p className="text-md left mt-2 text-gray-500">
+        <p className="text-md left text-gray-500">
           These actions are irreversible. Please contact support if needed.
         </p>
       </div>
 
       {/* Delete Account Dialog */}
       {isDeleteDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-8 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded bg-white p-4">
             {/* Header */}
             <div className="mb-6 flex items-center gap-3">
               <div className="shrink-0"></div>
@@ -381,14 +378,14 @@ const Profile = () => {
                 </label>
                 {isLoadingReasons ? (
                   <div className="flex items-center justify-center py-4">
-                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+                    <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
                   </div>
                 ) : deleteReasons.length > 0 ? (
                   <div className="max-h-40 space-y-2 overflow-y-auto">
                     {deleteReasons.map((reason, index) => (
                       <label
                         key={`reason-${index}`}
-                        className="flex cursor-pointer items-start gap-3 rounded-lg border-2 p-3 transition-all duration-200 hover:bg-red-50"
+                        className="flex cursor-pointer items-start gap-3 rounded border-2 p-3 transition-all duration-200 hover:bg-red-50"
                         style={{
                           borderColor: selectedReason === reason ? '#ef4444' : '#e5e7eb',
                           backgroundColor: selectedReason === reason ? '#fef2f2' : 'transparent',
@@ -414,7 +411,7 @@ const Profile = () => {
                 ) : (
                   <p className="text-sm text-gray-500">No reasons available</p>
                 )}
-                {deleteErrors.reason && <p className="text-xs text-red-500">{deleteErrors.reason}</p>}
+                {deleteErrors.reason && <p className="text-xs text-rose-400">{deleteErrors.reason}</p>}
               </div>
 
               {/* Additional Details */}
@@ -432,7 +429,7 @@ const Profile = () => {
                     }
                   }}
                   placeholder="Tell us more about your reason for leaving..."
-                  className="w-full resize-none rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-medium transition-all duration-200 focus:border-red-500 focus:ring-4 focus:ring-red-500/20"
+                  className="w-full resize-none rounded border-2 border-gray-200 px-4 py-3 text-sm font-medium transition-all duration-200 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/20"
                   rows={4}
                 />
               </div>
@@ -449,7 +446,7 @@ const Profile = () => {
                   setDeleteErrors({});
                 }}
                 disabled={isDeletingAccount}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-3 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 disabled:opacity-50"
+                className="cursor-pointer flex h-12 flex-1 items-center justify-center rounded border border-gray-300 px-4 text-base font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -457,7 +454,7 @@ const Profile = () => {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={isDeletingAccount}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-3 font-semibold text-white transition-all duration-200 hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="cursor-pointer flex h-12 flex-1 items-center justify-center gap-2 rounded bg-primary px-4 text-base font-semibold text-white transition-all duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isDeletingAccount ? (
                   <>

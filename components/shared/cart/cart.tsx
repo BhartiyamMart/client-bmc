@@ -6,11 +6,24 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import { useCartItemCount, useCartStore, useCartTotal } from '@/stores/useCart.store';
-import { CalendarIcon, Package, ShieldCheck, Trash2, Bell, UserX } from '../svg/lucide-icon';
+import { CalendarIcon, Package, ShieldCheck, Trash2, Bell, UserX, AnimalPaw, LocateFixed } from '../svg/lucide-icon';
 import { Button } from '@/components/ui/button';
 import { Clock } from '../svg/svg-icon';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useRouter } from 'nextjs-toploader/app';
+import { Router } from 'next/router';
+import { useAddressStore } from '@/stores/useAddress.store';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import AddressList from '@/components/pages/account/address/address-list';
 
 interface TimeSlot {
   time: string;
@@ -24,6 +37,10 @@ interface DateSlot {
   dayName: string;
 }
 
+interface CartProps {
+  onClose?: () => void;
+}
+
 interface DeliveryInstruction {
   id: string;
   icon: React.ReactNode;
@@ -33,12 +50,13 @@ interface DeliveryInstruction {
   iconColor: string;
 }
 
-const Cart = () => {
+const Cart = ({ onClose }: CartProps) => {
   const items = useCartStore((state) => state.items);
   const addToCart = useCartStore((state) => state.addToCart);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const total = useCartTotal();
   const itemCount = useCartItemCount();
+  const defaultAddress = useAddressStore((state) => state.defaultAddress);
 
   const [deliveryType, setDeliveryType] = useState<'express' | 'schedule'>('express');
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -48,6 +66,7 @@ const Cart = () => {
   const unavailableItems = items.filter((item) => item.stock === 0);
   const availableItems = items.filter((item) => item.stock > 0);
   const totalSavings = 120;
+  const router = useRouter();
 
   // Generate next 7 days
   const generateDateSlots = (): DateSlot[] => {
@@ -69,6 +88,11 @@ const Cart = () => {
     return slots;
   };
 
+  const handleCheckout = async () => {
+    onClose?.();
+    router.push('/checkout');
+  };
+
   const dateSlots = generateDateSlots();
 
   const timeSlots: TimeSlot[] = [
@@ -85,7 +109,7 @@ const Cart = () => {
   const instructions: DeliveryInstruction[] = [
     {
       id: 'animals',
-      icon: <Package className="h-5 w-5" />,
+      icon: <AnimalPaw className="h-5 w-5" />,
       title: 'Animals',
       description: 'Delivery partner will be informed about the presence of pets',
       bgColor: 'bg-muted',
@@ -115,8 +139,29 @@ const Cart = () => {
 
   return (
     <>
-      <SheetHeader className="pb-4">
-        <SheetTitle className="text-2xl font-bold">My Cart</SheetTitle>
+      <SheetHeader className="mx-0 px-0">
+        <SheetTitle className="ml-1 text-2xl font-bold">My Cart</SheetTitle>
+        <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2">
+          <LocateFixed className="h-10 w-10" />
+          <div>
+            <p className="line-clamp-1">
+              {defaultAddress?.addressLineOne} {defaultAddress?.addressLineTwo} {defaultAddress?.mapAddress}
+            </p>
+          </div>
+          <Button className="bg-white text-blue-500 hover:cursor-pointer hover:bg-white">
+            <Dialog>
+              <DialogTrigger className=' cursor-pointer'>Change</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  Choose your address
+                </DialogHeader>
+                  <DialogDescription>
+                    <AddressList />
+                  </DialogDescription>
+              </DialogContent>
+            </Dialog>
+          </Button>
+        </div>
       </SheetHeader>
 
       <div className="flex-1 overflow-y-auto">
@@ -150,7 +195,7 @@ const Cart = () => {
                       onClick={() => removeFromCart(item.productId, item.variantId)}
                       variant="ghost"
                       size="icon"
-                      className="cursor-pointer text-red-500 hover:text-red-700"
+                      className="cursor-pointer text-rose-400 hover:text-red-700"
                     >
                       <Trash2 className="h-5 w-5" />
                     </Button>
@@ -161,7 +206,10 @@ const Cart = () => {
           )}
 
           {/* Available Items Accordion */}
-          <AccordionItem value="available-items" className="mt-5 rounded-lg border-b-0 bg-white">
+          <AccordionItem
+            value="available-items"
+            className={`${unavailableItems.length > 0 ? 'mt-5' : 'mt-0'} rounded-lg border-b-0 bg-white`}
+          >
             <AccordionTrigger className="rounded-none px-4 py-3 hover:no-underline">
               <div className="flex w-full items-center justify-between pr-2">
                 <div className="flex items-center gap-2">
@@ -200,7 +248,7 @@ const Cart = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 rounded-lg bg-orange-500 px-1">
+                    <div className="bg-primary flex items-center gap-2 rounded-lg px-1">
                       <button
                         onClick={() => removeFromCart(item.productId, item.variantId)}
                         className="px-3 py-1.5 text-xl font-bold text-white hover:bg-orange-600"
@@ -246,7 +294,7 @@ const Cart = () => {
                 <div
                   className={cn(
                     'flex cursor-pointer items-center justify-between rounded-lg border-2 p-4 transition-all',
-                    deliveryType === 'express' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'
+                    deliveryType === 'express' ? 'border-primary bg-orange-50' : 'border-gray-200 bg-white'
                   )}
                   onClick={() => setDeliveryType('express')}
                 >
@@ -266,7 +314,7 @@ const Cart = () => {
                 <div
                   className={cn(
                     'cursor-pointer rounded-lg border-2 transition-all',
-                    deliveryType === 'schedule' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'
+                    deliveryType === 'schedule' ? 'border-primary bg-orange-50' : 'border-gray-200 bg-white'
                   )}
                 >
                   <div className="flex items-center justify-between p-4" onClick={() => setDeliveryType('schedule')}>
@@ -294,7 +342,7 @@ const Cart = () => {
                             className={cn(
                               'flex min-w-[60px] flex-col items-center rounded-lg border-2 p-2 transition-all',
                               selectedDate === slot.date
-                                ? 'border-orange-500 bg-orange-500 text-white'
+                                ? 'border-primary bg-primary text-white'
                                 : 'border-gray-200 bg-white hover:border-orange-300'
                             )}
                           >
@@ -319,7 +367,7 @@ const Cart = () => {
                                   'rounded-lg border-2 p-3 text-sm font-semibold transition-all',
                                   slot.available
                                     ? selectedTime === slot.time
-                                      ? 'border-orange-500 bg-orange-500 text-white'
+                                      ? 'border-primary bg-primary text-white'
                                       : 'border-gray-200 bg-white hover:border-orange-300'
                                     : 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
                                 )}
@@ -392,7 +440,7 @@ const Cart = () => {
                   </button>
                 </div>
 
-                <Button className="h-10 bg-orange-500 px-6 font-semibold hover:bg-orange-600">ADD MEMBERSHIP</Button>
+                <Button className="bg-primary h-10 px-6 font-semibold hover:bg-orange-600">ADD MEMBERSHIP</Button>
               </div>
             </div>
           </div>
@@ -451,7 +499,7 @@ const Cart = () => {
               <span className="font-semibold text-gray-900">To Pay</span>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-400 line-through">₹{total}</span>
-                <span className="text-base font-bold text-gray-900">₹{total - 25 - 5}</span>
+                <span className="text-base font-bold text-gray-900">₹{total + 25 + 5}</span>
               </div>
             </div>
           </div>
@@ -492,25 +540,22 @@ const Cart = () => {
                       key={instruction.id}
                       onClick={() => toggleInstruction(instruction.id)}
                       className={cn(
-                        'flex flex-col items-center gap-3 rounded-lg border-2 p-3 text-left transition-all',
-                        isSelected
-                          ? 'border-orange-500 bg-primary shadow-sm'
-                          : 'border-gray-200 hover:border-orange-300',
-                        instruction.bgColor
+                        'flex flex-col items-center gap-3 rounded-lg border-2 p-3 text-left transition-all hover:cursor-pointer',
+                        isSelected ? 'bg-primary text-white shadow-sm' : ''
+                        // instruction.bgColor
                       )}
                     >
                       <div
                         className={cn(
-                          'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full',
-                          isSelected ? 'bg-orange-500 text-white' : `${instruction.bgColor} ${instruction.iconColor}`
+                          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+                          isSelected ? 'bg-primary text-white' : `${instruction.bgColor} ${instruction.iconColor}`
                         )}
                       >
                         {instruction.icon}
                       </div>
-
                       <div className="flex-1">
-                        <h4 className="text-sm font-semibold text-gray-900">{instruction.title}</h4>
-                        <p className="mt-1 text-xs text-gray-600">{instruction.description}</p>
+                        <h4 className="text-sm font-semibold">{instruction.title}</h4>
+                        <p className="mt-1 text-xs">{instruction.description}</p>
                       </div>
                     </button>
                   );
@@ -518,6 +563,22 @@ const Cart = () => {
               </div>
             </AccordionContent>
           </AccordionItem>
+
+          {/* Cancellation policy note */}
+          <div className="mt-5 space-y-2 rounded-lg bg-white px-4 py-2">
+            <div className="text-[14px]">
+              <h1 className="">
+                {' '}
+                <span className="text-[16px] text-red-500">Note :</span> Once an order is placed, any cancellation may
+                result in a fee. In case of high delays, an order may be cancelled with a complete refund.{' '}
+              </h1>
+            </div>
+            <div>
+              <Link href={''} className="text-[14px] text-blue-500">
+                Read cancellation policy
+              </Link>
+            </div>
+          </div>
         </Accordion>
       </div>
       {/* Checkout Section - Fixed at Bottom */}
@@ -535,10 +596,13 @@ const Cart = () => {
 
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold">Subtotal</span>
-            <span className="text-xl font-bold">₹{total - 25 - 5}</span>
+            <span className="text-xl font-bold">₹{total + 25 + 5}</span>
           </div>
 
-          <Button className="h-12 w-full bg-orange-500 text-base font-semibold hover:bg-orange-600">
+          <Button
+            onClick={handleCheckout}
+            className="bg-primary hover:bg-primary/90 h-12 w-full text-base font-semibold hover:cursor-pointer"
+          >
             Proceed to Checkout
           </Button>
         </div>

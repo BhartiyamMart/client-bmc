@@ -39,7 +39,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   // Check if we're on the base /account route
   const isAccountRoot = pathname === '/account';
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024; // Changed to lg breakpoint
 
   // Auto-redirect on desktop if on /account
   useEffect(() => {
@@ -51,7 +51,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   // Auto-close sidebar on desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1024) { // Changed to lg breakpoint
         setIsSidebarOpen(false);
       }
     };
@@ -59,6 +59,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
   // Fetch account details
   const handleChange = useCallback(async (item: IMenuItem) => {
     if (item.name === 'Logout') {
@@ -71,7 +72,6 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
       if (response.status === 200) {
         // Successfully fetched account details
-        // You can dispatch this to your store or state management if needed
       } else {
         toast.error(response.message || 'Failed to fetch account details');
       }
@@ -113,7 +113,6 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   const handleMenuItemClick = useCallback(
     (item: IMenuItem) => {
-      // Call handleChange to fetch account details
       handleChange(item);
 
       if (item.name === 'Logout') {
@@ -140,10 +139,14 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   return (
     <Section className="">
-      <Container className="relative flex overflow-hidden rounded border bg-white">
+      <Container className="relative flex flex-col overflow-hidden rounded border bg-white lg:flex-row">
         {/* Mobile Overlay */}
         {isSidebarOpen && (
-          <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={closeSidebar} aria-label="Close sidebar" />
+          <div 
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden" 
+            onClick={closeSidebar} 
+            aria-label="Close sidebar" 
+          />
         )}
 
         {/* Sidebar */}
@@ -153,10 +156,12 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
               ? 'relative w-full'
               : isSidebarOpen
                 ? 'translate-x-0 opacity-100'
-                : '-translate-x-full opacity-0'
+                : '-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100'
           } ${
-            showOnlySidebar ? 'flex h-auto' : 'fixed top-0 left-0 z-50 flex h-screen w-full'
-          } w-full max-w-80 flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out md:sticky md:top-20 md:z-auto md:h-auto md:max-h-[calc(100vh-80px)] md:translate-x-0 md:opacity-100 md:shadow-none`}
+            showOnlySidebar 
+              ? 'flex h-auto' 
+              : 'fixed top-0 left-0 z-50 flex h-screen w-full lg:relative lg:h-auto'
+          } flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out lg:sticky lg:top-20 lg:z-auto lg:w-80 lg:max-w-80 lg:max-h-[calc(100vh-80px)] lg:shadow-none`}
         >
           {/* Profile Section */}
           <SidebarProfile
@@ -174,7 +179,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
         {/* Main Content - Hidden on /account for mobile */}
         {!showOnlySidebar && (
-          <main className="flex min-h-[70vh] min-w-0 flex-1 flex-col overflow-y-auto md:h-auto md:max-h-[calc(100vh-80px)]">
+          <main className="flex min-h-[70vh] min-w-0 flex-1 flex-col overflow-y-auto lg:h-auto lg:max-h-[calc(100vh-80px)]">
             {/* Header */}
             <AccountHeader title={lastSegment || 'Account'} onBack={handleBack} />
 
@@ -184,7 +189,11 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
         )}
 
         {/* Logout Dialog */}
-        <LogoutDialog isOpen={isLogoutOpen} onClose={() => setIsLogoutOpen(false)} onConfirm={handleLogout} />
+        <LogoutDialog 
+          isOpen={isLogoutOpen} 
+          onClose={() => setIsLogoutOpen(false)} 
+          onConfirm={handleLogout} 
+        />
       </Container>
     </Section>
   );

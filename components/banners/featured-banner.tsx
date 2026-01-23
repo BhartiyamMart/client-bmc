@@ -11,13 +11,40 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
-import { useTopBanners } from '@/hooks/useBanners';
+import { useEffect, useState } from 'react';
+import { ApiResponse } from '@/interfaces/api.interface';
+import toast from 'react-hot-toast';
+import { getBanners } from '@/apis/content.api';
+import { IBanner } from '@/interfaces/content.interface';
 
 const FeaturedBanner = () => {
-  const { banners, loading, error } = useTopBanners();
+  const [banners, setBanners] = useState<IBanner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTopBanner = async (tag: string) => {
+      try {
+        setLoading(true);
+        console.log('tag is', tag);
+        const response = await getBanners(tag);
+        if (response.status === 200) {
+          setBanners(response.payload);
+        } else {
+          toast.error(response.message);
+        }
+      } catch (error: unknown) {
+        const apiError = error as ApiResponse<IBanner[]>;
+        toast.error(apiError.message || 'Failed to fetch banners');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopBanner('TOP_SLIDER');
+  }, []); // Added dependency array to run only once
 
   if (loading) return <FeaturedBannerSkeleton dots={4} />;
-  if (error || banners.length === 0) return null;
+  if (banners.length === 0) return null;
 
   return (
     <Section>
@@ -40,9 +67,9 @@ const FeaturedBanner = () => {
             }}
             className="overflow-hidden rounded-[12px] lg:rounded-2xl"
           >
-            {banners.map((banner) => (
-              <SwiperSlide key={banner.id}>
-                <Link href={banner.bannerUrl} className="block">
+            {banners.map((banner) => {
+              const BannerContent = () => (
+                <>
                   {/* Mobile/Tablet Image (< 1024px) - Aspect Ratio 2.58:1 */}
                   <div className="relative block w-full lg:hidden" style={{ aspectRatio: '2.58/1' }}>
                     <OptimizedImage
@@ -66,9 +93,23 @@ const FeaturedBanner = () => {
                       priority={banner.priority === 1}
                     />
                   </div>
-                </Link>
-              </SwiperSlide>
-            ))}
+                </>
+              );
+
+              return (
+                <SwiperSlide key={banner.id}>
+                  {banner.bannerUrl ? (
+                    <Link href={banner.bannerUrl} className="block">
+                      <BannerContent />
+                    </Link>
+                  ) : (
+                    <div className="block cursor-default">
+                      <BannerContent />
+                    </div>
+                  )}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
 
           {/* Pagination Dots Below Banner */}

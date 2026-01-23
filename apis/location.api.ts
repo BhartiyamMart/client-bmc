@@ -3,7 +3,7 @@ import { ApiResponse } from '@/interfaces/api.interface';
 import * as ISTORE from '@/interfaces/location.interface';
 
 export const storeList = async (data: ISTORE.IStoreListREQ) => {
-  return requestAPI<ApiResponse<ISTORE.IStoreListRES>>('post', 'v1', 'employee', 'get-all-store', data);
+  return requestAPI<ApiResponse<ISTORE.IStoreListRES>>('post', 'v1', 'location/customer', 'nearby-store-list', data);
 };
 
 export const getSuggestion = async (data: ISTORE.IGetSuggestionREQ) => {

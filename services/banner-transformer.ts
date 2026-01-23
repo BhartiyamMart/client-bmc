@@ -1,5 +1,5 @@
 import { getBanners } from '@/apis/content.api';
-import { BannersByTag, IBanner } from '@/interfaces/banner.interface';
+import { BannersByTag, IBanner } from '@/interfaces/content.interface';
 import { transformBannerGroup, normalizeBannerTag } from '@/utils/banner-transformer';
 
 export class BannerService {
@@ -17,6 +17,7 @@ export class BannerService {
   /**
    * Fetch all banners from API and organize by tag
    */
+
   async fetchAllBanners(): Promise<BannersByTag> {
     const banners: BannersByTag = {
       top: [],
@@ -25,18 +26,21 @@ export class BannerService {
 
     try {
       const response = await getBanners();
+      console.log('response', response);
 
       if (!response.error && response.payload) {
-        response.payload.banners.forEach((group) => {
-          const normalizedTag = normalizeBannerTag(group.tag);
+        // Group banners by tag manually
+        response.payload.forEach((banner: IBanner) => {
+          const normalizedTag = normalizeBannerTag(banner.tag);
 
           if (normalizedTag) {
-            const transformedBanners = transformBannerGroup(group);
-            banners[normalizedTag] = transformedBanners;
+            banners[normalizedTag].push(banner);
           }
         });
-      } else {
-        console.warn('BannerService: Failed to fetch banners', response.message);
+
+        // Sort each group by priority
+        banners.top.sort((a, b) => a.priority - b.priority);
+        banners.categoryBanner.sort((a, b) => a.priority - b.priority);
       }
 
       return banners;
@@ -49,24 +53,24 @@ export class BannerService {
   /**
    * Fetch banners by specific tag
    */
-  async fetchBannersByTag(tag: string): Promise<IBanner[]> {
-    try {
-      const response = await getBanners();
+  // async fetchBannersByTag(tag: string): Promise<IBanner[]> {
+  //   try {
+  //     const response = await getBanners();
 
-      if (!response.error && response.payload) {
-        const group = response.payload.banners.find((g) => g.tag.toUpperCase() === tag.toUpperCase());
+  //     if (!response.error && response.payload) {
+  //       const group = response.payload.payload.find((g) => g.tag.toUpperCase() === tag.toUpperCase());
 
-        if (group) {
-          return transformBannerGroup(group);
-        }
-      }
+  //       if (group) {
+  //         return transformBannerGroup(group);
+  //       }
+  //     }
 
-      return [];
-    } catch (error) {
-      console.error(`BannerService: Error fetching ${tag} banners`, error);
-      return [];
-    }
-  }
+  //     return [];
+  //   } catch (error) {
+  //     console.error(`BannerService: Error fetching ${tag} banners`, error);
+  //     return [];
+  //   }
+  // }
 }
 
 export const bannerService = BannerService.getInstance();

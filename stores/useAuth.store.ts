@@ -64,7 +64,7 @@ export type AuthStore = AuthState & AuthActions;
 const initialState: AuthState = {
   token: null,
   phone: null,
-  autoMail : null,
+  autoMail: null,
   userProfile: null,
   isAuthenticated: false,
   isAuthModalOpen: false,
@@ -159,7 +159,7 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         token: state.token,
         phone: state.phone,
-        autoMail : state.autoMail,
+        autoMail: state.autoMail,
         userProfile: state.userProfile,
         isAuthenticated: state.isAuthenticated,
         isAuthModalOpen: state.isAuthModalOpen,

@@ -13,12 +13,13 @@ export interface ISuggestion {
 }
 
 export interface IStoreListREQ {
-  lat: string;
-  lng: string;
+  latitude: string;
+  longitude: string;
+  radiusKm: number;
 }
 
 export interface IStoreListRES {
-  allStore: Array<{
+  stores: Array<{
     id: string;
     name: string;
     distance: number;
@@ -30,6 +31,7 @@ export interface IStoreListRES {
     lat: number;
     lng: number;
   };
+  total: number;
 }
 
 export interface IGetSuggestionREQ {

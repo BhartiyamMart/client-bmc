@@ -148,9 +148,10 @@ export const Copy: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-copy-icon lucide-copy"
+      {...props}
     >
       <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
       <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
@@ -170,6 +171,7 @@ export const Share: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       strokeLinecap="round"
       strokeLinejoin="round"
       className="lucide lucide-share2-icon lucide-share-2"
+      {...props}
     >
       <circle cx="18" cy="5" r="3" />
       <circle cx="6" cy="12" r="3" />
@@ -272,6 +274,24 @@ export const Package: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
     </svg>
   );
 };
+export const AnimalPaw: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      width="16"
+      height="14"
+      viewBox="0 0 16 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="lucide lucide-package lucide-package-icon"
+      {...props}
+    >
+      <path
+        d="M11.5128 8.55726C11.2724 7.68587 10.7528 6.91741 10.0336 6.36977C9.31443 5.82213 8.43545 5.52556 7.53152 5.52556C6.62758 5.52556 5.7486 5.82213 5.02944 6.36977C4.31028 6.91741 3.79065 7.68587 3.55027 8.55726L2.97744 10.6338C2.87459 11.0067 2.85924 11.3982 2.9326 11.778C3.00596 12.1577 3.16603 12.5154 3.40035 12.8231C3.63467 13.1308 3.93689 13.3802 4.28346 13.5519C4.63002 13.7236 5.01156 13.813 5.39833 13.813H9.6647C10.0515 13.813 10.433 13.7236 10.7796 13.5519C11.1261 13.3802 11.4284 13.1308 11.6627 12.8231C11.897 12.5154 12.0571 12.1577 12.1304 11.778C12.2038 11.3982 12.1884 11.0067 12.0856 10.6338L11.5128 8.55726ZM10.8635 12.2144C10.7235 12.3997 10.5423 12.5498 10.3342 12.653C10.1262 12.7561 9.89693 12.8093 9.6647 12.8084H5.39833C5.16626 12.8084 4.93734 12.7548 4.72939 12.6518C4.52145 12.5488 4.34011 12.3991 4.19952 12.2145C4.05893 12.0299 3.96288 11.8153 3.91887 11.5874C3.87485 11.3596 3.88406 11.1246 3.94578 10.9009L4.51861 8.8244C4.70052 8.16496 5.09377 7.58341 5.63801 7.16898C6.18226 6.75454 6.84744 6.53011 7.53152 6.53011C8.21559 6.53011 8.88077 6.75454 9.42502 7.16898C9.96926 7.58341 10.3625 8.16496 10.5444 8.8244L11.1173 10.9009C11.1798 11.1246 11.1895 11.3597 11.1455 11.5877C11.1014 11.8157 11.0049 12.0302 10.8635 12.2144ZM4.08158 6.22593C4.16897 5.67972 4.05307 5.09498 3.7551 4.57903C3.45713 4.06308 3.00861 3.67034 2.492 3.47291C1.93875 3.26162 1.37446 3.29527 0.902514 3.56762C-0.0356879 4.10932 -0.282583 5.44437 0.35225 6.54371C0.650125 7.05966 1.09868 7.4525 1.61529 7.64982C1.84413 7.73905 2.08739 7.78555 2.333 7.78704C2.63899 7.78815 2.9398 7.70811 3.20478 7.55508C3.67643 7.2827 3.98784 6.81066 4.08158 6.22593ZM3.0896 6.06715C3.04471 6.34745 2.90721 6.56691 2.70245 6.68513C2.49768 6.80335 2.23889 6.81264 1.97363 6.7114C1.67186 6.59616 1.40497 6.35821 1.22208 6.04144C0.870494 5.43244 0.954059 4.69788 1.40478 4.43758C1.51809 4.37331 1.64641 4.34018 1.77668 4.34158C1.89887 4.34288 2.01981 4.36647 2.13354 4.41118C2.4353 4.52648 2.7022 4.7644 2.88508 5.08117C3.06797 5.39794 3.14058 5.74818 3.0896 6.06715ZM4.19038 4.14488C4.54705 4.43002 4.95436 4.5785 5.36625 4.57847C5.48962 4.57842 5.61264 4.56515 5.73318 4.53888C6.7918 4.30875 7.43367 3.11235 7.16401 1.87191C7.03751 1.28972 6.72993 0.778948 6.29798 0.433608C5.83543 0.0638149 5.28752 -0.0761603 4.75518 0.039612C3.69659 0.269713 3.05472 1.46611 3.32435 2.70655C3.45089 3.28877 3.75846 3.79955 4.19038 4.14488ZM4.96851 1.02123C5.01733 1.01071 5.06713 1.00545 5.11706 1.00553C5.30378 1.00553 5.49583 1.07858 5.67071 1.2184C5.92301 1.42009 6.10473 1.72801 6.1824 2.08547C6.33182 2.77279 6.02839 3.44686 5.51981 3.55742C5.28874 3.60765 5.03937 3.53771 4.81768 3.36044C4.56538 3.15872 4.38366 2.8508 4.30599 2.49337C4.15654 1.80586 4.45997 1.13179 4.96851 1.02123ZM14.1605 3.56762C13.6888 3.29527 13.1242 3.26162 12.571 3.47291C12.0544 3.67027 11.6059 4.06308 11.308 4.57903C11.0101 5.09498 10.8942 5.67984 10.9815 6.22593C11.0751 6.81066 11.3865 7.2827 11.8583 7.55508C12.1233 7.70815 12.4241 7.78819 12.7301 7.78704C12.9757 7.78555 13.219 7.73905 13.4478 7.64982C13.9644 7.4525 14.413 7.05966 14.7108 6.54371C15.3456 5.44437 15.0987 4.10932 14.1605 3.56762ZM13.841 6.04144C13.6581 6.35821 13.3912 6.59616 13.0894 6.7114C12.8243 6.81273 12.5654 6.80341 12.3606 6.68513C12.1559 6.56684 12.0185 6.34745 11.9735 6.06715C11.9225 5.74818 11.995 5.39807 12.1779 5.08145C12.3609 4.76484 12.6277 4.52676 12.9295 4.41146C13.0432 4.36671 13.1642 4.34308 13.2864 4.34174C13.4166 4.34034 13.5449 4.37346 13.6583 4.43774C14.109 4.69782 14.1926 5.43229 13.841 6.04144ZM9.32985 4.53888C9.45039 4.56515 9.57341 4.57842 9.69678 4.57847C10.1086 4.57847 10.5161 4.43002 10.8727 4.14488C11.3046 3.79958 11.6121 3.28877 11.7387 2.70658C12.0083 1.46614 11.3664 0.269744 10.3079 0.0396434C9.77555 -0.0760662 9.22761 0.0638149 8.76505 0.43364C8.3331 0.778948 8.02553 1.28975 7.89902 1.87191C7.62936 3.11235 8.27123 4.30875 9.32985 4.53888ZM8.88063 2.08531C8.9583 1.72785 9.14002 1.41981 9.39232 1.21824C9.56723 1.07842 9.75925 1.00538 9.94597 1.00538C9.9959 1.00529 10.0457 1.01056 10.0945 1.02107C10.6031 1.13163 10.9065 1.80586 10.7571 2.49303C10.6794 2.85048 10.4976 3.15853 10.2454 3.36013C10.0238 3.53736 9.77454 3.6073 9.54328 3.55711C9.03464 3.4467 8.73121 2.77254 8.88063 2.08531Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
 
 export const Wallet: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
   return (
@@ -332,6 +352,47 @@ export const CreditCard: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
     </svg>
   );
 };
+export const BankNote: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-banknote-icon lucide-banknote"
+      {...props}
+    >
+      <rect width="20" height="12" x="2" y="6" rx="2" />
+      <circle cx="12" cy="12" r="2" />
+      <path d="M6 12h.01M18 12h.01" />
+    </svg>
+  );
+};
+export const Home: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-house-icon lucide-house"
+    >
+      <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+      <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    </svg>
+  );
+};
+
 export const SmartPhone: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
@@ -577,9 +638,9 @@ export const Money: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-indian-rupee-icon lucide-indian-rupee"
       {...props}
     >
@@ -730,6 +791,52 @@ export const Eclipse: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       <circle cx="12" cy="12" r="1" />
       <circle cx="19" cy="12" r="1" />
       <circle cx="5" cy="12" r="1" />
+    </svg>
+  );
+};
+
+export const ShoppingCart: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-shopping-cart-icon lucide-shopping-cart"
+    >
+      <circle cx="8" cy="21" r="1" />
+      <circle cx="19" cy="21" r="1" />
+      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+    </svg>
+  );
+};
+
+export const LocateFixed: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-locate-fixed-icon lucide-locate-fixed"
+      {...props}
+    >
+      <line x1="2" x2="5" y1="12" y2="12" />
+      <line x1="19" x2="22" y1="12" y2="12" />
+      <line x1="12" x2="12" y1="2" y2="5" />
+      <line x1="12" x2="12" y1="19" y2="22" />
+      <circle cx="12" cy="12" r="7" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 };

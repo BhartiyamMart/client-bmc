@@ -1,5 +1,5 @@
 import { useBannerContext } from '@/contexts/banner.context';
-import { IBanner } from '@/interfaces/banner.interface';
+import { IBanner } from '@/interfaces/content.interface';
 
 interface BannerHookReturn {
   banners: IBanner[];

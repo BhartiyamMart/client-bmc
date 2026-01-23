@@ -12,6 +12,7 @@ import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
 import LimitedOffer from './limited-offer';
 import CategoryBanner from '@/components/banners/category-banner';
 import SpecialDiscounts from './special-discounts';
+import MobileCart from '@/components/shared/cart/mobile-cart';
 
 const ShopPage = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -25,6 +26,7 @@ const ShopPage = () => {
       <LimitedOffer />
       <CategoryBanner />
       <SpecialDiscounts />
+      <MobileCart/>
       <FooterBar />
       <Footer />
     </main>

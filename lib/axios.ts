@@ -96,12 +96,47 @@ const handleApiError = (error: unknown): ApiErrorResponse => {
     payload: {},
   };
 };
-
-export const buildUrl = (version: string = 'v1', service: string, endpoint: string) => {
-  return `${version}/${service}/${endpoint}`;
+export const buildUrl = (
+  version: string = 'v1',
+  service: string,
+  endpoint: string,
+  params?: Record<string, string | number | boolean | string[] | number[] | null | undefined>
+) => {
+  let url = `${version}/${service}/${endpoint}`;
+  
+  if (params && Object.keys(params).length > 0) {
+    const queryString = new URLSearchParams();
+    
+    Object.entries(params).forEach(([key, value]) => {
+      // Skip undefined and null values
+      if (value === undefined || value === null) {
+        return;
+      }
+      
+      // Handle arrays
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          queryString.append(key, String(item));
+        });
+      } else {
+        queryString.append(key, String(value));
+      }
+    });
+    
+    const queryStringified = queryString.toString();
+    if (queryStringified) {
+      url += `?${queryStringified}`;
+    }
+  }
+  
+  return url;
 };
 
-export const requestAPI = async <TResponse, TData = unknown, TParams = Record<string, string | number | boolean>>(
+export const requestAPI = async <
+  TResponse, 
+  TData = unknown, 
+  TParams extends Record<string, string | number | boolean | string[] | number[] | null | undefined> = Record<string, string | number | boolean | string[] | number[] | null | undefined>
+>(
   method: 'get' | 'post' | 'put' | 'patch' | 'delete',
   version: string,
   service: string,
@@ -109,13 +144,17 @@ export const requestAPI = async <TResponse, TData = unknown, TParams = Record<st
   data?: TData,
   params?: TParams
 ): Promise<TResponse> => {
+  console.log("params", params)
   try {
-    const url = buildUrl(version, service, endpoint);
-    const response = await API.request({ method, url, data, params });
+    const url = buildUrl(version, service, endpoint, params);
+    console.log('Built URL:', url); // Debug log to verify URL construction
+    const response = await API.request({ method, url, data });
     return response.data;
   } catch (error: unknown) {
     throw handleApiError(error);
   }
 };
+
+
 
 export default API;

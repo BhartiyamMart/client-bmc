@@ -27,7 +27,7 @@ const Footer = () => {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors duration-200 hover:text-orange-500"
+                  className="transition-colors duration-200 hover:text-primary"
                   aria-label={label}
                   dangerouslySetInnerHTML={{ __html: svg }}
                 />
@@ -45,7 +45,7 @@ const Footer = () => {
               <ul className="space-y-2 text-xs sm:text-sm">
                 {companyLinks.map(({ href, label }) => (
                   <li key={href}>
-                    <Link href={href} className="transition-colors duration-200 hover:text-orange-500">
+                    <Link href={href} className="transition-colors duration-200 hover:text-primary">
                       {label}
                     </Link>
                   </li>
@@ -59,7 +59,7 @@ const Footer = () => {
               <ul className="space-y-2 text-xs sm:text-sm">
                 {legalLinks.map(({ href, label }) => (
                   <li key={href}>
-                    <Link href={href} className="transition-colors duration-200 hover:text-orange-500">
+                    <Link href={href} className="transition-colors duration-200 hover:text-primary">
                       {label}
                     </Link>
                   </li>

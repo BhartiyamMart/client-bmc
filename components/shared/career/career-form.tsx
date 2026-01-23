@@ -44,7 +44,7 @@ const CareerForm = () => {
         {/* Name Field */}
         <div>
           <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Name <span className="text-red-500">*</span>
+            Name <span className="text-rose-400">*</span>
           </label>
           <input
             id="name"
@@ -54,7 +54,7 @@ const CareerForm = () => {
             value={formData.name}
             onChange={handleChange}
             maxLength={50}
-            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 focus:outline-none"
+            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
             placeholder="Enter your name"
           />
         </div>
@@ -62,7 +62,7 @@ const CareerForm = () => {
         {/* Email Field */}
         <div>
           <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Email <span className="text-red-500">*</span>
+            Email <span className="text-rose-400">*</span>
           </label>
           <input
             id="email"
@@ -71,7 +71,7 @@ const CareerForm = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 focus:outline-none"
+            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
             placeholder="Enter your email"
           />
         </div>
@@ -79,7 +79,7 @@ const CareerForm = () => {
         {/* Mobile Field */}
         <div>
           <label htmlFor="mobile" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Mobile No. <span className="text-red-500">*</span>
+            Mobile No. <span className="text-rose-400">*</span>
           </label>
           <input
             id="mobile"
@@ -91,7 +91,7 @@ const CareerForm = () => {
             inputMode="numeric"
             maxLength={10}
             pattern="[0-9]{10}"
-            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 focus:outline-none"
+            className="w-full rounded border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
             placeholder="Enter 10-digit mobile number"
           />
         </div>
@@ -99,7 +99,7 @@ const CareerForm = () => {
         {/* Role Selection */}
         <div>
           <label htmlFor="role" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Position <span className="text-red-500">*</span>
+            Position <span className="text-rose-400">*</span>
           </label>
           <select
             id="role"

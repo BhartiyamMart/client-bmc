@@ -82,7 +82,7 @@ const WalletDetails = () => {
         const script = document.createElement('script');
         script.src = env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
-        
+
         script.onload = () => {
           console.log('Razorpay script loaded successfully');
           setRazorpayLoaded(true);
@@ -104,7 +104,9 @@ const WalletDetails = () => {
 
     // Cleanup function
     return () => {
-      const script = document.querySelector(`script[src="${env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js'}"]`);
+      const script = document.querySelector(
+        `script[src="${env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js'}"]`
+      );
       if (script) {
         document.body.removeChild(script);
       }
@@ -137,11 +139,11 @@ const WalletDetails = () => {
 
       if (response.status === 200) {
         setTransactions(response.payload.transactions);
-        
+
         // Use pagination object from API response
         const { totalPages } = response.payload.pagination;
         setTotalPages(totalPages);
-        
+
         console.log('Current page:', page, 'Total pages:', totalPages);
       }
     } catch (error) {
@@ -167,7 +169,6 @@ const WalletDetails = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
     }
   };
-
 
   const handleRecharge = async () => {
     if (!amount || amount <= 0) {
@@ -214,14 +215,14 @@ const WalletDetails = () => {
                 razorpayPaymentId: razorpayResponse.razorpay_payment_id,
                 razorpaySignature: razorpayResponse.razorpay_signature,
               });
-              
+
               if (verifyResponse.status === 200) {
                 toast.success('Payment successful! Money added to wallet.');
                 setAmount(0);
                 setSelectedQuickAmount(null);
                 fetchTransactions(1);
                 setCurrentPage(1);
-                router.push('wallet')
+                router.push('wallet');
               } else {
                 toast.error('Payment verification failed. Please contact support.');
               }
@@ -281,7 +282,7 @@ const WalletDetails = () => {
   // Helper function to get transaction icon and color
   const getTransactionStyle = (type: string) => {
     const lowerType = type.toLowerCase();
-    
+
     if (lowerType.includes('credit') || lowerType.includes('recharge') || lowerType.includes('refund')) {
       return {
         icon: <ArrowUpRight className="h-5 w-5" />,
@@ -289,7 +290,7 @@ const WalletDetails = () => {
         sign: '+',
       };
     }
-    
+
     return {
       icon: <ArrowDownRight className="h-5 w-5" />,
       colorClass: 'text-red-600 bg-red-50',
@@ -313,7 +314,7 @@ const WalletDetails = () => {
   // Helper function to get status badge color
   const getStatusColor = (status: string) => {
     const lowerStatus = status.toLowerCase();
-    
+
     if (lowerStatus === 'success' || lowerStatus === 'completed') {
       return 'bg-green-100 text-green-700';
     }
@@ -323,12 +324,12 @@ const WalletDetails = () => {
     if (lowerStatus === 'failed' || lowerStatus === 'rejected') {
       return 'bg-red-100 text-red-700';
     }
-    
+
     return 'bg-gray-100 text-gray-700';
   };
 
   // Generate page numbers for pagination
-    const generatePageNumbers = () => {
+  const generatePageNumbers = () => {
     const pages: (number | string)[] = [];
     const maxVisible = 5;
 
@@ -402,7 +403,7 @@ const WalletDetails = () => {
                     disabled={loading}
                     className={`shrink-0 cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm ${
                       selectedQuickAmount === quickAmount
-                        ? 'border-orange-500 bg-orange-50 text-orange-500'
+                        ? 'border-primary bg-orange-50 text-primary'
                         : 'border-gray-300 bg-white text-gray-400'
                     }`}
                   >
@@ -415,7 +416,7 @@ const WalletDetails = () => {
           </div>
 
           <Button
-            className="h-10 w-full enabled:cursor-pointer disabled:cursor-not-allowed bg-orange-500 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50 sm:h-12 sm:text-base"
+            className="h-10 w-full bg-primary text-sm font-semibold text-white hover:bg-orange-600 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
             disabled={!amount || loading || !razorpayLoaded}
             onClick={handleRecharge}
           >
@@ -442,7 +443,7 @@ const WalletDetails = () => {
 
           {transactionsLoading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-500 border-t-transparent"></div>
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
             </div>
           ) : transactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
@@ -455,29 +456,25 @@ const WalletDetails = () => {
               <div className="space-y-3">
                 {transactions.map((transaction) => {
                   const style = getTransactionStyle(transaction.type);
-                  
+
                   return (
                     <div
                       key={transaction.id}
                       className="flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 sm:p-4"
                     >
                       <div className="flex items-center gap-3 sm:gap-4">
-                        <div className={`rounded-full p-2 ${style.colorClass}`}>
-                          {style.icon}
-                        </div>
+                        <div className={`rounded-full p-2 ${style.colorClass}`}>{style.icon}</div>
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-gray-900 sm:text-base">
                             {transaction.type || 'Transaction'}
                           </p>
-                          <p className="text-xs text-gray-500 sm:text-sm">
-                            {formatDate(transaction.createdAt)}
-                          </p>
+                          <p className="text-xs text-gray-500 sm:text-sm">{formatDate(transaction.createdAt)}</p>
                           {transaction.description && (
                             <p className="mt-1 text-xs text-gray-400">{transaction.description}</p>
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="flex flex-col items-end gap-2">
                         <p className={`text-sm font-semibold sm:text-base ${style.colorClass.split(' ')[0]}`}>
                           {style.sign}₹{transaction.amount.toLocaleString('en-IN')}
@@ -503,11 +500,7 @@ const WalletDetails = () => {
                       <PaginationItem>
                         <PaginationPrevious
                           onClick={() => handlePageChange(currentPage - 1)}
-                          className={
-                            currentPage === 1
-                              ? 'pointer-events-none opacity-50'
-                              : 'cursor-pointer'
-                          }
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                         />
                       </PaginationItem>
 
@@ -530,11 +523,7 @@ const WalletDetails = () => {
                       <PaginationItem>
                         <PaginationNext
                           onClick={() => handlePageChange(currentPage + 1)}
-                          className={
-                            currentPage === totalPages
-                              ? 'pointer-events-none opacity-50'
-                              : 'cursor-pointer'
-                          }
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                         />
                       </PaginationItem>
                     </PaginationContent>

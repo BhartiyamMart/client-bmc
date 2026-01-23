@@ -1,12 +1,12 @@
-import Orders from '@/components/pages/account/orders/order'
-import React from 'react'
+import Orders from '@/components/pages/account/orders/order';
+import React from 'react';
 
 const page = () => {
   return (
     <>
-      <Orders/>
+      <Orders />
     </>
-  )
-}
+  );
+};
 
-export default page
+export default page;

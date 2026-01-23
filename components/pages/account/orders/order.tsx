@@ -135,7 +135,7 @@ const Orders = () => {
         return {
           bgColor: 'bg-red-50',
           textColor: 'text-red-700',
-          iconBg: 'bg-red-500',
+          iconBg: 'bg-rose-400',
           label: 'Order cancelled',
         };
       case 'pending':
@@ -157,7 +157,7 @@ const Orders = () => {
 
   const handleOrderClick = (order: Order) => {
     setSelectedOrder(order);
-    setOrderItems(order.items.map(item => ({ ...item, isSelected: false })));
+    setOrderItems(order.items.map((item) => ({ ...item, isSelected: false })));
     setSelectAll(false);
     setShowDetails(true);
   };
@@ -172,14 +172,14 @@ const Orders = () => {
   const toggleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
-    setOrderItems(orderItems.map(item => ({ ...item, isSelected: newSelectAll })));
+    setOrderItems(orderItems.map((item) => ({ ...item, isSelected: newSelectAll })));
   };
 
   const toggleItemSelection = (itemId: string) => {
-    setOrderItems(orderItems.map(item => (item.id === itemId ? { ...item, isSelected: !item.isSelected } : item)));
+    setOrderItems(orderItems.map((item) => (item.id === itemId ? { ...item, isSelected: !item.isSelected } : item)));
   };
 
-  const selectedItems = orderItems.filter(item => item.isSelected);
+  const selectedItems = orderItems.filter((item) => item.isSelected);
   const hasSelectedItems = selectedItems.length > 0;
 
   // Show order details view
@@ -187,7 +187,7 @@ const Orders = () => {
     const statusStyles = getStatusStyles(selectedOrder.status);
 
     return (
-      <div className=" bg-gray-50 pb-20">
+      <div className="bg-gray-50 pb-20">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white px-4 py-4 shadow-sm">
           <div className="flex items-center gap-3">
@@ -228,11 +228,11 @@ const Orders = () => {
         {/* Products Section */}
         <div className="mx-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
           {/* Select All Header */}
-          <div className="flex items-center justify-between border-b border-gray-200 bg-orange-50 px-4 py-3">
+          <div className="borde flex items-center justify-between border-gray-200 bg-orange-50 px-4 py-3">
             <button onClick={toggleSelectAll} className="flex items-center gap-2">
               <div
                 className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
-                  selectAll ? 'border-orange-500 bg-orange-500' : 'border-gray-300 bg-white'
+                  selectAll ? 'border-primary bg-primary' : 'border-gray-300 bg-white'
                 }`}
               >
                 {selectAll && <Check className="h-3 w-3 text-white" />}
@@ -244,13 +244,13 @@ const Orders = () => {
 
           {/* Product Items */}
           <div className="divide-y divide-gray-200">
-            {orderItems.map(item => (
+            {orderItems.map((item) => (
               <div key={item.id} className="flex items-center gap-4 px-4 py-4 hover:bg-gray-50">
                 {/* Checkbox */}
                 <button onClick={() => toggleItemSelection(item.id)} className="flex-shrink-0">
                   <div
                     className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
-                      item.isSelected ? 'border-orange-500 bg-orange-500' : 'border-gray-300 bg-white'
+                      item.isSelected ? 'border-primary bg-primary' : 'border-gray-300 bg-white'
                     }`}
                   >
                     {item.isSelected && <Check className="h-3 w-3 text-white" />}
@@ -286,10 +286,10 @@ const Orders = () => {
         </div>
 
         {/* Action Buttons - Fixed at bottom */}
-        <div className=" bottom-0 left-0 right-0 border-gray-200 px-4 py-4">
+        <div className="right-0 bottom-0 left-0 border-gray-200 px-4 py-4">
           <div className="flex gap-3">
             <button
-              className={`flex-1 rounded-lg border-2 border-orange-500 bg-white py-3 text-sm font-semibold text-orange-500 transition-colors hover:bg-orange-50 ${
+              className={`border-primary text-primary flex-1 rounded-lg border-2 bg-white py-3 text-sm font-semibold transition-colors hover:bg-orange-50 ${
                 !hasSelectedItems ? 'cursor-not-allowed opacity-50' : ''
               }`}
               disabled={!hasSelectedItems}
@@ -297,7 +297,7 @@ const Orders = () => {
               Replace
             </button>
             <button
-              className={`flex-1 rounded-lg bg-orange-500 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600 ${
+              className={`bg-primary flex-1 rounded-lg py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600 ${
                 !hasSelectedItems ? 'cursor-not-allowed opacity-50' : ''
               }`}
               disabled={!hasSelectedItems}
@@ -324,7 +324,7 @@ const Orders = () => {
               className="relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
             >
               {/* Order Header */}
-              <div onClick={() => handleOrderClick(order)} className="flex items-center justify-between p-4">
+              <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   {/* Status Icon */}
                   <div className={`rounded-full p-1.5 ${statusStyles.bgColor}`}>
@@ -351,7 +351,10 @@ const Orders = () => {
                 </div>
 
                 {/* Arrow Icon */}
-                <ChevronRight className="h-5 w-5 cursor-pointer text-gray-400" />
+
+                <div onClick={() => handleOrderClick(order)}>
+                  <ChevronRight className="h-5 w-5 cursor-pointer text-gray-400" />
+                </div>
               </div>
 
               {/* Product Images */}

@@ -146,7 +146,7 @@ const ProductCard: React.FC<IProduct> = ({
               )}
             </div>
             {/* {stock !== undefined && !hasVariants && (
-              <span className={`text-[11px] font-semibold ${stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
+              <span className={`text-[11px] font-semibold ${stock > 0 ? 'text-green-600' : 'text-rose-400'}`}>
                 {stock > 0 ? `${stock} in stock` : 'Out of stock'}
               </span>
             )} */}
@@ -224,7 +224,7 @@ const ProductCard: React.FC<IProduct> = ({
                 <div className="mt-2 flex w-full flex-col">
                   <button
                     onClick={handleAddToCart}
-                    className="text-primary flex-1 cursor-pointer rounded-sm border border-orange-500 bg-orange-50 py-2.5 text-sm font-medium transition-colors hover:bg-orange-100"
+                    className="text-primary flex-1 cursor-pointer rounded-sm border border-primary bg-orange-50 py-2.5 text-sm font-medium transition-colors hover:bg-orange-100"
                   >
                     Add
                   </button>

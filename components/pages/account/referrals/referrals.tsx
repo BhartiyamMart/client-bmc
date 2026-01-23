@@ -203,7 +203,7 @@ const ReferralPage = () => {
                       size="lg"
                       onClick={generateReferralCode}
                       disabled={uiState.isLoading}
-                      className="group from-primary hover:from-primary-dark border-primary/50 text-primary-foreground relative transform border-2 bg-linear-to-r via-orange-500 to-orange-600 px-6 py-6 text-xl font-bold shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:via-orange-600 hover:to-orange-700 hover:shadow-orange-500/50"
+                      className="group from-primary hover:from-primary-dark border-primary/50 text-primary-foreground relative transform border-2 bg-linear-to-r via-primary to-orange-600 px-6 py-6 text-xl font-bold shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:via-orange-600 hover:to-orange-700 hover:shadow-primary/50"
                     >
                       {uiState.isLoading ? (
                         <>
@@ -229,7 +229,7 @@ const ReferralPage = () => {
                       initial={{ scale: 0, rotateY: -180 }}
                       animate={{ scale: 1, rotateY: 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className="from-primary text-primary-foreground inline-flex items-center gap-4 rounded-3xl border-4 border-white/30 bg-linear-to-r to-orange-500 px-10 py-8 font-mono text-3xl font-black tracking-widest shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-orange-500/50 md:text-4xl"
+                      className="from-primary text-primary-foreground inline-flex items-center gap-4 rounded-3xl border-4 border-white/30 bg-linear-to-r to-primary px-10 py-8 font-mono text-3xl font-black tracking-widest shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-primary/50 md:text-4xl"
                     >
                       {referralData.code}
                     </motion.div>
@@ -271,7 +271,7 @@ const ReferralPage = () => {
             viewport={{ once: true }}
             className="group cursor-default"
           >
-            <Card className="from-primary-light to-primary-accent/50 hover:from-primary-accent border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br shadow-xl transition-all duration-500 hover:to-orange-200/70 hover:shadow-2xl hover:shadow-orange-500/20">
+            <Card className="from-primary-light to-primary-accent/50 hover:from-primary-accent border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br shadow-xl transition-all duration-500 hover:to-orange-200/70 hover:shadow-2xl hover:shadow-primary/20">
               <CardHeader className="pb-4">
                 <CardTitle className="text-primary-dark flex items-center gap-3 text-4xl font-black transition-all duration-300 group-hover:scale-105 md:text-5xl">
                   {referralData.totalReferrals}
@@ -286,9 +286,9 @@ const ReferralPage = () => {
           </motion.div>
 
           {/* <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <Card className="to-primary-light/70 hover:to-primary-accent/80 border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br from-orange-50 shadow-xl transition-all duration-500 hover:from-orange-100 hover:shadow-2xl hover:shadow-orange-500/20">
+            <Card className="to-primary-light/70 hover:to-primary-accent/80 border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br from-orange-50 shadow-xl transition-all duration-500 hover:from-orange-100 hover:shadow-2xl hover:shadow-primary/20">
               <CardHeader className="pb-4">
-                <CardTitle className="from-primary bg-linear-to-r via-orange-500 to-orange-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
+                <CardTitle className="from-primary bg-linear-to-r via-primary to-orange-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
                   +₹{referralData.stats.totalEarnings}
                 </CardTitle>
               </CardHeader>

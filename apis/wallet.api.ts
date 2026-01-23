@@ -40,5 +40,3 @@ export const getWalletTransaction = async (data: IWallet.IWalletTransactionREQ) 
     data
   );
 };
-
-

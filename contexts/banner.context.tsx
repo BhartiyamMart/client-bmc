@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { BannersByTag } from '@/interfaces/banner.interface';
+import { BannersByTag } from '@/interfaces/content.interface';
 import { bannerService } from '@/services/banner-transformer';
 
 interface BannerContextType extends BannersByTag {
@@ -28,13 +28,9 @@ export const BannerProvider = ({ children }: { children: ReactNode }) => {
       setError(null);
 
       const fetchedBanners = await bannerService.fetchAllBanners();
+      console.log("fetchedBanners ", fetchBanners)
       setBanners(fetchedBanners);
       setIsInitialized(true);
-
-      console.log('🎉 Banners loaded:', {
-        top: fetchedBanners.top.length,
-        categoryBanner: fetchedBanners.categoryBanner.length,
-      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load banners';
       console.error('BannerContext: Error fetching banners', errorMessage);

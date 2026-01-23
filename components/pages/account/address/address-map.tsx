@@ -353,33 +353,76 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
     }
   }, [updateAddressFromLatLng]);
 
-  const handleSave = () => {
-    const requiredFields = {
-      label: formData.label?.trim(),
-      addressLineOne: formData.addressLineOne?.trim(),
-      addressName: formData.addressName?.trim(),
-      latitude: formData.latitude?.trim(),
-      longitude: formData.longitude?.trim(),
-      mapAddress: formData.mapAddress?.trim(),
-      addressPhone: formData.addressPhone?.trim(),
-    };
 
-    const missingFields = Object.entries(requiredFields).filter(([key, value]) => !value);
 
-    if (missingFields.length > 0) {
-      toast.error(`Please fill: ${missingFields.map(([key]) => key.replace(/([A-Z])/g, ' $1').trim()).join(', ')}`);
-      return;
-    }
+// ✅ Add this helper function to format coordinates
+const formatCoordinate = (value: string | undefined, maxDecimals: number = 10): string => {
+  if (!value) return '';
+  
+  const num = parseFloat(value);
+  if (isNaN(num)) return '';
+  
+  // Convert to string with maximum decimal places
+  const formatted = num.toFixed(maxDecimals);
+  
+  // Remove trailing zeros after decimal point, but keep at least 1 decimal place
+  return formatted.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+};
 
-    if (formData.addressPhone.length !== 10) {
-      toast.error('Phone number must be 10 digits');
-      return;
-    }
+// ✅ Add this validation helper
+const validateCoordinates = (lat: string, lng: string): boolean => {
+  const latitudeRegex = /^-?([0-8]?[0-9]|90)(\.[0-9]{1,10})?$/;
+  const longitudeRegex = /^-?(([0-9]|[1-9][0-9]|1[0-7][0-9])(\.[0-9]{1,10})?|180(\.0{1,10})?)$/;
+  
+  return latitudeRegex.test(lat) && longitudeRegex.test(lng);
+};
 
-    const cleanedData = cleanFormData(formData);
-    console.log('Cleaned formData:', cleanedData);
-    onSave(cleanedData);
+// ✅ Update the handleSave function
+const handleSave = () => {
+  const requiredFields = {
+    label: formData.label?.trim(),
+    addressLineOne: formData.addressLineOne?.trim(),
+    addressName: formData.addressName?.trim(),
+    latitude: formData.latitude?.trim(),
+    longitude: formData.longitude?.trim(),
+    mapAddress: formData.mapAddress?.trim(),
+    addressPhone: formData.addressPhone?.trim(),
   };
+
+  const missingFields = Object.entries(requiredFields).filter(([key, value]) => !value);
+
+  if (missingFields.length > 0) {
+    toast.error(`Please fill: ${missingFields.map(([key]) => key.replace(/([A-Z])/g, ' $1').trim()).join(', ')}`);
+    return;
+  }
+
+  if (formData.addressPhone.length !== 10) {
+    toast.error('Phone number must be 10 digits');
+    return;
+  }
+
+  // ✅ Format coordinates to match regex (max 10 decimal places)
+  const formattedLatitude = formatCoordinate(formData.latitude, 10);
+  const formattedLongitude = formatCoordinate(formData.longitude, 10);
+
+  // ✅ Validate formatted coordinates
+  if (!validateCoordinates(formattedLatitude, formattedLongitude)) {
+    toast.error('Invalid coordinates format');
+    console.error('Invalid coordinates:', { formattedLatitude, formattedLongitude });
+    return;
+  }
+
+  // ✅ Create cleaned data with formatted coordinates
+  const cleanedData = cleanFormData({
+    ...formData,
+    latitude: formattedLatitude,
+    longitude: formattedLongitude,
+  });
+
+  console.log('Cleaned formData:', cleanedData);
+  onSave(cleanedData);
+};
+
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -443,7 +486,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                     <div className="relative flex w-full">
                       <input
                         ref={searchInputRef}
-                        className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-4 pl-10 text-sm shadow-lg transition-all focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 focus:outline-none sm:py-3 sm:pl-12"
+                        className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-4 pl-10 text-sm shadow-lg transition-all focus:border-primary focus:ring-2 focus:ring-primary/50 focus:outline-none sm:py-3 sm:pl-12"
                         placeholder="Search address, landmark, or area..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
@@ -462,7 +505,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                             className="w-full border-b border-gray-100 px-3 py-3 text-left transition-colors last:border-b-0 hover:bg-orange-50 focus:bg-orange-50 focus:outline-none sm:px-4"
                           >
                             <div className="flex items-start gap-2 sm:gap-3">
-                              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                               <div className="min-w-0 flex-1">
                                 <p className="text-xs font-medium text-gray-900 sm:text-sm">
                                   {place.formatted_address}
@@ -485,7 +528,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                     <button
                       onClick={handleUseCurrentLocation}
                       disabled={isLocating}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-500 to-orange-600 px-3 py-2.5 text-white shadow-lg transition-all hover:from-orange-600 hover:to-orange-700 focus:ring-2 focus:ring-orange-500/50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-3"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-primary to-orange-600 px-3 py-2.5 text-white shadow-lg transition-all hover:from-orange-600 hover:to-orange-700 focus:ring-2 focus:ring-primary/50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-3"
                     >
                       {isLocating ? (
                         <>
@@ -556,7 +599,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
             <div className="flex flex-1 flex-col">
               {/* Label Selection */}
               <label className="mb-3 text-sm font-medium sm:mb-4">
-                Label <span className="text-orange-500">*</span>
+                Label <span className="text-primary">*</span>
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[
@@ -577,7 +620,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                     }}
                     className={`flex h-14 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border p-2 text-xs transition-all sm:h-16 sm:gap-2 ${
                       formData.label === option.value
-                        ? 'border-orange-500 bg-orange-50 shadow-sm'
+                        ? 'border-primary bg-orange-50 shadow-sm'
                         : 'border-gray-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-sm'
                     }`}
                   >
@@ -595,7 +638,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                     name="labelDescription"
                     value={formData.labelDescription}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                    className="w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                     placeholder="Enter description for this location"
                   />
                 </div>
@@ -603,13 +646,13 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
 
               {/* Address Line 1 */}
               <label className="mt-3 mb-2 text-sm font-medium sm:mt-4">
-                {addressLabels.line1} <span className="text-orange-500">*</span>
+                {addressLabels.line1} <span className="text-primary">*</span>
               </label>
               <input
                 name="addressLineOne"
                 value={formData.addressLineOne}
                 onChange={handleInputChange}
-                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder={addressLabels.line1}
                 required
               />
@@ -620,7 +663,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                 name="addressLineTwo"
                 value={formData.addressLineTwo}
                 onChange={handleInputChange}
-                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder={addressLabels.line2}
               />
 
@@ -630,7 +673,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                 name="landmark"
                 value={formData.landmark}
                 onChange={handleInputChange}
-                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder="Near XYZ, Opposite ABC (optional)"
               />
 
@@ -639,33 +682,33 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
               <input
                 name="mapAddress"
                 value={formData.mapAddress}
-                className="rounded-lg border bg-gray-50 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="rounded-lg border bg-gray-50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder="Auto-filled from map"
                 disabled
               />
 
               {/* Address Name */}
               <label className="mt-3 mb-2 text-sm font-medium sm:mt-4">
-                Address Name <span className="text-orange-500">*</span>
+                Address Name <span className="text-primary">*</span>
               </label>
               <input
                 name="addressName"
                 value={formData.addressName}
                 onChange={handleInputChange}
-                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder="Enter receiver name"
                 required
               />
 
               {/* Phone Number */}
               <label className="mt-3 mb-2 text-sm font-medium sm:mt-4">
-                Phone Number <span className="text-orange-500">*</span>
+                Phone Number <span className="text-primary">*</span>
               </label>
               <input
                 name="addressPhone"
                 value={formData.addressPhone}
                 onChange={handlePhoneChange}
-                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder="Enter 10-digit phone number"
                 type="tel"
                 maxLength={10}
@@ -683,7 +726,7 @@ const AddressMap: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, addre
                 !formData.addressPhone ||
                 formData.addressPhone.length !== 10
               }
-              className="w-full rounded-lg bg-orange-500 px-6 py-3 font-medium text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-300"
+              className="w-full rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
               {isLoadingAddress ? 'Loading...' : addressId ? 'Update Address' : 'Save Address'}
             </button>

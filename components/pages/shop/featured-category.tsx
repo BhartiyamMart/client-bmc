@@ -10,32 +10,12 @@ import Section from '@/components/shared/ui/section';
 import Container from '@/components/shared/ui/container';
 import SectionTitle from '@/components/shared/ui/section-title';
 import Slider from '@/components/shared/ui/slider';
+import { useContentStore } from '@/stores/useContent.store';
 
 const FeaturedCategory = () => {
-  const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<ICategory[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-
-        setCategories(CategoryData);
-
-        if (CategoryData.length > 0) {
-          setCategories(CategoryData);
-        } else {
-          throw new Error('No categories received from API');
-        }
-      } catch (err) {
-        console.error('Error fetching categories, using fallback data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const setCategories = useContentStore((state)=>state.setCategories)
+  const categories = useContentStore((state)=> state.categories)
 
   // Show skeleton while loading
   if (loading) {
@@ -49,7 +29,7 @@ const FeaturedCategory = () => {
 
   const cards = categories.map((cat) => (
     <div key={cat.id} className="px-2">
-      <Link href={`/category/${cat.link}`}>
+      <Link href={`/category/${cat.name}`}>
         <div className="relative flex h-full flex-col items-center">
           <div className="relative flex h-full w-full flex-col rounded-xl border text-center transition-all duration-200">
             <div className="bg-primary-light flex h-12.5 items-center justify-center rounded-t-xl px-1">
@@ -60,7 +40,7 @@ const FeaturedCategory = () => {
 
             <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4 pb-2">
               <OptimizedImage
-                src={cat.img}
+                src={cat.imageUrl || ""}
                 alt={cat.name}
                 width={200}
                 height={200}

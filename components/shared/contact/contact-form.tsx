@@ -43,7 +43,7 @@ export function ContactForm({ email }: ContactFormProps) {
         {/* Name Field */}
         <div>
           <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Name <span className="text-red-500">*</span>
+            Name <span className="text-rose-400">*</span>
           </label>
           <input
             id="name"
@@ -60,7 +60,7 @@ export function ContactForm({ email }: ContactFormProps) {
         {/* Mobile Field */}
         <div>
           <label htmlFor="mobile" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Mobile <span className="text-red-500">*</span>
+            Mobile <span className="text-rose-400">*</span>
           </label>
           <input
             id="mobile"
@@ -88,7 +88,7 @@ export function ContactForm({ email }: ContactFormProps) {
         {/* Message Field */}
         <div>
           <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Message <span className="text-red-500">*</span>
+            Message <span className="text-rose-400">*</span>
           </label>
           <textarea
             id="message"

@@ -2,15 +2,18 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface WalletState {
-  amount: number;
+  balance: string;
+  hasWallet: boolean;
 }
 
 interface WalletActions {
-  setAmount: (amount: number) => void;
+  setBalance: (balance: string) => void;
+  setHasWallet: (wallet: boolean) => void;
 }
 
 const initialState: WalletState = {
-  amount: 0,
+  balance: '0.00',
+  hasWallet: false,
 };
 
 export type Wallet = WalletState & WalletActions;
@@ -19,7 +22,8 @@ export const useWalletStore = create<Wallet>()(
   persist(
     (set) => ({
       ...initialState,
-      setAmount: (amount) => set({ amount }),
+      setBalance: (balance) => set({ balance }),
+      setHasWallet: (wallet: boolean) => set({ hasWallet: wallet }),
     }),
     {
       name: 'wallet-storage',

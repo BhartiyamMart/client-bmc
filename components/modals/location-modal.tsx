@@ -90,9 +90,12 @@ const LocationModal = () => {
       setShowOutOfRange(false);
 
       try {
-        const response = await storeList({ lat, lng });
+        const latitude = Number(lat).toFixed(8);
+        const longitude = Number(lng).toFixed(8);
+        const radiusKm = 5;
+        const response = await storeList({ latitude, longitude, radiusKm });
 
-        if (response?.status === 200 && response?.payload?.allStore?.length > 0) {
+        if (response?.status === 200 && response?.payload?.stores?.length > 0) {
           setLocation({
             lattitude: lat,
             longitude: lng,
@@ -339,9 +342,9 @@ const LocationModal = () => {
       >
         {/* Loading Overlay */}
         {isCheckingStore && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-10 w-10 animate-spin rounded-full border-4 border-orange-500 border-t-transparent" />
+              <div className="border-primary h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
               <p className="text-sm font-medium text-gray-700">Checking availability...</p>
             </div>
           </div>
@@ -373,7 +376,7 @@ const LocationModal = () => {
                 value={search}
                 onChange={handleSearch}
                 disabled={isCheckingStore || !isScriptLoaded}
-                className="w-full rounded border border-gray-300 px-3 py-2.5 pr-10 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+                className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 pr-10 text-sm transition-colors outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100"
               />
 
               <div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-2">

@@ -11,12 +11,14 @@ export interface IUserProfile {
   dateOfBirth?: string | null;
   gender?: string | null;
   referralCode?: string | null;
+  autoMail?: string | null;
 }
 
 export interface AuthState {
   // Auth data
   token: string | null;
   phone: string | null;
+  autoMail: string | null;
   userProfile: IUserProfile | null;
   isAuthenticated: boolean;
 
@@ -34,6 +36,7 @@ export interface AuthActions {
   // Auth actions
   setToken: (token: string | null) => void;
   setPhone: (phone: string | null) => void;
+  setAutomail: (phone: string | null) => void;
   setUserProfile: (profile: IUserProfile | null) => void;
   updateUserProfile: (updates: Partial<IUserProfile>) => void;
 
@@ -61,6 +64,7 @@ export type AuthStore = AuthState & AuthActions;
 const initialState: AuthState = {
   token: null,
   phone: null,
+  autoMail: null,
   userProfile: null,
   isAuthenticated: false,
   isAuthModalOpen: false,
@@ -87,6 +91,10 @@ export const useAuthStore = create<AuthStore>()(
       setPhone: (phone) =>
         set({
           phone,
+        }),
+      setAutomail: (autoMail) =>
+        set({
+          autoMail,
         }),
 
       setUserProfile: (profile) =>
@@ -151,7 +159,7 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         token: state.token,
         phone: state.phone,
-
+        autoMail: state.autoMail,
         userProfile: state.userProfile,
         isAuthenticated: state.isAuthenticated,
         isAuthModalOpen: state.isAuthModalOpen,

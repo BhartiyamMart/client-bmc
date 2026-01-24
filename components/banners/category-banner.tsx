@@ -18,7 +18,7 @@ const CategoryBanner = () => {
       <Container className="">
         <div className="hidden w-full grid-cols-3 gap-4 lg:grid">
           {banners.slice(0, 3).map((banner, index) => (
-            <Link key={banner.id} href={banner.bannerUrl} className="group block">
+            <Link key={banner.id} href={banner.bannerUrl || ''} className="group block">
               <div className="relative aspect-3/2 w-full overflow-hidden rounded-sm transition-transform duration-300">
                 <Image
                   src={banner.imageUrlSmall}
@@ -36,7 +36,7 @@ const CategoryBanner = () => {
 
         <div className="scrollbar-hide flex w-full snap-x snap-mandatory gap-4 overflow-x-auto lg:hidden">
           {banners.slice(0, 3).map((banner, index) => (
-            <Link key={banner.id} href={banner.bannerUrl} className="w-[90%] shrink-0 snap-center sm:w-[48%]">
+            <Link key={banner.id} href={banner.bannerUrl || ''} className="w-[90%] shrink-0 snap-center sm:w-[48%]">
               <div className="relative aspect-3/2 w-full overflow-hidden rounded-sm">
                 <Image
                   src={banner.imageUrlSmall}

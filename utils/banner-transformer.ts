@@ -1,4 +1,4 @@
-import { IBanner, IBannerItem, IBannerGroup } from '@/interfaces/banner.interface';
+import { IBanner, IBannerItem, IBannerGroup } from '@/interfaces/content.interface';
 
 /**
  * Transform single banner item from API format to Frontend format
@@ -7,7 +7,7 @@ export const transformBannerItem = (item: IBannerItem, tag: string): IBanner => 
   return {
     id: item.id,
     title: item.title,
-    description: item.description,
+    // description: item.description,
     priority: item.priority,
     imageUrlSmall: item.images.small,
     imageUrlLarge: item.images.large,
@@ -29,18 +29,19 @@ export const transformBannerGroup = (group: IBannerGroup): IBanner[] => {
 /**
  * Normalize banner tag to camelCase
  */
-export const normalizeBannerTag = (tag: string): keyof import('@/interfaces/banner.interface').BannersByTag | null => {
-  const tagMap: Record<string, keyof import('@/interfaces/banner.interface').BannersByTag> = {
-    TOP: 'top',
-    BOTTOM_CATEGORIES: 'categoryBanner',
-  };
+export const normalizeBannerTag = (tag: string): keyof import('@/interfaces/content.interface').BannersByTag | null => {
+  const upperTag = tag.toUpperCase();
 
-  const normalizedTag = tagMap[tag.toUpperCase()];
-
-  if (!normalizedTag) {
-    console.warn(`Unknown banner tag: ${tag}`);
-    return null;
+  // Match any tag containing "TOP" to 'top'
+  if (upperTag.includes('TOP')) {
+    return 'top';
   }
 
-  return normalizedTag;
+  // Match category-related tags
+  if (upperTag.includes('CATEGORY') || upperTag.includes('BOTTOM')) {
+    return 'categoryBanner';
+  }
+
+  console.warn(`Unknown banner tag: ${tag}`);
+  return null;
 };

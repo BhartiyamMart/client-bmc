@@ -64,7 +64,7 @@ const VariantItem: React.FC<{
               <p className="-mt-1 text-xs text-gray-400 line-through sm:text-sm">₹{product.oldPrice}</p>
             )}
             {/* {product.stock !== undefined && (
-              <p className={`mt-1 text-xs font-semibold ${outOfStock ? 'text-red-500' : 'text-green-600'}`}>
+              <p className={`mt-1 text-xs font-semibold ${outOfStock ? 'text-rose-400' : 'text-green-600'}`}>
                 {outOfStock ? 'Out of stock' : `${product.stock} in stock`}
               </p>
             )} */}
@@ -141,6 +141,7 @@ export default function ProductVariantsModal({
       weight: variant.weight,
       price: variant.price,
       image: variant.image,
+      stock: variant.stock,
     });
     showPopCartTemporary();
   };

@@ -7,7 +7,7 @@ import ShopUtility from '@/components/shared/ui/utility-bar/shop-utility';
 
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from '@/components/shared/svg/svg-icon';
+import { ArrowRight } from '@/components/shared/svg/svg-icon';
 
 const Notfound = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -31,7 +31,7 @@ const Notfound = () => {
             href="/"
             className="bg-primary hover:bg-primary/90 inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition"
           >
-            <ArrowLeft className="h-5 w-5" /> Go Back Home
+            <ArrowRight className="h-5 w-5" /> Go Back Home
           </Link>
         </motion.div>
       </div>

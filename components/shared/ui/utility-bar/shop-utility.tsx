@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect, forwardRef } from 'react';
+import { AnimatePresence } from 'framer-motion'; // Add this import
 
 import Container from '@/components/shared/ui/container';
 import ShopByCategory from '@/components/shared/ui/utility-bar/shop-by-category';
@@ -17,7 +18,7 @@ const CATEGORIES = [
 ] as const;
 
 interface ShopUtilityProps {
-  navbarRef?: React.RefObject<HTMLElement | null>; // Accept null in the type
+  navbarRef?: React.RefObject<HTMLElement | null>;
 }
 
 const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef }, ref) => {
@@ -130,18 +131,20 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
         </Container>
       </nav>
 
-      {/* Category Sidebar */}
-      {sidebarOpen && isPositionSet && (
-        <div ref={sidebarRef}>
-          <CategorySidebar
-            position={sidebarPosition}
-            onClose={() => {
-              setSidebarOpen(false);
-              setIsPositionSet(false);
-            }}
-          />
-        </div>
-      )}
+      {/* Category Sidebar - Wrapped with AnimatePresence */}
+      <AnimatePresence>
+        {sidebarOpen && isPositionSet && (
+          <div ref={sidebarRef}>
+            <CategorySidebar
+              position={sidebarPosition}
+              onClose={() => {
+                setSidebarOpen(false);
+                setIsPositionSet(false);
+              }}
+            />
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 });

@@ -3,57 +3,97 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { generateReferral, getReferralCode } from '@/apis/referrals.api';
 import { Copy, Gift, RefreshCw, Share2, Users } from '@/components/shared/svg/lucide-icon';
+import { useRouter } from 'next/navigation';
+import { ReferralData } from '@/interfaces/referral.interface';
+
+// ✅ UI state (separate from data)
+interface UIState {
+  isLoading: boolean;
+  isFetching: boolean;
+  isCopied: boolean;
+  fetchError: boolean;
+}
 
 const ReferralPage = () => {
-  const [referralCode, setReferralCode] = useState('');
-  const [hasReferralCode, setHasReferralCode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(true);
-  const [referredCount, setReferredCount] = useState(0);
-  const [isCopied, setIsCopied] = useState(false);
+  // ✅ Single source of truth for all referral data
+  const [referralData, setReferralData] = useState<ReferralData>({
+    hasReferralCode: false,
+    code: '',
+    totalReferrals: 0,
+    recentReferrals: [],
+  });
 
-  // Fetch existing referral code on mount
+  // ✅ UI state separate from data
+  const [uiState, setUIState] = useState<UIState>({
+    isLoading: false,
+    isFetching: true,
+    isCopied: false,
+    fetchError: false,
+  });
+
+  const router = useRouter();
+
   useEffect(() => {
     fetchReferralCode();
   }, []);
 
+  // ✅ FIXED: Removed duplication by not spreading ...stats
   const fetchReferralCode = async () => {
-    setIsFetching(true);
+    setUIState((prev) => ({ ...prev, isFetching: true, fetchError: false }));
+
     try {
       const res = await getReferralCode();
+      console.log('getReferralCode response:', res);
 
       if (res.status === 200) {
-        const { hasReferralCode: hasCode, code, totalReferrals } = res.payload;
-        setHasReferralCode(hasCode);
-        if (hasCode) {
-          setReferralCode(code);
-        }
-        setReferredCount(totalReferrals || 0);
+        const { hasReferralCode, code, totalReferrals, recentReferrals } = res.payload;
+
+        // ✅ Update all data in one place - NO SPREADING to avoid duplication
+        setReferralData({
+          hasReferralCode: hasReferralCode || false,
+          code: code || '',
+          totalReferrals: totalReferrals || 0,
+          recentReferrals: recentReferrals || [],
+        });
+        console.log('referrals :', referralData);
       } else {
-        toast.error(res.message || 'Failed to fetch referral code');
+        console.warn('Non-200 response:', res);
+        setUIState((prev) => ({ ...prev, fetchError: true }));
+
+        if (res.status !== 404) {
+          toast.error(res.message || 'Failed to fetch referral code');
+        }
       }
     } catch (error) {
-      console.error('Fetch referral code error:', error);
-      toast.error('Failed to fetch referral code');
+      console.error('Fetch referral code exception:', error);
+      setUIState((prev) => ({ ...prev, fetchError: true }));
+      toast.error('Network error. Please check your connection.');
     } finally {
-      setIsFetching(false);
+      setUIState((prev) => ({ ...prev, isFetching: false }));
     }
   };
 
   const generateReferralCode = async () => {
-    setIsLoading(true);
+    setUIState((prev) => ({ ...prev, isLoading: true }));
+
     try {
       const res = await generateReferral();
+      console.log('generateReferral response:', res);
 
-      if (res.status === 200) {
-        setReferralCode(res.payload.referralCode);
-        setHasReferralCode(true);
+      if (res.status === 201 && res.payload?.referralCode) {
+        // ✅ Update referralData with new code
+        setReferralData((prev) => ({
+          ...prev,
+          hasReferralCode: true,
+          code: res.payload.referralCode,
+        }));
+
         toast.success('Referral code generated! 🎉');
+        router.refresh();
       } else {
         toast.error(res.message || 'Failed to generate code');
       }
@@ -61,23 +101,40 @@ const ReferralPage = () => {
       console.error('Generate referral code error:', error);
       toast.error('Failed to generate code');
     } finally {
-      setIsLoading(false);
+      setUIState((prev) => ({ ...prev, isLoading: false }));
     }
   };
 
   const copyToClipboard = async () => {
-    if (!referralCode) return;
-    await navigator.clipboard.writeText(referralCode);
-    setIsCopied(true);
-    toast.success('Code copied!');
-    setTimeout(() => setIsCopied(false), 2000);
+    if (!referralData.code) return;
+
+    try {
+      await navigator.clipboard.writeText(referralData.code);
+      setUIState((prev) => ({ ...prev, isCopied: true }));
+      toast.success('Code copied!');
+      setTimeout(() => setUIState((prev) => ({ ...prev, isCopied: false })), 2000);
+    } catch (error) {
+      console.error('Copy failed:', error);
+      toast.error('Failed to copy');
+    }
   };
 
   const shareCode = () => {
-    if (!referralCode) return;
-    const shareText = `Join me with my referral code: ${referralCode}! 🎁`;
+    if (!referralData.code) return;
+
+    const shareText = `Join me with my referral code: ${referralData.code}! 🎁`;
+
     if (navigator.share) {
-      navigator.share({ title: 'My Referral Code', text: shareText });
+      navigator
+        .share({
+          title: 'My Referral Code',
+          text: shareText,
+        })
+        .catch((err) => {
+          if (err.name !== 'AbortError') {
+            console.error('Share error:', err);
+          }
+        });
     } else {
       navigator.clipboard.writeText(shareText);
       toast.success('Share text copied!');
@@ -85,12 +142,27 @@ const ReferralPage = () => {
   };
 
   // Loading state
-  if (isFetching) {
+  if (uiState.isFetching) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-linear-to-br px-4 py-12">
         <div className="text-center">
           <RefreshCw className="text-primary mx-auto mb-4 h-12 w-12 animate-spin" />
           <p className="text-text-secondary text-lg">Loading referral information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (uiState.fetchError && !referralData.hasReferralCode) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br px-4 py-12">
+        <div className="text-center">
+          <p className="text-text-secondary mb-4 text-lg">Unable to load referral data</p>
+          <Button onClick={fetchReferralCode} className="bg-primary">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry
+          </Button>
         </div>
       </div>
     );
@@ -117,9 +189,9 @@ const ReferralPage = () => {
           className="mx-auto max-w-2xl"
         >
           <Card className="border-none shadow-none">
-            <CardContent className="">
+            <CardContent>
               <AnimatePresence mode="wait">
-                {!hasReferralCode ? (
+                {!referralData.hasReferralCode ? (
                   <motion.div
                     key="generate"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -130,17 +202,17 @@ const ReferralPage = () => {
                     <Button
                       size="lg"
                       onClick={generateReferralCode}
-                      disabled={isLoading}
-                      className="group from-primary hover:from-primary-dark border-primary/50 text-primary-foreground relative transform border-2 bg-linear-to-r via-orange-500 to-orange-600 px-6 py-6 text-xl font-bold shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:via-orange-600 hover:to-orange-700 hover:shadow-orange-500/50"
+                      disabled={uiState.isLoading}
+                      className="group from-primary hover:from-primary-dark border-primary/50 text-primary-foreground via-primary hover:shadow-primary/50 relative transform border-2 bg-linear-to-r to-orange-600 px-6 py-6 text-xl font-bold shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:via-orange-600 hover:to-orange-700"
                     >
-                      {isLoading ? (
+                      {uiState.isLoading ? (
                         <>
                           <RefreshCw className="mr-3 h-6 w-6 animate-spin" />
                           Generating...
                         </>
                       ) : (
                         <>
-                          <Gift className="h-6 w-6 transition-transform duration-300 group-hover:rotate-12 md:h-6 md:w-6" />
+                          <Gift className="mr-2 h-6 w-6 transition-transform duration-300 group-hover:rotate-12" />
                           <span className="text-xs sm:text-lg md:text-xl">Generate My Code</span>
                         </>
                       )}
@@ -157,24 +229,24 @@ const ReferralPage = () => {
                       initial={{ scale: 0, rotateY: -180 }}
                       animate={{ scale: 1, rotateY: 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className="from-primary text-primary-foreground inline-flex items-center gap-4 rounded-3xl border-4 border-white/30 bg-linear-to-r to-orange-500 px-10 py-8 font-mono text-3xl font-black tracking-widest shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-orange-500/50 md:text-4xl"
+                      className="from-primary text-primary-foreground to-primary hover:shadow-primary/50 inline-flex items-center gap-4 rounded-3xl border-4 border-white/30 bg-linear-to-r px-10 py-8 font-mono text-3xl font-black tracking-widest shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 md:text-4xl"
                     >
-                      {referralCode}
+                      {referralData.code}
                     </motion.div>
                     <div className="flex flex-wrap justify-center gap-4">
                       <Button
                         onClick={copyToClipboard}
                         size="lg"
                         className={`border-primary/50 transform gap-3 border-2 px-8 py-7 text-lg font-bold shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-orange-400/50 ${
-                          isCopied
+                          uiState.isCopied
                             ? 'border-emerald-400 bg-emerald-500 text-white shadow-emerald-500/25 hover:bg-emerald-600'
                             : 'bg-primary-light hover:bg-primary-accent text-primary border-primary/30'
                         }`}
                       >
                         <Copy className="h-5 w-5" />
-                        {isCopied ? 'Copied!' : 'Copy Code'}
+                        {uiState.isCopied ? 'Copied!' : 'Copy Code'}
                       </Button>
-                      <Button
+                      {/* <Button
                         variant="outline"
                         size="lg"
                         onClick={shareCode}
@@ -182,10 +254,7 @@ const ReferralPage = () => {
                       >
                         <Share2 className="h-5 w-5" />
                         Share Now
-                      </Button>
-                    </div>
-                    <div className="text-text-secondary border-primary/20 rounded-2xl border bg-white/80 px-8 py-4 font-mono text-sm font-semibold shadow-md">
-                      yourstore.com/?ref=<span className="text-primary font-black">{referralCode}</span>
+                      </Button> */}
                     </div>
                   </motion.div>
                 )}
@@ -194,7 +263,7 @@ const ReferralPage = () => {
           </Card>
         </motion.div>
 
-        {/* Stats */}
+        {/* Stats - Now using referralData.stats */}
         <div className="grid gap-8 md:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -202,10 +271,10 @@ const ReferralPage = () => {
             viewport={{ once: true }}
             className="group cursor-default"
           >
-            <Card className="from-primary-light to-primary-accent/50 hover:from-primary-accent border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br shadow-xl transition-all duration-500 hover:to-orange-200/70 hover:shadow-2xl hover:shadow-orange-500/20">
+            <Card className="from-primary-light to-primary-accent/50 hover:from-primary-accent border-primary/20 group-hover:border-primary/40 hover:shadow-primary/20 h-full border-0 bg-linear-to-br shadow-xl transition-all duration-500 hover:to-orange-200/70 hover:shadow-2xl">
               <CardHeader className="pb-4">
                 <CardTitle className="text-primary-dark flex items-center gap-3 text-4xl font-black transition-all duration-300 group-hover:scale-105 md:text-5xl">
-                  {referredCount}+
+                  {referralData.totalReferrals}
                   <Users className="text-primary h-14 w-14" />
                 </CardTitle>
               </CardHeader>
@@ -216,11 +285,11 @@ const ReferralPage = () => {
             </Card>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <Card className="to-primary-light/70 hover:to-primary-accent/80 border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br from-orange-50 shadow-xl transition-all duration-500 hover:from-orange-100 hover:shadow-2xl hover:shadow-orange-500/20">
+          {/* <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <Card className="to-primary-light/70 hover:to-primary-accent/80 border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br from-orange-50 shadow-xl transition-all duration-500 hover:from-orange-100 hover:shadow-2xl hover:shadow-primary/20">
               <CardHeader className="pb-4">
-                <CardTitle className="from-primary bg-linear-to-r via-orange-500 to-orange-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
-                  +₹{(referredCount * 50).toLocaleString()}
+                <CardTitle className="from-primary bg-linear-to-r via-primary to-orange-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
+                  +₹{referralData.stats.totalEarnings}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -228,7 +297,7 @@ const ReferralPage = () => {
                 <p className="text-text-secondary text-lg">₹50 per successful referral</p>
               </CardContent>
             </Card>
-          </motion.div>
+          </motion.div> */}
         </div>
 
         {/* How it works */}

@@ -21,7 +21,7 @@ const PartnerFaq = () => {
             <button className="flex w-full items-center justify-between text-left" onClick={() => toggleFAQ(index)}>
               <span className="flex-1 pr-4 text-lg font-medium text-black">{faq.question}</span>
 
-              <div className="flex-shrink-0 p-2">
+              <div className="shrink-0 p-2">
                 {openIndex === index ? (
                   <Minus className="h-5 w-5 text-black" />
                 ) : (

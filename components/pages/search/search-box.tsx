@@ -4,7 +4,7 @@ import { useRouter } from 'nextjs-toploader/app';
 import { useSearchParams } from 'next/navigation';
 import { useRef, useEffect, useState } from 'react';
 import { ISearchProps } from '@/interfaces/shared.interface';
-import { ArrowLeft, CloseIcon, SearchIcon } from '@/components/shared/svg/svg-icon';
+import { ArrowRight, CloseIcon, SearchIcon } from '@/components/shared/svg/svg-icon';
 
 const SearchBox: React.FC<ISearchProps> = ({ isMobile = false }) => {
   const [query, setQuery] = useState('');
@@ -97,7 +97,7 @@ const SearchBox: React.FC<ISearchProps> = ({ isMobile = false }) => {
               className="flex items-center transition-colors hover:opacity-70"
               aria-label="Go back"
             >
-              <ArrowLeft className="h-5 w-5 text-gray-600" />
+              <ArrowRight className="h-5 w-5 text-gray-600" />
             </button>
           ) : (
             <SearchIcon />

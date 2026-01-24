@@ -226,7 +226,7 @@ export const productData: IProduct[] = [
         discount: 'Save₹30',
         image: '/temp/product/magik_cook_sooji.webp',
         category: 'Health Foods',
-        stock: 55,
+        stock: 0,
       },
       {
         id: 10502,

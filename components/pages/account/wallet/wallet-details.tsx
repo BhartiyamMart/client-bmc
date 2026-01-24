@@ -1,63 +1,381 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Wallet, Plus, CreditCard, SmartPhone, AlertTriangle, Gift } from '@/components/shared/svg/lucide-icon';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useState } from 'react';
+import { Wallet, Plus, AlertTriangle, Gift } from '@/components/shared/svg/lucide-icon';
 import { Input } from '@/components/ui/input';
-// import { Checkbox } from '@/components/ui/checkbox';
-// import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-// import TermsContent from '../terms/terms';
+import { getWallet, reChargeWallet, verifyReChargeWallet, getWalletTransaction } from '@/apis/wallet.api';
+import { useWalletStore } from '@/stores/useWallet.store';
+import toast from 'react-hot-toast';
+import { env } from '@/config/env';
+import { useAuthStore } from '@/stores/useAuth.store';
+import { useRouter } from 'nextjs-toploader/app';
+import { Button } from '@/components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { ArrowDownRight, ArrowUpRight } from '@/components/shared/svg/svg-icon';
 
-const MyWallet = () => {
-  const [amount, setAmount] = useState<string>();
+// Declare Razorpay on window object
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+interface Transaction {
+  id: string;
+  userId: string;
+  type: string;
+  source: string;
+  status: string;
+  amount: number;
+  balanceBefore: number;
+  balanceAfter: number;
+  orderId: string | null;
+  referralId: string | null;
+  title: string;
+  description: string;
+  metadata: any;
+  expiresAt: string | null;
+  isExpired: boolean;
+  failureReason: string | null;
+  completedAt: string | null;
+  createdAt: string;
+}
+
+const WalletDetails = () => {
+  const [amount, setAmount] = useState<number>(0);
+  const wallet = useWalletStore();
   const [selectedQuickAmount, setSelectedQuickAmount] = useState<number | null>(null);
-  const [selectedPayment, setSelectedPayment] = useState<string>('upi');
-  const [acceptTerms] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const userStore = useAuthStore();
+  const router = useRouter();
+  const quickAmounts: number[] = [2000, 2500, 3000, 3500, 4000, 4500, 5000];
 
-  // Explicitly type the array as number[]
-  const quickAmounts: number[] = [500, 1000, 2000, 5000];
+  // Add state to track Razorpay script loading
+  const [razorpayLoaded, setRazorpayLoaded] = useState<boolean>(false);
+
+  // Transaction states
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [transactionsLoading, setTransactionsLoading] = useState<boolean>(false);
+  const limit = 2; // Items per page
+
+  // Load Razorpay script dynamically
+  useEffect(() => {
+    const loadRazorpayScript = () => {
+      return new Promise<boolean>((resolve) => {
+        // Check if already loaded
+        if (typeof window.Razorpay !== 'undefined') {
+          setRazorpayLoaded(true);
+          resolve(true);
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+
+        script.onload = () => {
+          console.log('Razorpay script loaded successfully');
+          setRazorpayLoaded(true);
+          resolve(true);
+        };
+
+        script.onerror = () => {
+          console.error('Failed to load Razorpay script');
+          setRazorpayLoaded(false);
+          toast.error('Failed to load payment gateway');
+          resolve(false);
+        };
+
+        document.body.appendChild(script);
+      });
+    };
+
+    loadRazorpayScript();
+
+    // Cleanup function
+    return () => {
+      const script = document.querySelector(
+        `script[src="${env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js'}"]`
+      );
+      if (script) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleQuickAmount = (quickAmount: number): void => {
-    setAmount(quickAmount.toString());
+    setAmount(quickAmount);
     setSelectedQuickAmount(quickAmount);
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setAmount(e.target.value);
+    setAmount(parseInt(e.target.value));
     const enteredAmount = parseInt(e.target.value);
     if (!quickAmounts.includes(enteredAmount)) {
       setSelectedQuickAmount(null);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 sm:bg-white">
-      <div className="space-y-4 p-3 sm:space-y-6 sm:p-4 md:p-6">
-        {/* Header */}
-        <div className="mb-4 flex items-center gap-2 sm:mb-6 sm:gap-3">
-          <div className="rounded-lg bg-orange-100 p-1.5 sm:p-2">
-            <Wallet className="h-4 w-4 text-orange-600 sm:h-5 sm:w-5" />
-          </div>
-          <h1 className="text-base font-medium text-gray-900 sm:text-lg md:text-xl">Bhartiyam Wallet & Transactions</h1>
-        </div>
+  // Fetch wallet transactions
+  const fetchTransactions = async (page: number) => {
+    setTransactionsLoading(true);
+    try {
+      const response = await getWalletTransaction({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
 
+      console.log('Transaction response:', response);
+
+      if (response.status === 200) {
+        setTransactions(response.payload.transactions);
+
+        // Use pagination object from API response
+        const { totalPages } = response.payload.pagination;
+        setTotalPages(totalPages);
+
+        console.log('Current page:', page, 'Total pages:', totalPages);
+      }
+    } catch (error) {
+      console.error('Failed to fetch transactions:', error);
+      toast.error('Failed to load transactions');
+    } finally {
+      setTransactionsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleFetchWallet = async () => {
+      await getWallet();
+    };
+
+    handleFetchWallet();
+    fetchTransactions(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
+    }
+  };
+
+  const handleRecharge = async () => {
+    if (!amount || amount <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    if (amount > 25000) {
+      toast.error('UPI transactions cannot exceed ₹25,000');
+      return;
+    }
+
+    // Check if Razorpay is loaded
+    if (!razorpayLoaded || typeof window.Razorpay === 'undefined') {
+      toast.error('Payment gateway not loaded. Please refresh the page.');
+      console.error('Razorpay not loaded. razorpayLoaded:', razorpayLoaded, 'window.Razorpay:', typeof window.Razorpay);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await reChargeWallet({ amount });
+      console.log('Recharge response:', response);
+
+      if (response.status === 201) {
+        const { razorpay } = response.payload;
+
+        const userEmail = userStore.autoMail || '';
+        const userName = userStore.userProfile?.name || 'Customer';
+        const userContact = userStore.phone || '9999999999';
+
+        const options = {
+          key: razorpay.key, // Use key from API response
+          amount: razorpay.amount, // Already in paise
+          currency: razorpay.currency || 'INR',
+          name: 'Bhartiyam Wallet',
+          description: 'Add money to wallet',
+          order_id: razorpay.orderId,
+          handler: async function (razorpayResponse: any) {
+            try {
+              const verifyResponse = await verifyReChargeWallet({
+                razorpayOrderId: razorpayResponse.razorpay_order_id,
+                razorpayPaymentId: razorpayResponse.razorpay_payment_id,
+                razorpaySignature: razorpayResponse.razorpay_signature,
+              });
+
+              if (verifyResponse.status === 200) {
+                toast.success('Payment successful! Money added to wallet.');
+                setAmount(0);
+                setSelectedQuickAmount(null);
+                fetchTransactions(1);
+                setCurrentPage(1);
+                router.push('wallet');
+              } else {
+                toast.error('Payment verification failed. Please contact support.');
+              }
+            } catch (error) {
+              console.error('Verification error:', error);
+              toast.error('Payment verification failed. Please contact support.');
+            }
+
+            setLoading(false);
+          },
+          prefill: {
+            name: userName,
+            email: userEmail,
+            contact: userContact,
+          },
+          readonly: {
+            email: true,
+            contact: true,
+            name: true,
+          },
+          theme: {
+            color: '#f97316',
+          },
+          modal: {
+            ondismiss: function () {
+              setLoading(false);
+              toast.error('Payment cancelled');
+            },
+          },
+        };
+
+        console.log('Opening Razorpay with options:', options);
+        const razorpayWindow = new window.Razorpay(options);
+
+        razorpayWindow.on('payment.failed', function (response: any) {
+          toast.error('Payment failed. Please try again.');
+          console.error('Payment failed:', response.error);
+          setLoading(false);
+        });
+
+        razorpayWindow.open();
+      } else {
+        toast.error('Failed to create order');
+        setLoading(false);
+      }
+    } catch (error: unknown) {
+      const apiError = error as {
+        message?: string;
+        payload?: { message?: string };
+      };
+
+      toast.error(apiError.payload?.message || apiError.message || 'Failed to recharge wallet');
+      setLoading(false);
+    }
+  };
+
+  // Helper function to get transaction icon and color
+  const getTransactionStyle = (type: string) => {
+    const lowerType = type.toLowerCase();
+
+    if (lowerType.includes('credit') || lowerType.includes('recharge') || lowerType.includes('refund')) {
+      return {
+        icon: <ArrowUpRight className="h-5 w-5" />,
+        colorClass: 'text-green-600 bg-green-50',
+        sign: '+',
+      };
+    }
+
+    return {
+      icon: <ArrowDownRight className="h-5 w-5" />,
+      colorClass: 'text-red-600 bg-red-50',
+      sign: '-',
+    };
+  };
+
+  // Helper function to format date
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // Helper function to get status badge color
+  const getStatusColor = (status: string) => {
+    const lowerStatus = status.toLowerCase();
+
+    if (lowerStatus === 'success' || lowerStatus === 'completed') {
+      return 'bg-green-100 text-green-700';
+    }
+    if (lowerStatus === 'pending' || lowerStatus === 'processing') {
+      return 'bg-yellow-100 text-yellow-700';
+    }
+    if (lowerStatus === 'failed' || lowerStatus === 'rejected') {
+      return 'bg-red-100 text-red-700';
+    }
+
+    return 'bg-gray-100 text-gray-700';
+  };
+
+  // Generate page numbers for pagination
+  const generatePageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('ellipsis');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('ellipsis');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+  return (
+    <div className="bg-gray-50 sm:bg-white">
+      <div className="space-y-4 p-3 sm:space-y-6 sm:p-4 md:p-6">
         {/* Main Wallet Container */}
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 sm:space-y-6 sm:p-6">
           {/* Balance Section */}
           <div className="space-y-2 sm:space-y-4">
-            <h2 className="text-xs font-medium text-gray-600 sm:text-sm">Your Balance</h2>
-            <p className="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">₹25,000</p>
+            <h2 className="text-xs font-medium text-gray-600 sm:text-sm">Available Balance</h2>
+            <p className="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">₹{wallet.balance}</p>
           </div>
 
           {/* Add Money Section */}
-          <div className="space-y-3 border-t border-gray-100 pt-4 sm:space-y-4 sm:pt-6">
-            <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-gray-600 sm:h-5 sm:w-5" />
-              <h3 className="text-sm font-semibold text-gray-900 sm:text-base">Add Money</h3>
-            </div>
-
-            <div className="text-xs text-gray-500">You can add money instantly</div>
-
+          <div className="space-y-3 sm:space-y-4">
             {/* Amount Input */}
             <div className="space-y-2">
               <div className="relative">
@@ -66,26 +384,26 @@ const MyWallet = () => {
                 </span>
                 <Input
                   type="number"
-                  value={amount}
+                  value={amount || ''}
                   onChange={handleAmountChange}
                   className="h-10 w-full pl-7 text-base font-medium sm:h-12 sm:pl-8 sm:text-lg"
                   placeholder="Enter amount"
+                  disabled={loading}
                 />
               </div>
-              <p className="text-xs text-gray-500">UPI can have maximum of ₹25000</p>
             </div>
 
             {/* Quick Amounts */}
             <div className="space-y-2">
-              <p className="text-xs font-medium text-gray-700 sm:text-sm">Quick amounts</p>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {quickAmounts.map((quickAmount: number) => (
                   <button
                     key={quickAmount}
                     onClick={() => handleQuickAmount(quickAmount)}
-                    className={`flex-shrink-0 cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-orange-100 sm:px-4 sm:py-2 sm:text-sm ${
+                    disabled={loading}
+                    className={`shrink-0 cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm ${
                       selectedQuickAmount === quickAmount
-                        ? 'border-orange-500 bg-orange-50 text-orange-500'
+                        ? 'border-primary text-primary bg-orange-50'
                         : 'border-gray-300 bg-white text-gray-400'
                     }`}
                   >
@@ -94,105 +412,21 @@ const MyWallet = () => {
                 ))}
               </div>
             </div>
+            <p className="text-xs text-gray-500">UPI can have maximum of ₹25000</p>
           </div>
 
-          {/* Payment Method */}
-          <div className="space-y-3 border-t border-gray-100 pt-4 sm:space-y-4 sm:pt-6">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 sm:text-base">
-              <CreditCard className="h-4 w-4 text-gray-600 sm:h-5 sm:w-5" />
-              Payment Method
-            </h3>
-
-            {/* Payment Options */}
-            <div className="space-y-2 sm:space-y-3">
-              {/* UPI Option */}
-              <label
-                className={`flex cursor-pointer items-start gap-2 rounded-lg border-2 p-3 transition-all sm:gap-3 sm:p-4 ${
-                  selectedPayment === 'upi'
-                    ? 'border-orange-500 bg-orange-50'
-                    : 'border-gray-200 bg-white hover:bg-gray-50'
-                }`}
-              >
-                <div className="relative top-0.5 sm:top-1">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="upi"
-                    checked={selectedPayment === 'upi'}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedPayment(e.target.value)}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 sm:h-4 sm:w-4 ${
-                      selectedPayment === 'upi' ? 'border-orange-500 bg-orange-500' : 'border-gray-300'
-                    }`}
-                  >
-                    {selectedPayment === 'upi' && (
-                      <div className="h-1.5 w-1.5 rounded-full bg-white sm:h-2 sm:w-2"></div>
-                    )}
-                  </div>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <SmartPhone className="h-3.5 w-3.5 flex-shrink-0 text-gray-600 sm:h-4 sm:w-4" />
-                    <span className="text-sm font-medium text-gray-900 sm:text-base">UPI</span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-gray-500 sm:mt-1 sm:text-sm">
-                    Supports PhonePe, GPay, Paytm and more
-                  </p>
-                </div>
-              </label>
-
-              {/* Card Option */}
-              <label
-                className={`flex cursor-pointer items-start gap-2 rounded-lg border-2 p-3 transition-all sm:gap-3 sm:p-4 ${
-                  selectedPayment === 'card'
-                    ? 'border-orange-500 bg-orange-50'
-                    : 'border-gray-200 bg-white hover:bg-gray-50'
-                }`}
-              >
-                <div className="relative top-0.5 sm:top-1">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="card"
-                    checked={selectedPayment === 'card'}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedPayment(e.target.value)}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 sm:h-4 sm:w-4 ${
-                      selectedPayment === 'card' ? 'border-orange-500 bg-orange-500' : 'border-gray-300'
-                    }`}
-                  >
-                    {selectedPayment === 'card' && (
-                      <div className="h-1.5 w-1.5 rounded-full bg-white sm:h-2 sm:w-2"></div>
-                    )}
-                  </div>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="h-3.5 w-3.5 flex-shrink-0 text-gray-600 sm:h-4 sm:w-4" />
-                    <span className="text-sm font-medium text-gray-900 sm:text-base">Card</span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-gray-500 sm:mt-1 sm:text-sm">Visa, Mastercard, Rupay</p>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          {/* Add Amount Button */}
           <Button
-            className="h-10 w-full cursor-pointer bg-orange-500 text-sm font-semibold text-white hover:bg-orange-600 sm:h-12 sm:text-base"
-            disabled={!amount || !acceptTerms}
+            className="bg-primary h-10 w-full text-sm font-semibold text-white hover:bg-orange-600 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
+            disabled={!amount || loading || !razorpayLoaded}
+            onClick={handleRecharge}
           >
-            Add amount
+            {loading ? 'Processing...' : !razorpayLoaded ? 'Loading payment gateway...' : 'Add amount'}
           </Button>
 
           {/* Important Note */}
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 sm:p-4">
             <div className="flex items-start gap-2 sm:gap-3">
-              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-600 sm:h-5 sm:w-5" />
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-yellow-600 sm:h-5 sm:w-5" />
               <div className="min-w-0">
                 <h4 className="mb-1 text-sm font-semibold text-yellow-800 sm:text-base">Important Note</h4>
                 <p className="text-xs text-yellow-700 sm:text-sm">
@@ -201,50 +435,107 @@ const MyWallet = () => {
               </div>
             </div>
           </div>
-
-          {/* Terms & Conditions */}
-          {/* <div className="flex items-start gap-2 sm:gap-3">
-            <Checkbox
-              id="terms"
-              checked={acceptTerms}
-              onCheckedChange={(checked: boolean | 'indeterminate') => setAcceptTerms(checked as boolean)}
-              className="mt-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4"
-            />
-            <div className="text-xs sm:text-sm leading-relaxed text-gray-600 min-w-0">
-              I agree to the{' '}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button 
-                    type="button" 
-                    className="text-orange-600 cursor-pointer underline hover:text-orange-700 focus:outline-none break-words"
-                  >
-                    Terms & Conditions
-                  </button>
-                </DialogTrigger>
-                <TermsContent />
-              </Dialog>
-            </div>
-          </div> */}
         </div>
 
-        {/* Cashback Offer */}
-        <div className="rounded-lg border border-green-200 bg-gradient-to-r from-green-50 to-blue-50 sm:px-4">
-          <div className="flex flex-col items-center justify-center gap-2 text-green-700 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center rounded-full bg-green-100 p-1.5 sm:p-2">
-                <Gift className="h-3.5 w-3.5 text-green-600 sm:h-4 sm:w-4" />
-              </div>
-              <span className="text-sm font-bold sm:text-base">Cashback Offer:</span>
+        {/* Transaction History Section */}
+        <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+          <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">Transaction History</h2>
+
+          {transactionsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
             </div>
-            <span className="text-sm font-bold text-green-600 sm:text-base">
-              10% cashback
-              <span className="ml-1 text-xs text-green-600 sm:text-sm">(Up to ₹5,000)</span>
-            </span>
-          </div>
+          ) : transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Wallet className="h-12 w-12 text-gray-300 sm:h-16 sm:w-16" />
+              <p className="mt-4 text-sm text-gray-500 sm:text-base">No transactions yet</p>
+            </div>
+          ) : (
+            <>
+              {/* Transactions List */}
+              <div className="space-y-3">
+                {transactions.map((transaction) => {
+                  const style = getTransactionStyle(transaction.type);
+
+                  return (
+                    <div
+                      key={transaction.id}
+                      className="flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 sm:p-4"
+                    >
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className={`rounded-full p-2 ${style.colorClass}`}>{style.icon}</div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 sm:text-base">
+                            {transaction.type || 'Transaction'}
+                          </p>
+                          <p className="text-xs text-gray-500 sm:text-sm">{formatDate(transaction.createdAt)}</p>
+                          {transaction.description && (
+                            <p className="mt-1 text-xs text-gray-400">{transaction.description}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2">
+                        <p className={`text-sm font-semibold sm:text-base ${style.colorClass.split(' ')[0]}`}>
+                          {style.sign}₹{transaction.amount.toLocaleString('en-IN')}
+                        </p>
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusColor(
+                            transaction.status
+                          )}`}
+                        >
+                          {transaction.status}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-6 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
+                      </PaginationItem>
+
+                      {generatePageNumbers().map((page, index) => (
+                        <PaginationItem key={index}>
+                          {page === 'ellipsis' ? (
+                            <PaginationEllipsis />
+                          ) : (
+                            <PaginationLink
+                              onClick={() => handlePageChange(page as number)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          )}
+                        </PaginationItem>
+                      ))}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default MyWallet;
+export default WalletDetails;

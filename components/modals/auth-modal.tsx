@@ -4,7 +4,7 @@ import OptimizedImage from '@/components/shared/optimizeImage';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
-import { ArrowLeft, CloseIcon } from '../shared/svg/svg-icon';
+import { ArrowRight, CloseIcon } from '../shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
 import { sendOtp, verifyOtp } from '@/apis/auth.api';
 import { editProfile } from '@/apis/profile.api';
@@ -380,7 +380,7 @@ const AuthModal = () => {
             disabled={isLoading}
             aria-label="Go back"
           >
-            <ArrowLeft />
+            <ArrowRight />
           </button>
         )}
 
@@ -399,7 +399,7 @@ const AuthModal = () => {
               </div>
 
               <form onSubmit={handlePhoneSubmit} className="space-y-4">
-                <div className="flex overflow-hidden rounded border border-gray-300 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500">
+                <div className="focus-within:border-primary focus-within:ring-primary flex overflow-hidden rounded border border-gray-300 transition-colors focus-within:ring-2">
                   <span className="border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
                     +91
                   </span>
@@ -478,7 +478,7 @@ const AuthModal = () => {
                           otpInputsRef.current[index] = el;
                         }}
                         className={`xs:h-11 xs:w-11 xs:rounded xs:text-lg h-10 w-10 shrink-0 rounded border text-center text-base font-semibold transition-all outline-none sm:h-12 sm:w-12 ${
-                          otp[index] ? 'border-orange-500 bg-orange-50' : 'border-gray-300 focus:border-orange-500'
+                          otp[index] ? 'border-primary bg-orange-50' : 'focus:border-primary border-gray-300'
                         } ${isLoading || index > nextAllowed ? 'cursor-not-allowed bg-gray-50' : ''}`}
                         disabled={isLoading}
                       />
@@ -517,7 +517,7 @@ const AuthModal = () => {
           {currentStep === 'profile' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="text-center">
-                <div className="mb-3 inline-block rounded-xl bg-orange-100 p-2.5 sm:mb-4 sm:p-3">
+                <div className="mb-3 inline-block rounded bg-orange-100 p-2.5 sm:mb-4 sm:p-3">
                   <OptimizedImage src="/images/favicon.webp" alt="Logo" width={40} height={40} priority />
                 </div>
                 <h2 className="mb-2 text-base font-semibold text-gray-900 sm:text-lg">Complete Your Profile</h2>
@@ -532,7 +532,7 @@ const AuthModal = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
+                    className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     required
                     maxLength={50}
@@ -547,7 +547,7 @@ const AuthModal = () => {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                     placeholder="Enter referral code"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
+                    className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     maxLength={20}
                   />
@@ -556,7 +556,7 @@ const AuthModal = () => {
                 <button
                   type="submit"
                   disabled={!firstName.trim() || isLoading}
-                  className={`w-full rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                  className={`w-full rounded py-2.5 text-sm font-medium transition-colors ${
                     firstName.trim() && !isLoading
                       ? 'bg-primary hover:bg-primary/90 text-white'
                       : 'cursor-not-allowed bg-gray-200 text-gray-400'

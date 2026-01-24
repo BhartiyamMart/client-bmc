@@ -1,7 +1,12 @@
-import React from 'react';
+'use client';
+import AddressList from '@/components/pages/account/address/address-list';
 
 const page = () => {
-  return <></>;
+  return (
+    <>
+      <AddressList />
+    </>
+  );
 };
 
 export default page;

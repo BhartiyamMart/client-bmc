@@ -478,10 +478,69 @@ export const ArrowLeft: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       strokeLinecap="round"
       strokeLinejoin="round"
       className="lucide lucide-arrow-left-icon lucide-arrow-left"
+    >
+      <path d="m12 19-7-7 7-7" />
+      <path d="M19 12H5" />
+    </svg>
+  );
+};
+export const ArrowRight: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-arrow-left-icon lucide-arrow-left"
       {...props}
     >
       <path d="m12 19-7-7 7-7" />
       <path d="M19 12H5" />
+    </svg>
+  );
+};
+export const ArrowUpRight: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-move-up-right-icon lucide-move-up-right"
+      {...props}
+    >
+      <path d="M13 5H19V11" />
+      <path d="M19 5L5 19" />
+    </svg>
+  );
+};
+export const ArrowDownRight: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-move-down-right-icon lucide-move-down-right"
+      {...props}
+    >
+      <path d="M19 13V19H13" />
+      <path d="M5 5L19 19" />
     </svg>
   );
 };
@@ -773,6 +832,40 @@ export const Logout: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       <path d="m16 17 5-5-5-5" />
       <path d="M21 12H9" />
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    </svg>
+  );
+};
+
+export const Scooter: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      width="14"
+      height="22"
+      viewBox="0 0 14 22"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className=""
+      {...props}
+    >
+      <path
+        d="M6.75 4.75C7.85457 4.75 8.75 3.85457 8.75 2.75C8.75 1.64543 7.85457 0.75 6.75 0.75C5.64543 0.75 4.75 1.64543 4.75 2.75C4.75 3.85457 5.64543 4.75 6.75 4.75Z"
+        stroke="black"
+        stroke-width="1.5"
+      />
+      <path
+        d="M4.75 2.75H0.75M12.75 2.75H8.75"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.75001 18.75C2.42301 18.715 1.65001 18.578 1.17201 18.055C0.52501 17.346 0.71901 16.265 1.10801 14.1L1.72001 10.7C1.96501 9.336 2.08801 8.654 2.44401 8.136C2.79501 7.627 3.30401 7.228 3.90301 6.991C4.51301 6.75 5.25801 6.75 6.75001 6.75C8.24201 6.75 8.98801 6.75 9.59701 6.991C10.1857 7.22028 10.6934 7.61868 11.056 8.136C11.412 8.654 11.535 9.336 11.78 10.7L12.391 14.1C12.781 16.264 12.975 17.346 12.328 18.055C11.852 18.575 11.084 18.714 9.76801 18.75"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path d="M6.75 16.75V20.75" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   );
 };

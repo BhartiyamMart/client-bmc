@@ -134,7 +134,7 @@ const AuthModal = () => {
             setphone('');
             setOtp('');
 
-            router.push('account/profile');
+            router.push('/account');
           }
         }
       } catch (error) {
@@ -323,7 +323,7 @@ const AuthModal = () => {
           setFirstName('');
           setReferralCode('');
 
-          router.push('account/profile');
+          router.push('/account');
         }
       } catch (error) {
         toast.error('Failed to create profile. Please try again.');

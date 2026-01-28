@@ -1,175 +1,131 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import WalletDetails from './wallet-details';
 import { useWalletStore } from '@/stores/useWallet.store';
 import toast from 'react-hot-toast';
 import { getWallet } from '@/apis/wallet.api';
 
-const Wallet = () => {
-  const [isAgreed, setIsAgreed] = useState<boolean>(false);
-  const hasWallet = useWalletStore((state) => state.hasWallet);
-  const setHasWallet = useWalletStore((state) => state.setHasWallet);
+const Wallet: React.FC = () => {
   const router = useRouter();
 
-  const handleAcceptTerms = async (): Promise<void> => {
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const hasWallet = useWalletStore((state) => state.hasWallet);
+  const walletTerms = useWalletStore((state) => state.walletTerms);
+  const setHasWallet = useWalletStore((state) => state.setHasWallet);
+
+  const handleAcceptTerms = useCallback(async (): Promise<void> => {
+    if (!isAgreed || isLoading) return;
+
+    setIsLoading(true);
     try {
       const response = await getWallet();
       if (response.status === 201) {
         setHasWallet(true);
-        router.push('wallet');
+        toast.success('Wallet created successfully!');
+        router.push('/account/wallet');
       }
     } catch (error) {
-      toast.error('Something went wrong while creating wallet');
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong while creating wallet';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [isAgreed, isLoading, setHasWallet, router]);
 
-  const handleDialogClose = (): void => {
-    router.back();
-  };
+  const handleDialogClose = useCallback((): void => {
+    if (!isLoading) {
+      router.back();
+    }
+  }, [isLoading, router]);
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleCheckboxChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     setIsAgreed(e.target.checked);
-  };
+  }, []);
 
-  // ✅ If wallet exists, show wallet directly
   if (hasWallet) {
     return <WalletDetails />;
   }
 
-  // ✅ If no wallet, show terms dialog
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/30">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
       <Dialog open={true} onOpenChange={handleDialogClose}>
         <DialogContent className="m-0 flex max-h-[80vh] flex-col gap-0 p-0 sm:max-w-xl">
-          {/* Fixed Header */}
           <DialogHeader className="shrink-0 border-b border-gray-200 bg-white p-4">
-            <DialogTitle>Terms and Conditions</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">Terms and Conditions</DialogTitle>
           </DialogHeader>
-
-          {/* Scrollable Content Area */}
-          <div className="flex-1 overflow-y-auto bg-[#E8E8E8] p-4" style={{ maxHeight: 'calc(80vh - 120px)' }}>
+          <div
+            className="customScrollbar flex-1 overflow-y-auto bg-gray-50 p-4"
+            style={{ maxHeight: 'calc(80vh - 120px)' }}
+          >
             <div className="space-y-4 text-sm text-gray-700">
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">1. Wallet Usage</h3>
-                <p>
-                  The Bhartiyam Wallet allows you to store money for purchases within the Bhartiyam Mart platform. Once
-                  money is added to your wallet, it cannot be withdrawn or refunded.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">2. Adding Money</h3>
-                <p>
-                  You can add money to your wallet using UPI or card payments. The maximum limit for UPI transactions is
-                  ₹25,000 per transaction. All payments are processed securely through authorized payment gateways.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">3. Transaction Limits</h3>
-                <p>
-                  Daily transaction limits may apply based on your payment method and verification status. We reserve
-                  the right to modify these limits for security purposes.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">4. Cashback and Offers</h3>
-                <p>
-                  Cashback offers are subject to terms and conditions. Cashback amounts will be credited to your wallet
-                  within 24-48 hours of successful transaction completion.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">5. Security</h3>
-                <p>
-                  You are responsible for maintaining the confidentiality of your account credentials. Report any
-                  unauthorized transactions immediately to our customer support.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">6. Modification of Terms</h3>
-                <p>
-                  We reserve the right to modify these terms and conditions at any time. Continued use of the wallet
-                  service constitutes acceptance of modified terms.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">7. Privacy Policy</h3>
-                <p>
-                  Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the
-                  wallet service, to understand our practices regarding the collection, use, and disclosure of your
-                  personal information.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">8. Liability Limitations</h3>
-                <p>
-                  Bhartiyam Mart shall not be liable for any indirect, incidental, special, consequential, or punitive
-                  damages arising out of your use of the wallet service, including but not limited to loss of profits,
-                  data, or other intangible losses.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">9. Dispute Resolution</h3>
-                <p>
-                  Any disputes arising from these terms will be resolved through binding arbitration in accordance with
-                  the rules of the applicable arbitration association.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-2 font-semibold text-gray-900">10. Contact Information</h3>
-                <p>
-                  For any questions regarding these terms and conditions, please contact our customer support team at
-                  support@bhartiyammart.com, call 1-800-BHARTIYAM, or write to us at Bhartiyam Mart Customer Service,
-                  123 Commerce Street, Business District, India 110001.
-                </p>
-              </div>
-
-              {/* Checkbox Agreement Section */}
-              <div className="border-t border-gray-300 pt-4">
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    id="terms-agreement"
-                    checked={isAgreed}
-                    onChange={handleCheckboxChange}
-                    className="mt-1 h-4 w-4 rounded border-gray-300 bg-gray-100 text-[#F0701E] focus:ring-2 focus:ring-[#F0701E]"
-                  />
+              {walletTerms.map((term, index) => (
+                <div key={index}>
+                  <h3 className="mb-2 font-semibold text-gray-900">
+                    {index + 1}. {term.title}
+                  </h3>
+                  <p className="leading-relaxed">{term.content}</p>
+                </div>
+              ))}
+              {/* Checkbox Agreement - Custom with White Tick */}
+              <div className="border-t border-gray-300 bg-gray-50 pt-4 pb-2">
+                <div className="flex items-start gap-3">
+                  <label htmlFor="terms-agreement" className="relative flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      id="terms-agreement"
+                      checked={isAgreed}
+                      onChange={handleCheckboxChange}
+                      disabled={isLoading}
+                      className="peer sr-only"
+                    />
+                    <div className="peer peer-checked:border-primary peer-checked:bg-primary h-4.5 w-4.5 cursor-pointer rounded-xs border-2 border-gray-300 bg-white transition-all peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+                      {isAgreed && (
+                        <svg
+                          className="h-full w-full text-white"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </label>
                   <label
                     htmlFor="terms-agreement"
-                    className="cursor-pointer text-sm font-medium text-gray-900 select-none"
+                    className="flex-1 cursor-pointer text-sm font-medium text-gray-900 select-none"
                   >
-                    I agree to the terms and conditions
+                    I have read and agree to the terms and conditions
                   </label>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Fixed Footer with Button */}
-          <div className="flex shrink-0 justify-center border-t border-gray-200 bg-white py-4">
+          {/* Fixed Footer */}
+          <div className="flex shrink-0 justify-center border-t border-gray-200 bg-white p-4">
             <Button
               onClick={handleAcceptTerms}
-              disabled={!isAgreed}
-              className={`w-[80%] rounded-[8px] px-4 py-2 ${
-                isAgreed
-                  ? 'cursor-pointer bg-[#F0701E] text-white hover:bg-[#e0601a]'
-                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
-              }`}
+              disabled={!isAgreed || isLoading}
+              className="w-full cursor-pointer rounded sm:w-[80%]"
             >
-              Acknowledgement
+              {isLoading ? (
+                <>
+                  <span className="mr-2 inline-block h-4 w-4 animate-spin rounded border-2 border-white border-t-transparent" />
+                  Creating Wallet...
+                </>
+              ) : (
+                'Accept & Create Wallet'
+              )}
             </Button>
           </div>
         </DialogContent>

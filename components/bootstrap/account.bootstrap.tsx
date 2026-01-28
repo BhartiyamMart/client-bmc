@@ -14,6 +14,7 @@ const AccountBootstrap = () => {
   const router = useRouter();
   const setWallet = useWalletStore((state) => state.setBalance);
   const setHasWallet = useWalletStore((state) => state.setHasWallet);
+  const setWalletTerms = useWalletStore((state) => state.setWalletTerms);
   const setAutoMail = useAuthStore((state) => state.setAutomail);
   // const setAddresses = useAddressStore((state)=> state.setAddresses)
 
@@ -24,6 +25,7 @@ const AccountBootstrap = () => {
         if (response.status === 200) {
           setWallet(response.payload.wallet.balance);
           setHasWallet(response.payload.wallet.hasWallet);
+          setWalletTerms(response.payload.wallet.walletTerms);
           setAutoMail(response.payload.user.autoMail);
           // setAddresses(response.payload.addresses.allAddresses)
         } else {

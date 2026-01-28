@@ -17,6 +17,7 @@ import AccountHeader from '@/components/account-layout/account-header';
 import SidebarProfile from '@/components/account-layout/sidebar-profile';
 import SidebarWallet from './sidebar-wallet';
 import { accountDetails } from '@/apis/profile.api';
+import AccountLayoutSkeleton from './account-layout-skeleton';
 
 interface AccountLayoutProps {
   children: React.ReactNode;
@@ -28,7 +29,9 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
   const userImage = useUserImage();
   const userProfile = useUserProfile();
   const userPhone = usePhone();
@@ -37,26 +40,31 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const fullName = userProfile?.name || '';
   const phone = userPhone || '';
 
-  // Check if we're on the base /account route
   const isAccountRoot = pathname === '/account';
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024; // Changed to lg breakpoint
 
-  // Auto-redirect on desktop if on /account
+  // Hydration phase
   useEffect(() => {
-    if (isAccountRoot && !isMobile) {
-      router.replace('/account/profile');
-    }
-  }, [isAccountRoot, isMobile, router]);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    const hydrationTimer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 50);
+    window.addEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(hydrationTimer);
+    };
+  }, []);
 
   // Auto-close sidebar on desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        // Changed to lg breakpoint
         setIsSidebarOpen(false);
       }
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -66,21 +74,13 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
     if (item.name === 'Logout') {
       return;
     }
-
-    setIsLoadingDetails(true);
     try {
       const response = await accountDetails();
-
-      if (response.status === 200) {
-        // Successfully fetched account details
-      } else {
+      if (response.status !== 200) {
         toast.error(response.message || 'Failed to fetch account details');
       }
     } catch (error) {
-      console.error('Account details error:', error);
       toast.error('Error fetching account details');
-    } finally {
-      setIsLoadingDetails(false);
     }
   }, []);
 
@@ -88,11 +88,9 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   const handleLogout = useCallback(async () => {
     try {
       const response = await logout();
-
       if (response.status === 200) {
         logoutStore();
         localStorage.removeItem('auth-storage');
-
         setTimeout(() => {
           setIsLogoutOpen(false);
           toast.success(response.message);
@@ -103,19 +101,14 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
         toast.error(response.message);
       }
     } catch (error) {
-      console.error('Logout error:', error);
       toast.error('Something went wrong. Please try again.');
     }
   }, [logoutStore, router, setProtectedRoute]);
 
-  // Sidebar handlers
   const closeSidebar = useCallback(() => setIsSidebarOpen(false), []);
-  const openSidebar = useCallback(() => setIsSidebarOpen(true), []);
-
   const handleMenuItemClick = useCallback(
     (item: IMenuItem) => {
       handleChange(item);
-
       if (item.name === 'Logout') {
         setIsLogoutOpen(true);
       }
@@ -124,66 +117,68 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
     [handleChange, closeSidebar]
   );
 
-  // Navigation helpers
-  const handleBack = useCallback(() => {
-    if (window.history.length > 1) {
-      router.back();
+  // Custom back handler based on screen size
+  const handleBackClick = useCallback(() => {
+    if (isMobile) {
+      router.push('/account', { scroll: false });
     } else {
-      router.push('/account');
+      router.back();
     }
-  }, [router]);
+  }, [isMobile, router]);
 
   const lastSegment = getLastSegment(pathname);
   const normalizedPathname = normalizePath(pathname);
-
   const showOnlySidebar = isAccountRoot && isMobile;
 
-  return (
-    <Section className="">
-      <Container className="relative flex flex-col overflow-hidden rounded border bg-white lg:flex-row">
-        {/* Mobile Overlay */}
-        {isSidebarOpen && (
-          <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={closeSidebar} aria-label="Close sidebar" />
-        )}
+  // Show skeleton until hydrated
+  if (!isHydrated) {
+    return <AccountLayoutSkeleton />;
+  }
 
-        {/* Sidebar */}
+  return (
+    <Section className="py-4">
+      <Container className="relative flex h-auto w-full flex-col overflow-hidden rounded border bg-white lg:h-125 lg:min-h-125 lg:flex-row">
+        {isSidebarOpen && (
+          <div className="fixed inset-0 z-20 bg-black/50 lg:hidden" onClick={closeSidebar} aria-label="Close sidebar" />
+        )}
         <aside
           className={`${
             showOnlySidebar
-              ? 'relative w-full'
+              ? 'relative translate-x-0 opacity-100'
               : isSidebarOpen
                 ? 'translate-x-0 opacity-100'
                 : '-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100'
-          } ${
-            showOnlySidebar ? 'flex h-auto' : 'fixed top-0 left-0 z-50 flex h-screen w-full lg:relative lg:h-auto'
-          } flex-col border-r bg-white shadow-sm transition-all duration-300 ease-in-out lg:sticky lg:top-20 lg:z-auto lg:max-h-[calc(100vh-80px)] lg:w-80 lg:max-w-80 lg:shadow-none`}
+          } fixed inset-y-0 left-0 z-20 flex h-full w-full flex-col border-r bg-white shadow-lg transition-all duration-300 ease-in-out lg:relative lg:z-auto lg:h-full lg:w-80 lg:max-w-80 lg:shadow-none`}
         >
-          {/* Profile Section */}
-          <SidebarProfile
-            fullName={fullName}
-            phone={phone}
-            profileImage={userImage}
-            onClose={showOnlySidebar ? () => {} : closeSidebar}
-          />
-
-          <SidebarWallet />
-
-          {/* Navigation */}
-          <SidebarMenu pathname={normalizedPathname} onItemClick={handleMenuItemClick} />
+          <div className="shrink-0">
+            <SidebarProfile
+              fullName={fullName}
+              phone={phone}
+              profileImage={userImage}
+              onClose={showOnlySidebar ? () => {} : closeSidebar}
+            />
+          </div>
+          <div className="shrink-0">
+            <SidebarWallet />
+          </div>
+          <div className="lg:customScrollbarLeft min-h-0 flex-1 overflow-y-auto pb-4">
+            <SidebarMenu pathname={normalizedPathname} onItemClick={handleMenuItemClick} />
+          </div>
         </aside>
-
-        {/* Main Content - Hidden on /account for mobile */}
         {!showOnlySidebar && (
-          <main className="flex min-h-[70vh] min-w-0 flex-1 flex-col overflow-y-auto lg:h-auto lg:max-h-[calc(100vh-80px)]">
-            {/* Header */}
-            <AccountHeader title={lastSegment || 'Account'} onBack={handleBack} />
-
-            {/* Page Content */}
-            <div className="flex-1 p-4 py-6">{children}</div>
+          <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+            <div className="shrink-0">
+              <AccountHeader
+                title={lastSegment || 'Account'}
+                onBack={handleBackClick}
+                showBackButton={!isAccountRoot || !isMobile}
+              />
+            </div>
+            <div className="lg:customScrollbar min-h-0 flex-1 overflow-y-auto">
+              <div className="p-4 py-6">{children}</div>
+            </div>
           </main>
         )}
-
-        {/* Logout Dialog */}
         <LogoutDialog isOpen={isLogoutOpen} onClose={() => setIsLogoutOpen(false)} onConfirm={handleLogout} />
       </Container>
     </Section>

@@ -25,9 +25,15 @@ export interface IUserProfile {
   gender?: string | null;
 }
 
+export interface WalletTerm {
+  title: string;
+  content: string;
+}
+
 export interface IWalletData {
   balance: string;
   hasWallet: boolean;
+  walletTerms: WalletTerm[];
 }
 
 export interface IAddressData {

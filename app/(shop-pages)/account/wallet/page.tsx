@@ -1,4 +1,4 @@
-import Wallet from '@/components/pages/account/wallet/wallet';
+import Wallet from '@/components/modals/wallet-tnc-modal';
 
 const page = () => {
   return <Wallet />;

@@ -8,6 +8,8 @@ import { ArrowRight, CloseIcon } from '../shared/svg/svg-icon';
 import { useAuthStore } from '@/stores/useAuth.store';
 import { sendOtp, verifyOtp } from '@/apis/auth.api';
 import { editProfile } from '@/apis/profile.api';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 // Constants
 const OTP_LENGTH = 6;
@@ -41,7 +43,6 @@ const AuthModal = () => {
   const isVerifyingRef = useRef(false);
 
   // Reset to phone step if on OTP step without phone number (on reload)
-  // But keep profile step even without phone (user is completing profile after OTP verification)
   useEffect(() => {
     if (currentStep === 'otp' && !phone) {
       setCurrentStep('phone');
@@ -65,14 +66,12 @@ const AuthModal = () => {
 
   // Close modal
   const close = useCallback(() => {
-    // Don't close if on profile step (wait for form submission)
     if (currentStep === 'profile') return;
 
     setAuthModalOpen(false);
     resetAuthFlow();
     if (timerRef.current) clearInterval(timerRef.current);
 
-    // Reset all local state
     setphone('');
     setOtp('');
     setFirstName('');
@@ -117,24 +116,20 @@ const AuthModal = () => {
           setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
         } else {
           toast.success(response.message);
-          // Save token
           setToken(response.payload.token);
           setPhone(response.payload.user.phone);
-          // Check if profile exists
+
           if (response.payload.user.profile === null) {
-            // No profile - show profile form
             setCurrentStep('profile');
           } else {
-            // Profile exists - save profile and navigate to /profile
             setUserProfile(response.payload.user.profile);
             setAuthModalOpen(false);
             resetAuthFlow();
 
-            // Clear sensitive data
             setphone('');
             setOtp('');
 
-            router.push('/account');
+            router.refresh();
           }
         }
       } catch (error) {
@@ -161,6 +156,7 @@ const AuthModal = () => {
     setAuthModalOpen,
     resetAuthFlow,
     router,
+    setPhone,
   ]);
 
   // Handle phone submission
@@ -174,7 +170,7 @@ const AuthModal = () => {
       }
       const first = Number(phone[0]);
       if (first <= 4) {
-        toast.error('Phone number is not valid');
+        toast.error('Phone number must start with 5');
         return;
       }
       setIsLoading(true);
@@ -251,7 +247,6 @@ const AuthModal = () => {
       const newOtp = otpArray.join('');
       setOtp(newOtp);
 
-      // focus last filled input
       const lastIndex = Math.min(startIndex + pasted.length - 1, OTP_LENGTH - 1);
       setTimeout(() => {
         otpInputsRef.current[lastIndex]?.focus();
@@ -306,7 +301,6 @@ const AuthModal = () => {
         } else {
           toast.success(response.message);
 
-          // Save the new profile
           setUserProfile({
             name: firstName.trim(),
             photo: null,
@@ -317,13 +311,12 @@ const AuthModal = () => {
           setAuthModalOpen(false);
           resetAuthFlow();
 
-          // Clear sensitive data
           setphone('');
           setOtp('');
           setFirstName('');
           setReferralCode('');
 
-          router.push('/account');
+          router.refresh();
         }
       } catch (error) {
         toast.error('Failed to create profile. Please try again.');
@@ -356,9 +349,9 @@ const AuthModal = () => {
 
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/70" aria-hidden="true" onClick={close} />
 
-      <div className="relative z-10 w-full max-w-112.5 rounded bg-white">
+      <div className="relative z-10 w-full max-w-112.5 rounded bg-white" onClick={(e) => e.stopPropagation()}>
         {currentStep === 'phone' && (
           <div className="absolute top-3 right-3 z-10 sm:top-4 sm:right-4">
             <button
@@ -399,7 +392,7 @@ const AuthModal = () => {
               </div>
 
               <form onSubmit={handlePhoneSubmit} className="space-y-4">
-                <div className="focus-within:border-primary focus-within:ring-primary flex overflow-hidden rounded border border-gray-300 transition-colors focus-within:ring-2">
+                <div className="focus-within:border-primary flex overflow-hidden rounded border border-gray-300 transition-colors">
                   <span className="border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
                     +91
                   </span>
@@ -415,28 +408,34 @@ const AuthModal = () => {
                   />
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={phone.length !== PHONE_LENGTH || isLoading}
-                  className={`w-full rounded py-2.5 text-sm font-medium transition-colors ${
-                    phone.length === PHONE_LENGTH && !isLoading
-                      ? 'bg-primary hover:bg-primary/90 text-white'
-                      : 'cursor-not-allowed bg-gray-200 text-gray-400'
-                  }`}
+                  fullWidth
+                  disabled={phone.length !== PHONE_LENGTH}
+                  isLoading={isLoading}
+                  loadingText="Sending..."
                 >
-                  {isLoading ? 'Sending...' : 'Continue'}
-                </button>
+                  Continue
+                </Button>
               </form>
 
               <p className="text-center text-xs text-gray-500">
                 By continuing, you agree to our{' '}
-                <a href="/terms" className="text-gray-700 underline hover:text-gray-900">
+                <Link
+                  href="/terms-of-use"
+                  className="text-blue-700 hover:text-blue-800 hover:underline"
+                  target="_blank"
+                >
                   Terms of Service
-                </a>{' '}
+                </Link>{' '}
                 &{' '}
-                <a href="/privacy" className="text-gray-700 underline hover:text-gray-900">
+                <Link
+                  href="/privacy-policy"
+                  className="text-blue-700 hover:text-blue-800 hover:underline"
+                  target="_blank"
+                >
                   Privacy Policy
-                </a>
+                </Link>
               </p>
             </div>
           )}
@@ -467,7 +466,7 @@ const AuthModal = () => {
                         value={otp[index] || ''}
                         onChange={(e) => handleOtpChange(e.target.value, index)}
                         onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                        onPaste={(e) => handleOtpPaste(e, index)} // ⬅️ add this
+                        onPaste={(e) => handleOtpPaste(e, index)}
                         onMouseDown={(e) => {
                           if (index > nextAllowed) {
                             e.preventDefault();
@@ -496,18 +495,16 @@ const AuthModal = () => {
                 )}
 
                 <div className="text-center">
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={handleResendOtp}
                     disabled={!canResend}
-                    className={`text-xs font-medium sm:text-sm ${
-                      canResend
-                        ? 'text-primary cursor-pointer hover:text-orange-700'
-                        : 'cursor-not-allowed text-gray-400'
-                    }`}
+                    className={canResend ? 'text-primary hover:text-orange-700' : ''}
                   >
                     {resendTimer > 0 ? `Resend Code in ${formatTime(resendTimer)}` : 'Resend Code'}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -532,7 +529,7 @@ const AuthModal = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
+                    className="focus:border-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     required
                     maxLength={50}
@@ -547,41 +544,40 @@ const AuthModal = () => {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                     placeholder="Enter referral code"
-                    className="focus:border-primary focus:ring-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
+                    className="focus:border-primary w-full rounded border border-gray-300 px-3 py-2.5 text-sm transition-colors outline-none disabled:cursor-not-allowed disabled:bg-gray-100 sm:px-4"
                     disabled={isLoading}
                     maxLength={20}
                   />
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={!firstName.trim() || isLoading}
-                  className={`w-full rounded py-2.5 text-sm font-medium transition-colors ${
-                    firstName.trim() && !isLoading
-                      ? 'bg-primary hover:bg-primary/90 text-white'
-                      : 'cursor-not-allowed bg-gray-200 text-gray-400'
-                  }`}
+                  fullWidth
+                  disabled={!firstName.trim()}
+                  isLoading={isLoading}
+                  loadingText="Getting Started..."
                 >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      <span>Getting Started...</span>
-                    </div>
-                  ) : (
-                    'Get Started'
-                  )}
-                </button>
+                  Get Started
+                </Button>
               </form>
 
               <p className="text-center text-xs text-gray-500">
                 By continuing, you agree to our{' '}
-                <a href="/terms" className="text-gray-700 underline hover:text-gray-900">
+                <Link
+                  href="/terms-of-use"
+                  className="text-blue-700 hover:text-blue-800 hover:underline"
+                  target="_blank"
+                >
                   Terms of Service
-                </a>{' '}
+                </Link>{' '}
                 &{' '}
-                <a href="/privacy" className="text-gray-700 underline hover:text-gray-900">
+                <Link
+                  href="/privacy-policy"
+                  className="text-blue-700 hover:text-blue-800 hover:underline"
+                  target="_blank"
+                >
                   Privacy Policy
-                </a>
+                </Link>
               </p>
             </div>
           )}

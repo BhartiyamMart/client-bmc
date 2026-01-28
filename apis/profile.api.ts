@@ -37,3 +37,23 @@ export const accountDetails = async () => {
     'account'
   );
 };
+
+export const sendEmailVerification = async (data: IPROFILE.ISendEmailVerificationREQ) => {
+  return requestAPI<ApiResponse<IPROFILE.ISendEmailVerificationRES>, IPROFILE.ISendEmailVerificationREQ>(
+    'post',
+    'v1',
+    'profile/customer',
+    'request-email-verification',
+    data
+  );
+};
+
+export const verifyEmailOTP = async (data: IPROFILE.IVerifyEmailOTPREQ) => {
+  return requestAPI<ApiResponse<IPROFILE.IVerifyEmailOTPRES>, IPROFILE.IVerifyEmailOTPREQ>(
+    'post',
+    'v1',
+    'profile/customer',
+    'verify-email',
+    data
+  );
+};

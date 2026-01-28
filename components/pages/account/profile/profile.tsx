@@ -2,19 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
-import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { accountDeleteReason, accountDelete } from '@/apis/auth.api';
-import { dateToDDMMYYYY, ddMMYYYYToDate } from '@/utils/date';
-import { useRouter } from 'nextjs-toploader/app';
+import { ddMMYYYYToDate } from '@/utils/date';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { Mail } from '@/components/shared/svg/svg-icon';
-import { CalendarIcon, Trash2, User } from '@/components/shared/svg/lucide-icon';
-import { editProfile, getGender, getProfile } from '@/apis/profile.api';
-import { ErrorResposne } from '@/interfaces/api.interface';
+import { CalendarIcon, User, CircleCheck } from '@/components/shared/svg/lucide-icon';
+import { editProfile, getGender, getProfile, sendEmailVerification, verifyEmailOTP } from '@/apis/profile.api';
+import { ErrorResponse } from '@/interfaces/api.interface';
+import DeleteAccountModal from '@/components/modals/delete-account-modal';
+import ProfileSkeleton from './profile-skeleton';
 
 interface FormData {
   name: string;
@@ -24,7 +25,7 @@ interface FormData {
 }
 
 const Profile = () => {
-  const router = useRouter();
+  const { handleError } = useErrorHandler();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -42,13 +43,18 @@ const Profile = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [genderOptions, setGenderOptions] = useState<string[]>([]);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deleteReasons, setDeleteReasons] = useState<string[]>([]);
-  const [selectedReason, setSelectedReason] = useState<string>('');
-  const [deleteReasonText, setDeleteReasonText] = useState<string>('');
-  const [isLoadingReasons, setIsLoadingReasons] = useState(false);
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-  const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
+
+  // Email verification states
+  const [isEmailChanged, setIsEmailChanged] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [emailOtp, setEmailOtp] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
+
+  // Delete modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -73,6 +79,7 @@ const Profile = () => {
 
         setFormData(profileData);
         setOriginalData(profileData);
+        setIsEmailVerified(!!data?.user?.email);
       } catch (error) {
         console.error('Load data error:', error);
         toast.error('Failed to load profile data');
@@ -83,38 +90,102 @@ const Profile = () => {
     loadData();
   }, []);
 
-  const fetchDeleteReasons = async () => {
-    setIsLoadingReasons(true);
-    try {
-      const response = await accountDeleteReason();
-
-      if (response.status === 200) {
-        setDeleteReasons(Array.isArray(response.payload) ? response.payload : []);
-      } else {
-        toast.error(response.message || 'Failed to fetch delete reasons');
-      }
-    } catch (error) {
-      console.error('Fetch delete reasons error:', error);
-      toast.error('Failed to fetch delete reasons');
-    } finally {
-      setIsLoadingReasons(false);
+  // Check if email changed
+  useEffect(() => {
+    if (formData.email !== originalData.email && formData.email) {
+      setIsEmailChanged(true);
+      setIsEmailVerified(false);
+      setShowOtpInput(false);
+      setEmailOtp('');
+      setResendTimer(0);
+    } else {
+      setIsEmailChanged(false);
+      setIsEmailVerified(!!originalData.email);
     }
-  };
+  }, [formData.email, originalData.email]);
+
+  // Resend timer countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Valid email is required';
     if (!formData.gender) newErrors.gender = 'Gender is required';
+
+    if (isEmailChanged && !isEmailVerified) {
+      newErrors.email = 'Please verify your email before saving';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateDeleteForm = () => {
-    const newErrors: Record<string, string> = {};
-    if (!selectedReason) newErrors.reason = 'Please select a reason';
-    setDeleteErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleSendEmailOtp = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsSendingOtp(true);
+    try {
+      const response = await sendEmailVerification({ email: formData.email });
+      if (response.error) {
+        toast.error(response.message || 'Failed to send verification email');
+        return;
+      }
+      toast.success('Verification code sent to your email');
+      setShowOtpInput(true);
+      setResendTimer(60);
+    } catch (error) {
+      handleError(error, {
+        component: 'Profile',
+        action: 'Send Email Verification',
+        showToast: true,
+        fallbackMessage: 'Failed to send verification email',
+      });
+    } finally {
+      setIsSendingOtp(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    if (!emailOtp || emailOtp.length !== 6) {
+      toast.error('Please enter a valid 6-digit OTP');
+      return;
+    }
+
+    setIsVerifyingOtp(true);
+    try {
+      const response = await verifyEmailOTP({ email: formData.email, otp: emailOtp });
+      if (response.error) {
+        toast.error(response.message || 'Invalid OTP');
+        return;
+      }
+      toast.success('Email verified successfully!');
+      setIsEmailVerified(true);
+      setShowOtpInput(false);
+      setEmailOtp('');
+      setIsEmailChanged(false);
+      setResendTimer(0);
+    } catch (error) {
+      handleError(error, {
+        component: 'Profile',
+        action: 'Verify Email OTP',
+        showToast: true,
+        fallbackMessage: 'Failed to verify otp',
+      });
+    } finally {
+      setIsVerifyingOtp(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -134,8 +205,6 @@ const Profile = () => {
 
       const response = await editProfile(payload);
 
-      console.log(response.message);
-
       if (response.error) {
         toast.error(response.message || 'Failed to update profile');
         return;
@@ -143,49 +212,13 @@ const Profile = () => {
 
       toast.success('Profile updated successfully!');
       setOriginalData(formData);
+      setIsEmailChanged(false);
     } catch (error) {
-      const ApiError = error as ErrorResposne;
+      const ApiError = error as ErrorResponse;
       console.error('Update error:', ApiError);
       toast.error(ApiError.message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleDeleteClick = async () => {
-    setIsDeleteDialogOpen(true);
-    await fetchDeleteReasons();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!validateDeleteForm()) return;
-
-    setIsDeletingAccount(true);
-    try {
-      const payload: any = {
-        deleteTitle: selectedReason,
-      };
-
-      if (deleteReasonText.trim()) {
-        payload.deleteReason = deleteReasonText.trim();
-      }
-
-      const response = await accountDelete(payload);
-
-      if (response.status === 200) {
-        toast.success('Account deleted successfully');
-        localStorage.removeItem('auth-storage');
-        setTimeout(() => {
-          router.replace('/');
-        }, 1000);
-      } else {
-        toast.error(response.message || 'Failed to delete account');
-      }
-    } catch (error) {
-      console.error('Delete account error:', error);
-      toast.error('Failed to delete account');
-    } finally {
-      setIsDeletingAccount(false);
     }
   };
 
@@ -205,14 +238,7 @@ const Profile = () => {
   const startYear = currentYear - 100;
 
   if (isPageLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="border-primary mx-auto h-12 w-12 animate-spin rounded-full border-4 border-t-transparent"></div>
-          <p className="mt-4 text-lg font-medium text-gray-700">Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   return (
@@ -221,56 +247,135 @@ const Profile = () => {
         <div className="-mx-2 flex flex-wrap">
           {/* Name */}
           <div className="mb-6 w-full px-2 md:w-1/2">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Full Name *</label>
-            <div className="relative">
-              <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              Full Name <span className="text-red-500">*</span>
+            </label>
+            <div
+              className={cn(
+                'focus-within:border-primary flex overflow-hidden rounded border transition-colors',
+                errors.name ? 'border-red-300' : 'border-gray-300'
+              )}
+            >
+              <span className="flex items-center border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
+                <User className="h-4 w-4" />
+              </span>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => updateField('name', e.target.value)}
-                className={`focus:ring-primary/20 h-12 w-full rounded border px-4 pl-10 text-base font-medium transition-all duration-200 focus:ring-4 ${
-                  errors.name ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
-                } hover:bg-orange-50`}
+                className="w-full flex-1 px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
                 placeholder="Enter your full name"
               />
             </div>
-            {errors.name && <p className="text-xs text-rose-400">{errors.name}</p>}
+            {errors.name && <p className="mt-1 text-xs text-rose-400">{errors.name}</p>}
           </div>
 
           {/* Email */}
           <div className="mb-6 w-full px-2 md:w-1/2">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Email *</label>
-            <div className="relative">
-              <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <div
+              className={cn(
+                'focus-within:border-primary flex overflow-hidden rounded border transition-colors',
+                errors.email ? 'border-red-300' : 'border-gray-300'
+              )}
+            >
+              <span className="flex items-center border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
+                <Mail className="h-4 w-4" />
+              </span>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => updateField('email', e.target.value)}
-                className={`focus:ring-primary/20 h-12 w-full rounded border px-4 pl-10 text-base font-medium transition-all duration-200 focus:ring-4 ${
-                  errors.email ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
-                } hover:bg-orange-50`}
+                className="w-full flex-1 px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
                 placeholder="Enter your email"
               />
+              {isEmailVerified && !isEmailChanged && (
+                <span className="flex items-center px-3">
+                  <CircleCheck className="h-5 w-5 text-green-600" />
+                </span>
+              )}
             </div>
-            {errors.email && <p className="text-xs text-rose-400">{errors.email}</p>}
+            {errors.email && <p className="mt-1 text-xs text-rose-400">{errors.email}</p>}
+
+            {isEmailChanged && !isEmailVerified && !showOtpInput && (
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleSendEmailOtp}
+                  disabled={!formData.email}
+                  isLoading={isSendingOtp}
+                  loadingText="Sending..."
+                >
+                  Verify Email
+                </Button>
+              </div>
+            )}
+
+            {showOtpInput && !isEmailVerified && (
+              <div className="mt-2 space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={emailOtp}
+                    onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="Enter 6-digit OTP sent to your email"
+                    maxLength={6}
+                    className="focus:border-primary h-10 flex-1 rounded border border-gray-300 px-3 text-sm transition-all outline-none"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleVerifyEmailOtp}
+                    disabled={emailOtp.length !== 6}
+                    isLoading={isVerifyingOtp}
+                    loadingText="Verifying..."
+                    className="h-10"
+                  >
+                    Verify
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSendEmailOtp}
+                    disabled={isSendingOtp || resendTimer > 0}
+                    className="h-auto p-0 text-sm font-medium text-blue-600 hover:bg-transparent hover:text-blue-700 hover:underline"
+                  >
+                    {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* DOB */}
           <div className="mb-6 w-full px-2 md:w-1/2">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Date of Birth *</label>
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              Date of Birth <span className="text-red-500">*</span>
+            </label>
             <Popover open={showDatePicker} onOpenChange={setShowDatePicker}>
               <PopoverTrigger asChild>
-                <div className="relative">
-                  <CalendarIcon className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <div
+                  className={cn(
+                    'focus-within:border-primary flex cursor-pointer overflow-hidden rounded border transition-colors',
+                    'border-gray-300'
+                  )}
+                >
+                  <span className="flex items-center border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
+                    <CalendarIcon className="h-4 w-4" />
+                  </span>
                   <button
                     type="button"
                     className={cn(
-                      'focus:border-primary focus:ring-primary/20 h-12 w-full justify-start rounded border px-4 pl-10 text-left text-base font-medium transition-all duration-200 hover:bg-orange-50 focus:ring-4',
-                      !formData.dob && 'text-gray-500',
-                      'border-gray-200'
+                      'w-full flex-1 px-3 py-2.5 text-left text-sm outline-none',
+                      !formData.dob && 'text-gray-500'
                     )}
                   >
-                    {formData.dob ? format(formData.dob, 'PPP') : 'Pick a date'}
+                    {formData.dob ? format(formData.dob, 'dd-MM-yyyy') : 'Pick a date'}
                   </button>
                 </div>
               </PopoverTrigger>
@@ -290,20 +395,25 @@ const Profile = () => {
                 />
               </PopoverContent>
             </Popover>
-            {errors.dob && <p className="text-xs text-rose-400">{errors.dob}</p>}
+            {errors.dob && <p className="mt-1 text-xs text-rose-400">{errors.dob}</p>}
           </div>
 
           {/* Gender */}
           <div className="mb-6 w-full px-2 md:w-1/2">
-            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">Gender *</label>
-            <div className="relative">
-              <User className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              Gender <span className="text-red-500">*</span>
+            </label>
+            <div
+              className={cn(
+                'focus-within:border-primary flex overflow-hidden rounded border transition-colors',
+                errors.gender ? 'border-red-300' : 'border-gray-300'
+              )}
+            >
+              <span className="flex items-center border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
+                <User className="h-4 w-4" />
+              </span>
               <Select value={formData.gender} onValueChange={(value) => updateField('gender', value)}>
-                <SelectTrigger
-                  className={`focus:ring-primary/20 !h-12 w-full rounded border px-4 pl-10 text-base font-medium !shadow-none transition-all duration-200 hover:bg-orange-50 focus:ring-4 ${
-                    errors.gender ? 'border-red-300 focus:border-rose-400' : 'focus:border-primary border-gray-200'
-                  }`}
-                >
+                <SelectTrigger className="h-auto w-full border-0 px-3 py-2.5 text-sm !shadow-none outline-none focus:ring-0">
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
                 <SelectContent className="!rounded !shadow-none">
@@ -315,28 +425,19 @@ const Profile = () => {
                 </SelectContent>
               </Select>
             </div>
-            {errors.gender && <p className="text-xs text-rose-400">{errors.gender}</p>}
+            {errors.gender && <p className="mt-1 text-xs text-rose-400">{errors.gender}</p>}
           </div>
 
           {/* Save Changes Button */}
           <div className="mb-8 flex w-full justify-end px-2">
-            <button
+            <Button
               type="submit"
-              disabled={isLoading || !hasChanges}
-              className={`${isLoading || !hasChanges ? 'cursor-not-allowed bg-gray-200 text-gray-400' : 'bg-primary hover:bg-primary/90 text-white'} flex h-12 w-fit cursor-pointer items-center justify-center gap-2 rounded px-6 text-base font-semibold transition-all duration-200 disabled:cursor-not-allowed`}
-
-              // 'bg-primary hover:bg-primary/90 text-white'
-              //         : 'cursor-not-allowed bg-gray-200 text-gray-400'
+              disabled={!hasChanges || (isEmailChanged && !isEmailVerified)}
+              isLoading={isLoading}
+              loadingText="Saving..."
             >
-              {isLoading ? (
-                <>
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Saving...
-                </>
-              ) : (
-                'Save Changes'
-              )}
-            </button>
+              Save Changes
+            </Button>
           </div>
         </div>
       </form>
@@ -345,135 +446,20 @@ const Profile = () => {
       <div className="">
         <div className="border"></div>
         <div className="mt-8 flex flex-col">
-          <button
+          <Button
             type="button"
-            onClick={handleDeleteClick}
-            className="flex w-full cursor-pointer text-lg font-semibold text-rose-400"
+            variant="ghost"
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="h-auto w-full justify-start p-0 text-lg font-semibold text-rose-400 hover:bg-transparent hover:text-rose-500"
           >
             Delete Account
-          </button>
+          </Button>
         </div>
         <p className="text-md left text-gray-500">These actions are irreversible. Please contact support if needed.</p>
       </div>
 
-      {/* Delete Account Dialog */}
-      {isDeleteDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded bg-white p-4">
-            {/* Header */}
-            <div className="mb-6 flex items-center gap-3">
-              <div className="shrink-0"></div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">Delete Your Account?</h2>
-                <p className="mt-1 text-sm text-gray-600">
-                  This action cannot be undone. Your account and all associated data will be permanently deleted.
-                </p>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="my-8 space-y-6 border-t border-b border-gray-200 py-6">
-              {/* Select Reason */}
-              <div className="space-y-3">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Why are you deleting your account? *
-                </label>
-                {isLoadingReasons ? (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
-                  </div>
-                ) : deleteReasons.length > 0 ? (
-                  <div className="max-h-40 space-y-2 overflow-y-auto">
-                    {deleteReasons.map((reason, index) => (
-                      <label
-                        key={`reason-${index}`}
-                        className="flex cursor-pointer items-start gap-3 rounded border-2 p-3 transition-all duration-200 hover:bg-red-50"
-                        style={{
-                          borderColor: selectedReason === reason ? '#ef4444' : '#e5e7eb',
-                          backgroundColor: selectedReason === reason ? '#fef2f2' : 'transparent',
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          name="delete-reason"
-                          value={reason}
-                          checked={selectedReason === reason}
-                          onChange={(e) => {
-                            setSelectedReason(e.target.value);
-                            if (deleteErrors.reason) {
-                              setDeleteErrors((prev) => ({ ...prev, reason: '' }));
-                            }
-                          }}
-                          className="mt-1 cursor-pointer"
-                        />
-                        <span className="text-sm font-medium text-gray-900">{reason}</span>
-                      </label>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-500">No reasons available</p>
-                )}
-                {deleteErrors.reason && <p className="text-xs text-rose-400">{deleteErrors.reason}</p>}
-              </div>
-
-              {/* Additional Details */}
-              <div className="space-y-2">
-                <label htmlFor="reason-text" className="block text-sm font-semibold text-gray-700">
-                  Please provide additional details (Optional)
-                </label>
-                <textarea
-                  id="reason-text"
-                  value={deleteReasonText}
-                  onChange={(e) => {
-                    setDeleteReasonText(e.target.value);
-                    if (deleteErrors.reasonText) {
-                      setDeleteErrors((prev) => ({ ...prev, reasonText: '' }));
-                    }
-                  }}
-                  placeholder="Tell us more about your reason for leaving..."
-                  className="w-full resize-none rounded border-2 border-gray-200 px-4 py-3 text-sm font-medium transition-all duration-200 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/20"
-                  rows={4}
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col-reverse gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsDeleteDialogOpen(false);
-                  setSelectedReason('');
-                  setDeleteReasonText('');
-                  setDeleteErrors({});
-                }}
-                disabled={isDeletingAccount}
-                className="flex h-12 flex-1 cursor-pointer items-center justify-center rounded border border-gray-300 px-4 text-base font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmDelete}
-                disabled={isDeletingAccount}
-                className="bg-primary hover:bg-primary/90 flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded px-4 text-base font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {isDeletingAccount ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="h-4 w-4" />
-                    Delete Account
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Delete Account Modal */}
+      <DeleteAccountModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} />
     </div>
   );
 };

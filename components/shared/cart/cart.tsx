@@ -148,17 +148,19 @@ const Cart = ({ onClose }: CartProps) => {
               {defaultAddress?.addressLineOne} {defaultAddress?.addressLineTwo} {defaultAddress?.mapAddress}
             </p>
           </div>
-          <Button className="bg-white text-blue-500 hover:cursor-pointer hover:bg-white">
-            <Dialog>
-              <DialogTrigger className="cursor-pointer">Change</DialogTrigger>
-              <DialogContent>
-                <DialogHeader>Choose your address</DialogHeader>
-                <DialogDescription>
-                  <AddressList />
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-white text-blue-500 hover:cursor-pointer hover:bg-white">Change</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Choose your address</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                <AddressList />
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
         </div>
       </SheetHeader>
 

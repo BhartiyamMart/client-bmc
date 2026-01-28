@@ -3,19 +3,17 @@
   display: none;
 }
 
-/* Custom scrollbar for sidebar - Modern Design */
+/* Custom scrollbar for modal content */
 .customScrollbar::-webkit-scrollbar {
-  width: 8px; /* slightly wider for better visibility */
+  width: 6px;
   height: 6px;
   display: block;
 }
 
 .customScrollbar::-webkit-scrollbar-track {
-  background: #f9fafb; /* background behind scrollbar */
-  border-left: 1px solid #e5e7eb; /* left border */
-  border-right: 1px solid #e5e7eb; /* right border */
+  background: #f3f4f6;
   border-radius: 10px;
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 .customScrollbar::-webkit-scrollbar-thumb {
@@ -30,6 +28,37 @@
 
 /* Firefox support */
 .customScrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Custom scrollbar for sidebar - Modern Design */
+.customScrollbarSidebar::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+  display: block;
+}
+
+.customScrollbarSidebar::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-left: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.customScrollbarSidebar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.customScrollbarSidebar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Firefox support for sidebar */
+.customScrollbarSidebar {
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f9fafb;
 }
@@ -66,10 +95,10 @@
 .custom-pagination-dots .swiper-pagination-bullet {
   width: 8px;
   height: 8px;
-  background: #9ca3af; /* gray-400 */
+  background: #9ca3af;
   opacity: 0.4;
   border-radius: 50%;
-  margin: 0 4px !important; /* Reduced spacing */
+  margin: 0 4px !important;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
@@ -81,7 +110,7 @@
 }
 
 .custom-pagination-dots .swiper-pagination-bullet-active {
-  background: #ee7c00 !important; /* orange-600 */
+  background: #ee7c00 !important;
   opacity: 1 !important;
   transform: scale(1.25);
 }

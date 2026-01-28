@@ -551,18 +551,18 @@ const PrivacyPolicy = () => {
             <p className="mt-4 text-base leading-relaxed text-gray-700">
               <strong>Limitation: </strong>Your rights regarding your personal information may be limited, subject to
               the law of your jurisdiction.
-              <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-700">
-                <li>Incase your requests are abusive or unreasonably excessive.</li>
-                <li>Where the rights or safety of another person or persons would be encroached upon.</li>
-                <li>
-                  If the information or material you request relates to existing or anticipated legal proceedings
-                  between you and us, or providing access to you would prejudice negotiations between us or an
-                  investigation of possible unlawful activity. Your right to review, update, correct, and delete your
-                  information is subject to our records retention policies and applicable law, including any statutory
-                  retention requirements.
-                </li>
-              </ul>
             </p>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-700">
+              <li>Incase your requests are abusive or unreasonably excessive.</li>
+              <li>Where the rights or safety of another person or persons would be encroached upon.</li>
+              <li>
+                If the information or material you request relates to existing or anticipated legal proceedings between
+                you and us, or providing access to you would prejudice negotiations between us or an investigation of
+                possible unlawful activity. Your right to review, update, correct, and delete your information is
+                subject to our records retention policies and applicable law, including any statutory retention
+                requirements.
+              </li>
+            </ul>
 
             <h2 className="mt-10 text-xl font-semibold text-gray-900">
               How we protect your personal information shared with us:

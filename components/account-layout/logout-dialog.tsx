@@ -23,10 +23,10 @@ const LogoutDialog = ({ isOpen, onClose, onConfirm }: LogoutDialogProps) => {
           <DialogDescription>This will end your session and you will need to login again.</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" className="cursor-pointer rounded" onClick={onClose}>
             Cancel
           </Button>
-          <Button className="hover:bg-primary bg-primary text-white" onClick={onConfirm}>
+          <Button className="hover:bg-primary bg-primary cursor-pointer rounded text-white" onClick={onConfirm}>
             Logout
           </Button>
         </DialogFooter>

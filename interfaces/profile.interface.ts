@@ -105,3 +105,21 @@ export interface IReferralInfo {
 export interface IGetGenderREQ {}
 
 export interface IGetGenderRES extends Array<string> {}
+
+export interface ISendEmailVerificationREQ {
+  email: string;
+}
+
+export interface ISendEmailVerificationRES {
+  email: string;
+  expiresIn: string;
+}
+
+export interface IVerifyEmailOTPREQ {
+  email: string;
+  otp: string;
+}
+
+export interface IVerifyEmailOTPRES {
+  email: string;
+}

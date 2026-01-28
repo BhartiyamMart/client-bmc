@@ -5,7 +5,7 @@ export interface ApiResponse<T> {
   payload: T;
 }
 
-export interface ErrorResposne {
+export interface ErrorResponse {
   error: boolean;
   status: number;
   message: string;

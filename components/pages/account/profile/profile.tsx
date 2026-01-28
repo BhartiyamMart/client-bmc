@@ -14,6 +14,7 @@ import { useRouter } from 'nextjs-toploader/app';
 import { Mail } from '@/components/shared/svg/svg-icon';
 import { CalendarIcon, Trash2, User } from '@/components/shared/svg/lucide-icon';
 import { editProfile, getGender, getProfile } from '@/apis/profile.api';
+import { ErrorResposne } from '@/interfaces/api.interface';
 
 interface FormData {
   name: string;
@@ -133,6 +134,8 @@ const Profile = () => {
 
       const response = await editProfile(payload);
 
+      console.log(response.message);
+
       if (response.error) {
         toast.error(response.message || 'Failed to update profile');
         return;
@@ -141,8 +144,9 @@ const Profile = () => {
       toast.success('Profile updated successfully!');
       setOriginalData(formData);
     } catch (error) {
-      console.error('Update error:', error);
-      toast.error('Failed to update profile');
+      const ApiError = error as ErrorResposne;
+      console.error('Update error:', ApiError);
+      toast.error(ApiError.message);
     } finally {
       setIsLoading(false);
     }

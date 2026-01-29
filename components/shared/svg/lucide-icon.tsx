@@ -338,8 +338,8 @@ export const Plus: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-plus-icon lucide-plus"
       {...props}
     >
@@ -409,6 +409,56 @@ export const Home: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
     >
       <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
       <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    </svg>
+  );
+};
+
+export const Briefcase: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-briefcase-icon lucide-briefcase"
+      {...props}
+    >
+      <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+      <rect width="20" height="14" x="2" y="6" rx="2" />
+    </svg>
+  );
+};
+
+export const Hotel: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-hotel-icon lucide-hotel"
+      {...props}
+    >
+      <path d="M10 22v-6.57" />
+      <path d="M12 11h.01" />
+      <path d="M12 7h.01" />
+      <path d="M14 15.43V22" />
+      <path d="M15 16a5 5 0 0 0-6 0" />
+      <path d="M16 11h.01" />
+      <path d="M16 7h.01" />
+      <path d="M8 11h.01" />
+      <path d="M8 7h.01" />
+      <rect x="4" y="2" width="16" height="20" rx="2" />
     </svg>
   );
 };

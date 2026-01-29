@@ -1,21 +1,30 @@
 'use client';
 
-import { Pencil, Trash2, Plus } from '@/components/shared/svg/lucide-icon';
+import { Pencil, Trash2, Plus, MapPin } from '@/components/shared/svg/lucide-icon';
 import { useEffect, useState, useCallback } from 'react';
 import { IAddressFormData } from '@/interfaces/address.interface';
 import toast from 'react-hot-toast';
 import { deleteAddress as deleteAddressAPI, editAddress, getAllAddress } from '@/apis/address.api';
 import { useRouter } from 'next/navigation';
-import AddressMap from './address-map';
 import { IAddressData, useAddressStore } from '@/stores/useAddress.store';
+import { Button } from '@/components/ui/button';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import AddressListSkeleton from './address-list-skeleton';
+import AddressMapModal from '@/components/modals/address-map-modal';
+import DeleteAddressModal from '@/components/modals/delete-address-modal';
 
 const AddressList = () => {
   const { addresses: storeAddresses, defaultAddress, setAddresses, deleteAddress } = useAddressStore();
+  const { handleError } = useErrorHandler();
 
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [updatingPrimary, setUpdatingPrimary] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<IAddressData | null>(null);
   const router = useRouter();
 
   const convertToStoreFormat = (apiAddresses: IAddressFormData[]): IAddressData[] => {
@@ -32,7 +41,6 @@ const AddressList = () => {
     }));
   };
 
-  // ✅ FIX 1: Find primary from CONVERTED addresses
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
@@ -42,24 +50,27 @@ const AddressList = () => {
           const convertedAddresses = convertToStoreFormat(response.payload.addresses);
           setAddresses(convertedAddresses);
 
-          // ✅ Search in convertedAddresses (same format as rendered)
+          // Find primary address from converted addresses
           const primary = convertedAddresses.find((a) => a.isDefault);
           const initialSelectedId = primary?.addressId ?? convertedAddresses[0]?.addressId ?? null;
 
           setSelectedId(initialSelectedId);
         }
       } catch (error) {
-        console.error('Failed to fetch addresses:', error);
-        toast.error('Failed to load addresses');
+        handleError(error, {
+          component: 'Address List',
+          action: 'fetch addresses',
+          showToast: true,
+          fallbackMessage: 'Failed to load addresses',
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchAddresses();
-  }, [setAddresses]);
+  }, [setAddresses, handleError]);
 
-  // ✅ FIX 2: Don't override selectedId during loading
   useEffect(() => {
     if (defaultAddress && !loading) {
       setSelectedId(defaultAddress.addressId);
@@ -73,7 +84,13 @@ const AddressList = () => {
         return;
       }
 
+      // Don't update if already selected
+      if (selectedId === address.addressId) {
+        return;
+      }
+
       try {
+        setUpdatingPrimary(true);
         const updateData: Partial<IAddressFormData> = {
           addressId: address.addressId,
           isDefault: true,
@@ -81,13 +98,15 @@ const AddressList = () => {
           mapAddress: address.mapAddress,
           addressLineOne: address.addressLineOne,
           addressName: address.addressName,
+          addressPhone: address.addressPhone,
         };
 
         const response = await editAddress(updateData as IAddressFormData);
         if (response.status === 200) {
-          toast.success('Primary address updated');
+          toast.success('Primary address updated successfully');
           setSelectedId(address.addressId);
 
+          // Refresh addresses
           const freshAddresses = await getAllAddress();
           if (freshAddresses.status === 200) {
             const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
@@ -95,12 +114,18 @@ const AddressList = () => {
             router.refresh();
           }
         }
-      } catch (error: any) {
-        console.error('Failed to update primary address:', error);
-        toast.error(error.message || 'Something went wrong');
+      } catch (error) {
+        handleError(error, {
+          component: 'Address List',
+          action: 'update primary address',
+          showToast: true,
+          fallbackMessage: 'Failed to update primary address',
+        });
+      } finally {
+        setUpdatingPrimary(false);
       }
     },
-    [router, setAddresses]
+    [router, setAddresses, selectedId, handleError]
   );
 
   const formatAddress = (a: IAddressData) => {
@@ -125,13 +150,14 @@ const AddressList = () => {
         toast.success('Address updated successfully');
       } else {
         response = await editAddress(addressData);
-        toast.success('Address created successfully');
+        toast.success('Address added successfully');
       }
 
       if (response.status === 200 || response.status === 201) {
         setIsMapOpen(false);
         setEditingAddressId(null);
 
+        // Refresh addresses
         const freshAddresses = await getAllAddress();
         if (freshAddresses.status === 200) {
           const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
@@ -139,134 +165,198 @@ const AddressList = () => {
           router.refresh();
         }
       }
-    } catch (error: any) {
-      toast.error('Something went wrong');
+    } catch (error) {
+      handleError(error, {
+        component: 'Address List',
+        action: editingAddressId ? 'edit address' : 'add address',
+        showToast: true,
+        fallbackMessage: editingAddressId ? 'Failed to update address' : 'Failed to add address',
+      });
     }
   };
 
-  // ✅ FIX 3: Update selectedId after delete
-  const handleDelete = async (addressId?: string) => {
-    if (!addressId) {
-      toast.error('Invalid address ID');
-      return;
-    }
+  const handleDeleteClick = (address: IAddressData) => {
+    setAddressToDelete(address);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!addressToDelete?.addressId) return;
+
+    const addressId = addressToDelete.addressId;
 
     try {
+      setDeletingId(addressId);
       const response = await deleteAddressAPI({ addressId });
       if (response.status === 200) {
         deleteAddress(addressId);
         toast.success('Address deleted successfully');
 
+        // Update selected address if deleted address was selected
         if (selectedId === addressId) {
           const remainingAddresses = storeAddresses.filter((a) => a.addressId !== addressId);
-          const newDefault = remainingAddresses.find((a) => a.isDefault) || remainingAddresses[0];
-          setSelectedId(newDefault?.addressId ?? null);
+          if (remainingAddresses.length > 0) {
+            const newDefault = remainingAddresses.find((a) => a.isDefault) || remainingAddresses[0];
+            setSelectedId(newDefault?.addressId ?? null);
+          } else {
+            setSelectedId(null);
+          }
         }
 
+        setIsDeleteModalOpen(false);
+        setAddressToDelete(null);
         router.refresh();
       }
-    } catch (error: any) {
-      toast.error('Failed to delete address');
-      const freshAddresses = await getAllAddress();
-      if (freshAddresses.status === 200) {
-        const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
-        setAddresses(convertedAddresses);
+    } catch (error) {
+      handleError(error, {
+        component: 'Address List',
+        action: 'delete address',
+        showToast: true,
+        fallbackMessage: 'Failed to delete address',
+      });
+
+      // Refresh addresses on error
+      try {
+        const freshAddresses = await getAllAddress();
+        if (freshAddresses.status === 200) {
+          const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
+          setAddresses(convertedAddresses);
+        }
+      } catch (refreshError) {
+        handleError(refreshError, {
+          component: 'Address List',
+          action: 'refresh addresses after delete error',
+          showToast: false,
+        });
       }
+    } finally {
+      setDeletingId(null);
     }
   };
 
+  // Show skeleton loader
   if (loading) {
-    return (
-      <section className="rounded-md bg-white p-8 text-center">
-        <div>Loading addresses...</div>
-      </section>
-    );
+    return <AddressListSkeleton />;
   }
 
   return (
     <>
-      <section className="rounded-md bg-white">
-        <div className="space-y-4 py-4">
-          {storeAddresses.length === 0 ? (
-            <div className="py-12 text-center text-gray-500">
-              <p className="text-sm md:text-base">No addresses found.</p>
-              <button
-                onClick={handleAddNew}
-                className="bg-primary hover:bg-primary/80 mt-4 cursor-pointer rounded px-4 py-2 text-sm text-white transition-colors md:px-6 md:text-base"
-              >
-                Add your first address
-              </button>
+      <section className="space-y-3">
+        {storeAddresses.length === 0 ? (
+          <div className="py-12 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+              <MapPin className="h-8 w-8 text-gray-400" />
             </div>
-          ) : (
-            storeAddresses.map((address) => (
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">No addresses found</h3>
+            <p className="mb-6 text-sm text-gray-500">Add your first delivery address to get started</p>
+            <Button onClick={handleAddNew} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add your first address
+            </Button>
+          </div>
+        ) : (
+          <>
+            {storeAddresses.map((address) => (
               <div
                 key={address.addressId ?? Math.random()}
-                className="flex items-start justify-between gap-2 rounded-md border px-3 py-3 md:gap-3 md:px-4"
+                className={`group relative flex items-start justify-between gap-3 rounded border-2 p-4 transition-all md:gap-4 md:p-5 ${
+                  selectedId === address.addressId
+                    ? 'border-primary bg-primary/5'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                }`}
               >
-                <div className="flex min-w-0 flex-1 items-start gap-2 md:gap-3">
-                  {/* ✅ FIX 4: Orange radio button */}
-                  <input
-                    type="radio"
-                    name="deliveryAddress"
-                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-                    checked={selectedId === address.addressId}
-                    onChange={() => handleSelect(address)}
-                  />
+                <div className="flex min-w-0 flex-1 items-start gap-3 md:gap-4">
+                  {/* Radio Button */}
+                  <div className="relative mt-1 flex items-center">
+                    <input
+                      type="radio"
+                      name="deliveryAddress"
+                      className="accent-primary focus:ring-primary h-5 w-5 shrink-0 cursor-pointer focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      checked={selectedId === address.addressId}
+                      onChange={() => handleSelect(address)}
+                      disabled={updatingPrimary}
+                    />
+                  </div>
 
+                  {/* Address Details */}
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm leading-snug font-medium wrap-break-word md:text-base">
+                    {/* Label Badge */}
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="bg-primary-dark inline-flex items-center gap-1.5 rounded-xs px-2.5 py-1 text-xs font-medium text-white">
+                        <span className="capitalize">{address.label.toLowerCase()}</span>
+                      </span>
+
+                      {address.isDefault && (
+                        <span className="bg-primary inline-flex items-center rounded-xs px-2.5 py-1 text-xs font-semibold text-white">
+                          Primary
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Address Text */}
+                    <p className="mb-2 text-sm leading-relaxed text-gray-900 capitalize md:text-base">
                       {formatAddress(address)}
                     </p>
-                    <p className="mt-1 truncate text-xs text-gray-500 md:text-sm">
-                      {address.addressName} • {address.addressPhone}
-                    </p>
 
-                    {address.isDefault && (
-                      <span className="mt-1.5 inline-block rounded-full border border-orange-400 bg-orange-50 px-2 py-0.5 text-xs font-medium text-orange-600 md:px-3">
-                        Primary
-                      </span>
-                    )}
+                    {/* Contact Info */}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600 md:text-sm">
+                      <span className="font-medium capitalize">{address.addressName}</span>
+                      <span className="text-gray-400">•</span>
+                      <span>{address.addressPhone}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="text-primary flex shrink-0 items-center gap-1 md:gap-2">
-                  <button
+                {/* Action Buttons */}
+                <div className="flex shrink-0 items-center gap-1 md:gap-2">
+                  <Button
                     type="button"
-                    className="cursor-pointer rounded-lg p-1 transition-colors hover:bg-orange-50 md:p-1.5"
-                    title="Edit"
+                    variant="ghost"
+                    size="icon"
+                    className="text-primary hover:bg-primary-dark/10 hover:text-primary h-9 w-9"
+                    title="Edit address"
                     onClick={() => handleEdit(address.addressId!)}
+                    disabled={deletingId === address.addressId || updatingPrimary}
                   >
-                    <Pencil className="h-4 w-4 md:h-5 md:w-5" />
-                  </button>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
 
-                  <button
+                  <Button
                     type="button"
-                    className="cursor-pointer rounded-lg p-1 transition-colors hover:bg-orange-50 md:p-1.5"
-                    title="Delete"
-                    onClick={() => handleDelete(address.addressId)}
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-primary-dark/10 h-9 w-9 text-red-600 hover:text-red-700"
+                    title="Delete address"
+                    onClick={() => handleDeleteClick(address)}
+                    disabled={deletingId === address.addressId || updatingPrimary}
                   >
-                    <Trash2 className="h-4 w-4 md:h-5 md:w-5" />
-                  </button>
+                    {deletingId === address.addressId ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
 
-        {storeAddresses.length > 0 && (
-          <button
-            type="button"
-            onClick={handleAddNew}
-            className="text-primary flex w-full items-center justify-center gap-2 rounded border px-4 py-3 text-sm transition-colors hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-60 md:px-6 md:py-4 md:text-base"
-            disabled={loading}
-          >
-            <Plus className="h-4 w-4 md:h-5 md:w-5" />
-            <span className="font-medium">Add New Address</span>
-          </button>
+            {/* Add New Address Button */}
+            <Button
+              type="button"
+              variant="outline"
+              className="text-primary hover:border-primary hover:bg-primary/5 hover:text-primary w-full gap-2 border-2 border-dashed py-6"
+              onClick={handleAddNew}
+              disabled={loading}
+            >
+              <Plus className="h-5 w-5" />
+              <span className="font-semibold">Add New Address</span>
+            </Button>
+          </>
         )}
       </section>
 
-      <AddressMap
+      {/* Address Map Modal */}
+      <AddressMapModal
         isOpen={isMapOpen}
         onClose={() => {
           setIsMapOpen(false);
@@ -274,6 +364,18 @@ const AddressList = () => {
         }}
         onSave={handleMapSave}
         addressId={editingAddressId || undefined}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteAddressModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setAddressToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        isDeleting={!!deletingId}
+        addressName={addressToDelete?.addressName}
       />
     </>
   );

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// ✅ Address data interface (from your API response)
 export interface IAddressData {
   addressId: string;
   label: string;
@@ -14,13 +13,11 @@ export interface IAddressData {
   status: boolean;
 }
 
-// ✅ Address state
 interface AddressState {
   addresses: IAddressData[];
   defaultAddress: IAddressData | null;
 }
 
-// ✅ Address actions
 interface AddressActions {
   setAddresses: (addresses: IAddressData[]) => void;
   addAddress: (address: IAddressData) => void;
@@ -30,16 +27,13 @@ interface AddressActions {
   clearAddresses: () => void;
 }
 
-// ✅ Initial state
 const initialState: AddressState = {
   addresses: [],
   defaultAddress: null,
 };
 
-// ✅ Combined type
 export type AddressStore = AddressState & AddressActions;
 
-// ✅ Create address store with persist
 export const useAddressStore = create<AddressStore>()(
   persist(
     (set) => ({

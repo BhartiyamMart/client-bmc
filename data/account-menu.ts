@@ -17,10 +17,10 @@ export const accountMenuItems: IMenuItem[] = [
     activePatterns: ['/account/orders', '/orders'],
   },
   {
-    name: 'Address',
-    href: '/account/address',
+    name: 'Addresses',
+    href: '/account/addresses',
     icon: MapPin,
-    activePatterns: ['/account/address', '/address'],
+    activePatterns: ['/account/addresses', '/addresses'],
   },
   {
     name: 'Referrals',

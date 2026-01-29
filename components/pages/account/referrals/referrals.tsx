@@ -1,16 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { generateReferral, getReferralCode } from '@/apis/referrals.api';
-import { Copy, Gift, RefreshCw, Share2, Users } from '@/components/shared/svg/lucide-icon';
+import { Copy, Gift, RefreshCw, Users } from '@/components/shared/svg/lucide-icon';
 import { useRouter } from 'next/navigation';
 import { ReferralData } from '@/interfaces/referral.interface';
+import ReferralSkeleton from './referral-skeleton';
 
-// ✅ UI state (separate from data)
 interface UIState {
   isLoading: boolean;
   isFetching: boolean;
@@ -19,7 +17,6 @@ interface UIState {
 }
 
 const ReferralPage = () => {
-  // ✅ Single source of truth for all referral data
   const [referralData, setReferralData] = useState<ReferralData>({
     hasReferralCode: false,
     code: '',
@@ -27,7 +24,6 @@ const ReferralPage = () => {
     recentReferrals: [],
   });
 
-  // ✅ UI state separate from data
   const [uiState, setUIState] = useState<UIState>({
     isLoading: false,
     isFetching: true,
@@ -41,7 +37,6 @@ const ReferralPage = () => {
     fetchReferralCode();
   }, []);
 
-  // ✅ FIXED: Removed duplication by not spreading ...stats
   const fetchReferralCode = async () => {
     setUIState((prev) => ({ ...prev, isFetching: true, fetchError: false }));
 
@@ -52,14 +47,13 @@ const ReferralPage = () => {
       if (res.status === 200) {
         const { hasReferralCode, code, totalReferrals, recentReferrals } = res.payload;
 
-        // ✅ Update all data in one place - NO SPREADING to avoid duplication
         setReferralData({
           hasReferralCode: hasReferralCode || false,
           code: code || '',
           totalReferrals: totalReferrals || 0,
           recentReferrals: recentReferrals || [],
         });
-        console.log('referrals :', referralData);
+        console.log('referrals:', referralData);
       } else {
         console.warn('Non-200 response:', res);
         setUIState((prev) => ({ ...prev, fetchError: true }));
@@ -85,7 +79,6 @@ const ReferralPage = () => {
       console.log('generateReferral response:', res);
 
       if (res.status === 201 && res.payload?.referralCode) {
-        // ✅ Update referralData with new code
         setReferralData((prev) => ({
           ...prev,
           hasReferralCode: true,
@@ -119,47 +112,18 @@ const ReferralPage = () => {
     }
   };
 
-  const shareCode = () => {
-    if (!referralData.code) return;
-
-    const shareText = `Join me with my referral code: ${referralData.code}! 🎁`;
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: 'My Referral Code',
-          text: shareText,
-        })
-        .catch((err) => {
-          if (err.name !== 'AbortError') {
-            console.error('Share error:', err);
-          }
-        });
-    } else {
-      navigator.clipboard.writeText(shareText);
-      toast.success('Share text copied!');
-    }
-  };
-
   // Loading state
   if (uiState.isFetching) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-linear-to-br px-4 py-12">
-        <div className="text-center">
-          <RefreshCw className="text-primary mx-auto mb-4 h-12 w-12 animate-spin" />
-          <p className="text-text-secondary text-lg">Loading referral information...</p>
-        </div>
-      </div>
-    );
+    return <ReferralSkeleton />;
   }
 
   // Error state
   if (uiState.fetchError && !referralData.hasReferralCode) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-linear-to-br px-4 py-12">
+      <div className="flex min-h-100 items-center justify-center">
         <div className="text-center">
-          <p className="text-text-secondary mb-4 text-lg">Unable to load referral data</p>
-          <Button onClick={fetchReferralCode} className="bg-primary">
+          <p className="mb-4 text-gray-600">Unable to load referral data</p>
+          <Button onClick={fetchReferralCode} className="">
             <RefreshCw className="mr-2 h-4 w-4" />
             Retry
           </Button>
@@ -168,187 +132,119 @@ const ReferralPage = () => {
     );
   }
 
+  const steps = [
+    {
+      number: 1,
+      title: 'Generate Code',
+      desc: 'Get your unique code',
+    },
+    {
+      number: 2,
+      title: 'Share with Friends',
+      desc: 'Via WhatsApp or SMS',
+    },
+    {
+      number: 3,
+      title: 'Earn Rewards',
+      desc: 'Get ₹50 per signup',
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-linear-to-br px-4 py-12">
-      <div className="mx-auto w-full space-y-8">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 text-center">
-          <h1 className="bg-primary bg-clip-text text-2xl font-black text-transparent drop-shadow-lg md:text-4xl">
-            Invite Friends, Earn Rewards
-          </h1>
-          <p className="text-text-secondary mx-auto max-w-md text-xl leading-relaxed">
-            Generate your unique referral code and earn ₹50 for every friend who joins!
-          </p>
-        </motion.div>
-
-        {/* Generate Code Card */}
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mx-auto max-w-2xl"
-        >
-          <Card className="border-none shadow-none">
-            <CardContent>
-              <AnimatePresence mode="wait">
-                {!referralData.hasReferralCode ? (
-                  <motion.div
-                    key="generate"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex justify-center"
-                  >
-                    <Button
-                      size="lg"
-                      onClick={generateReferralCode}
-                      disabled={uiState.isLoading}
-                      className="group from-primary hover:from-primary-dark border-primary/50 text-primary-foreground via-primary hover:shadow-primary/50 relative transform border-2 bg-linear-to-r to-orange-600 px-6 py-6 text-xl font-bold shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:via-orange-600 hover:to-orange-700"
-                    >
-                      {uiState.isLoading ? (
-                        <>
-                          <RefreshCw className="mr-3 h-6 w-6 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Gift className="mr-2 h-6 w-6 transition-transform duration-300 group-hover:rotate-12" />
-                          <span className="text-xs sm:text-lg md:text-xl">Generate My Code</span>
-                        </>
-                      )}
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="revealed"
-                    initial={{ opacity: 0, scale: 1.05, rotateX: 10 }}
-                    animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-                    className="space-y-6 text-center"
-                  >
-                    <motion.div
-                      initial={{ scale: 0, rotateY: -180 }}
-                      animate={{ scale: 1, rotateY: 0 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className="from-primary text-primary-foreground to-primary hover:shadow-primary/50 inline-flex items-center gap-4 rounded-3xl border-4 border-white/30 bg-linear-to-r px-10 py-8 font-mono text-3xl font-black tracking-widest shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 md:text-4xl"
-                    >
-                      {referralData.code}
-                    </motion.div>
-                    <div className="flex flex-wrap justify-center gap-4">
-                      <Button
-                        onClick={copyToClipboard}
-                        size="lg"
-                        className={`border-primary/50 transform gap-3 border-2 px-8 py-7 text-lg font-bold shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-orange-400/50 ${
-                          uiState.isCopied
-                            ? 'border-emerald-400 bg-emerald-500 text-white shadow-emerald-500/25 hover:bg-emerald-600'
-                            : 'bg-primary-light hover:bg-primary-accent text-primary border-primary/30'
-                        }`}
-                      >
-                        <Copy className="h-5 w-5" />
-                        {uiState.isCopied ? 'Copied!' : 'Copy Code'}
-                      </Button>
-                      {/* <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={shareCode}
-                        className="border-primary/50 hover:bg-primary-light/50 transform gap-3 border-2 px-8 py-7 text-lg font-bold shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-orange-400/50"
-                      >
-                        <Share2 className="h-5 w-5" />
-                        Share Now
-                      </Button> */}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Stats - Now using referralData.stats */}
-        <div className="grid gap-8 md:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="group cursor-default"
+    <div className="space-y-6">
+      {/* Empty State - No Code Generated */}
+      {!referralData.hasReferralCode ? (
+        <div className="flex min-h-100 flex-col items-center justify-center space-y-4 py-12">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
+            <Gift className="h-10 w-10 text-gray-600" />
+          </div>
+          <div className="space-y-2 text-center">
+            <h2 className="text-xl font-semibold text-gray-900">Start Earning Rewards</h2>
+            <p className="max-w-md text-gray-600">Generate your unique referral code and earn ₹50 for every friend</p>
+          </div>
+          <Button
+            onClick={generateReferralCode}
+            disabled={uiState.isLoading}
+            isLoading={uiState.isLoading}
+            loadingText="Generating..."
+            className="gap-2"
           >
-            <Card className="from-primary-light to-primary-accent/50 hover:from-primary-accent border-primary/20 group-hover:border-primary/40 hover:shadow-primary/20 h-full border-0 bg-linear-to-br shadow-xl transition-all duration-500 hover:to-orange-200/70 hover:shadow-2xl">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-primary-dark flex items-center gap-3 text-4xl font-black transition-all duration-300 group-hover:scale-105 md:text-5xl">
-                  {referralData.totalReferrals}
-                  <Users className="text-primary h-14 w-14" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-primary-dark mb-1 text-2xl font-bold">Friends Referred</p>
-                <p className="text-text-secondary text-lg">Total successful referrals</p>
-              </CardContent>
-            </Card>
-          </motion.div>
+            <Gift className="h-4 w-4" />
+            Generate My Code
+          </Button>
+        </div>
+      ) : (
+        /* Referral Code + Stats - No Card */
+        <div className="space-y-6">
+          {/* Referral Code Section */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-gray-700">Referral Code</label>
+            <div className="flex items-center justify-between rounded border border-gray-300 bg-gray-50 p-4">
+              <code className="text-2xl font-bold tracking-wider text-gray-900 md:text-3xl">{referralData.code}</code>
+              <Button
+                onClick={copyToClipboard}
+                size="sm"
+                variant={uiState.isCopied ? 'default' : 'outline'}
+                className={`gap-2 ${
+                  uiState.isCopied ? 'bg-green-600 text-white hover:bg-green-700' : 'border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <Copy className="h-4 w-4" />
+                {uiState.isCopied ? 'Copied!' : 'Copy'}
+              </Button>
+            </div>
+          </div>
 
-          {/* <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <Card className="to-primary-light/70 hover:to-primary-accent/80 border-primary/20 group-hover:border-primary/40 h-full border-0 bg-linear-to-br from-orange-50 shadow-xl transition-all duration-500 hover:from-orange-100 hover:shadow-2xl hover:shadow-primary/20">
-              <CardHeader className="pb-4">
-                <CardTitle className="from-primary bg-linear-to-r via-primary to-orange-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
-                  +₹{referralData.stats.totalEarnings}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-primary-dark mb-1 text-2xl font-bold">Total Earned</p>
-                <p className="text-text-secondary text-lg">₹50 per successful referral</p>
-              </CardContent>
-            </Card>
-          </motion.div> */}
+          {/* Stats Section */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-gray-700">Performance</label>
+            <div className="flex items-center gap-4 rounded border border-gray-200 bg-gray-50 p-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                <Users className="h-6 w-6 text-gray-600" />
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-gray-900">{referralData.totalReferrals}</p>
+                <p className="text-sm text-gray-600">Friends Referred</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* How it Works - Always Visible */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">How Referrals Work</h3>
+          <p className="mt-1 text-sm text-gray-600">Simple 3-step process to earn rewards</p>
         </div>
 
-        {/* How it works */}
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <Card className="to-primary-light/50 border-primary/20 border-0 bg-linear-to-br from-orange-50/80 shadow-2xl backdrop-blur-xl">
-            <CardHeader>
-              <CardTitle className="from-primary-dark to-primary bg-linear-to-r via-orange-600 bg-clip-text text-3xl font-black text-transparent">
-                How Referrals Work
-              </CardTitle>
-              <CardDescription className="text-text-secondary">Simple 3-step process to earn rewards</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6 pt-4 md:grid-cols-3">
-              {[
-                {
-                  icon: '🎁',
-                  title: 'Generate Code',
-                  desc: 'Click button to get your unique referral code instantly',
-                  bg: 'from-primary-light to-orange-100',
-                },
-                {
-                  icon: '📱',
-                  title: 'Share Easily',
-                  desc: 'Copy link or share via WhatsApp, SMS, social media',
-                  bg: 'from-primary-accent to-orange-200',
-                },
-                {
-                  icon: '💰',
-                  title: 'Earn Rewards',
-                  desc: 'Get ₹50 credited when friends complete signup',
-                  bg: 'from-orange-100 to-primary-accent',
-                },
-              ].map((step, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group border-primary/10 hover:border-primary/30 rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:bg-white/60 hover:shadow-xl"
-                >
-                  <div
-                    className={`mx-auto mb-6 h-20 w-20 bg-linear-to-br ${step.bg} flex items-center justify-center rounded-2xl border-4 border-white/50 shadow-xl transition-all duration-300 group-hover:scale-110`}
-                  >
-                    <span className="text-3xl">{step.icon}</span>
-                  </div>
-                  <h3 className="text-primary-dark group-hover:text-primary mb-3 text-xl font-bold transition-colors">
-                    {step.title}
-                  </h3>
-                  <p className="text-text-secondary leading-relaxed">{step.desc}</p>
-                </motion.div>
-              ))}
-            </CardContent>
-          </Card>
-        </motion.div>
+        {/* Horizontal Stepper */}
+        <div className="relative">
+          {/* Horizontal connecting line */}
+          <div className="absolute top-5 right-5 left-5 hidden h-0.5 bg-gray-200 md:block"></div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {steps.map((step, index) => (
+              <div key={step.number} className="relative flex flex-col items-start gap-3 md:items-center">
+                {/* Circle with number */}
+                <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold text-gray-700">
+                  {step.number}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 text-left md:text-center">
+                  <h4 className="mb-1 font-semibold text-gray-900">{step.title}</h4>
+                  <p className="text-sm text-gray-600">{step.desc}</p>
+                </div>
+
+                {/* Mobile vertical line */}
+                {index < steps.length - 1 && (
+                  <div className="absolute top-12 left-5 h-full w-0.5 bg-gray-200 md:hidden"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

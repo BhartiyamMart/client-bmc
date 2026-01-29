@@ -174,7 +174,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
                 showBackButton={!isAccountRoot || !isMobile}
               />
             </div>
-            <div className="lg:customScrollbar min-h-0 flex-1 overflow-y-auto">
+            <div className="customScrollbar min-h-0 flex-1 overflow-y-auto">
               <div className="p-4 py-6">{children}</div>
             </div>
           </main>

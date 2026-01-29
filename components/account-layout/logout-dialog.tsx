@@ -26,7 +26,7 @@ const LogoutDialog = ({ isOpen, onClose, onConfirm }: LogoutDialogProps) => {
           <Button variant="outline" className="cursor-pointer rounded" onClick={onClose}>
             Cancel
           </Button>
-          <Button className="hover:bg-primary bg-primary cursor-pointer rounded text-white" onClick={onConfirm}>
+          <Button className="" onClick={onConfirm}>
             Logout
           </Button>
         </DialogFooter>

@@ -450,7 +450,7 @@ const Profile = () => {
             type="button"
             variant="ghost"
             onClick={() => setIsDeleteModalOpen(true)}
-            className="h-auto w-full justify-start p-0 text-lg font-semibold text-rose-400 hover:bg-transparent hover:text-rose-500"
+            className="h-auto w-fit justify-start p-0 text-lg font-semibold text-rose-400 hover:bg-transparent hover:text-rose-500"
           >
             Delete Account
           </Button>

@@ -137,7 +137,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
   return (
     <Section className="py-4">
-      <Container className="relative flex h-auto w-full flex-col overflow-hidden rounded border bg-white lg:h-125 lg:min-h-125 lg:flex-row">
+      <Container className="relative flex h-auto min-h-[70vh] w-full flex-col overflow-hidden rounded border bg-white lg:h-[80vh] lg:flex-row">
         {isSidebarOpen && (
           <div className="fixed inset-0 z-20 bg-black/50 lg:hidden" onClick={closeSidebar} aria-label="Close sidebar" />
         )}

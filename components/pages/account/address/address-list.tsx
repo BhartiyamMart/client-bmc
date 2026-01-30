@@ -193,12 +193,14 @@ const AddressList = () => {
         deleteAddress(addressId);
         toast.success('Address deleted successfully');
 
-        // Update selected address if deleted address was selected
-        if (selectedId === addressId) {
-          const remainingAddresses = storeAddresses.filter((a) => a.addressId !== addressId);
-          if (remainingAddresses.length > 0) {
-            const newDefault = remainingAddresses.find((a) => a.isDefault) || remainingAddresses[0];
-            setSelectedId(newDefault?.addressId ?? null);
+        const freshAddresses = await getAllAddress();
+        if (freshAddresses.status === 200) {
+          const convertedAddresses = convertToStoreFormat(freshAddresses.payload.addresses);
+          setAddresses(convertedAddresses);
+          if (convertedAddresses.length > 0) {
+            const newPrimary = convertedAddresses.find((a) => a.isDefault);
+            const newSelectedId = newPrimary?.addressId ?? convertedAddresses[0].addressId;
+            setSelectedId(newSelectedId);
           } else {
             setSelectedId(null);
           }
@@ -271,7 +273,7 @@ const AddressList = () => {
                   className="flex cursor-pointer items-start justify-between gap-3 md:gap-4"
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-3 md:gap-4">
-                    <div className="relative flex items-center">
+                    <div className="relative mt-px flex items-center">
                       <input
                         type="checkbox"
                         id={`address-${address.addressId}`}

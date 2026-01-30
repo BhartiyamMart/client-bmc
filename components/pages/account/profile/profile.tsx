@@ -16,6 +16,7 @@ import { editProfile, getGender, getProfile, sendEmailVerification, verifyEmailO
 import { ErrorResponse } from '@/interfaces/api.interface';
 import DeleteAccountModal from '@/components/modals/delete-account-modal';
 import ProfileSkeleton from './profile-skeleton';
+import { useAuthStore } from '@/stores/useAuth.store';
 
 interface FormData {
   name: string;
@@ -26,6 +27,7 @@ interface FormData {
 
 const Profile = () => {
   const { handleError } = useErrorHandler();
+  const { updateUserProfile } = useAuthStore();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -209,6 +211,13 @@ const Profile = () => {
         toast.error(response.message || 'Failed to update profile');
         return;
       }
+
+      updateUserProfile({
+        name: payload.name,
+        dateOfBirth: payload.dateOfBirth || null,
+        gender: payload.gender,
+        autoMail: payload.email,
+      });
 
       toast.success('Profile updated successfully!');
       setOriginalData(formData);

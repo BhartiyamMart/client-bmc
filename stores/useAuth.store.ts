@@ -1,3 +1,4 @@
+import { IUserProfile } from '@/interfaces/profile.interface';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -5,20 +6,12 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type AuthStep = 'phone' | 'otp' | 'profile';
 
-export interface IUserProfile {
-  name: string;
-  photo?: string | null;
-  dateOfBirth?: string | null;
-  gender?: string | null;
-  referralCode?: string | null;
-  autoMail?: string | null;
-}
-
 export interface AuthState {
   // Auth data
   token: string | null;
   phone: string | null;
   autoMail: string | null;
+  email: string | null;
   userProfile: IUserProfile | null;
   isAuthenticated: boolean;
 
@@ -36,7 +29,8 @@ export interface AuthActions {
   // Auth actions
   setToken: (token: string | null) => void;
   setPhone: (phone: string | null) => void;
-  setAutomail: (phone: string | null) => void;
+  setAutomail: (autoMail: string | null) => void;
+  setEmail: (mail: string | null) => void;
   setUserProfile: (profile: IUserProfile | null) => void;
   updateUserProfile: (updates: Partial<IUserProfile>) => void;
 
@@ -65,6 +59,7 @@ const initialState: AuthState = {
   token: null,
   phone: null,
   autoMail: null,
+  email: null,
   userProfile: null,
   isAuthenticated: false,
   isAuthModalOpen: false,
@@ -95,6 +90,11 @@ export const useAuthStore = create<AuthStore>()(
       setAutomail: (autoMail) =>
         set({
           autoMail,
+        }),
+
+      setEmail: (email) =>
+        set({
+          email,
         }),
 
       setUserProfile: (profile) =>
@@ -160,6 +160,7 @@ export const useAuthStore = create<AuthStore>()(
         token: state.token,
         phone: state.phone,
         autoMail: state.autoMail,
+        email: state.email,
         userProfile: state.userProfile,
         isAuthenticated: state.isAuthenticated,
         isAuthModalOpen: state.isAuthModalOpen,

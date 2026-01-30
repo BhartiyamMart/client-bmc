@@ -33,8 +33,6 @@ const Footer = () => {
                 />
               ))}
             </div>
-
-            {/* <p className="text-xs text-gray-500 sm:text-sm">Bhartiyam Marketplace Private Limited</p> */}
           </div>
 
           {/* Links Section */}

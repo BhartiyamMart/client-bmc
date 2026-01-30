@@ -12,7 +12,7 @@ export interface IProfile {
 }
 
 export interface ICreateProfileData {
-  profile: IProfile;
+  profile: IUserProfile;
   myReferralCode: string;
   referralApplied: boolean;
   referralInfo: IReferralInfo | null;
@@ -23,6 +23,9 @@ export interface IUserProfile {
   photo?: string | null;
   dateOfBirth?: string | null;
   gender?: string | null;
+  referralCode?: string | null;
+  autoMail?: string | null;
+  mail?: string | null;
 }
 
 export interface WalletTerm {

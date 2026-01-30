@@ -1,7 +1,8 @@
+// src/components/pages/account/wallet/wallet.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Plus, AlertTriangle, Gift } from '@/components/shared/svg/lucide-icon';
+import { AlertTriangle, Wallet as WalletIconEmpty } from '@/components/shared/svg/lucide-icon';
 import { Input } from '@/components/ui/input';
 import { getWallet, reChargeWallet, verifyReChargeWallet, getWalletTransaction } from '@/apis/wallet.api';
 import { useWalletStore } from '@/stores/useWallet.store';
@@ -21,8 +22,8 @@ import {
 } from '@/components/ui/pagination';
 import { ArrowDownRight, ArrowUpRight } from '@/components/shared/svg/svg-icon';
 import WalletTncModal from '@/components/modals/wallet-tnc-modal';
+import { WalletEmptySkeleton, WalletLoadedSkeleton } from './wallet-skeleton';
 
-// Declare Razorpay on window object
 declare global {
   interface Window {
     Razorpay: any;
@@ -55,25 +56,25 @@ const Wallet = () => {
   const wallet = useWalletStore();
   const [selectedQuickAmount, setSelectedQuickAmount] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const userStore = useAuthStore();
   const router = useRouter();
   const quickAmounts: number[] = [2000, 2500, 3000, 3500, 4000, 4500, 5000];
 
-  // Add state to track Razorpay script loading
   const [razorpayLoaded, setRazorpayLoaded] = useState<boolean>(false);
 
-  // Transaction states
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [transactionsLoading, setTransactionsLoading] = useState<boolean>(false);
-  const limit = 2; // Items per page
+  const limit = 10;
 
-  // Load Razorpay script dynamically
+  const [isTncModalOpen, setIsTncModalOpen] = useState<boolean>(false);
+
+  // Load Razorpay script
   useEffect(() => {
     const loadRazorpayScript = () => {
       return new Promise<boolean>((resolve) => {
-        // Check if already loaded
         if (typeof window.Razorpay !== 'undefined') {
           setRazorpayLoaded(true);
           resolve(true);
@@ -85,13 +86,11 @@ const Wallet = () => {
         script.async = true;
 
         script.onload = () => {
-          console.log('Razorpay script loaded successfully');
           setRazorpayLoaded(true);
           resolve(true);
         };
 
         script.onerror = () => {
-          console.error('Failed to load Razorpay script');
           setRazorpayLoaded(false);
           toast.error('Failed to load payment gateway');
           resolve(false);
@@ -103,7 +102,6 @@ const Wallet = () => {
 
     loadRazorpayScript();
 
-    // Cleanup function
     return () => {
       const script = document.querySelector(
         `script[src="${env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js'}"]`
@@ -120,14 +118,13 @@ const Wallet = () => {
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setAmount(parseInt(e.target.value));
-    const enteredAmount = parseInt(e.target.value);
+    const enteredAmount = parseInt(e.target.value) || 0;
+    setAmount(enteredAmount);
     if (!quickAmounts.includes(enteredAmount)) {
       setSelectedQuickAmount(null);
     }
   };
 
-  // Fetch wallet transactions
   const fetchTransactions = async (page: number) => {
     setTransactionsLoading(true);
     try {
@@ -136,38 +133,79 @@ const Wallet = () => {
         limit: limit.toString(),
       });
 
-      console.log('Transaction response:', response);
-
       if (response.status === 200) {
-        setTransactions(response.payload.transactions);
-
-        // Use pagination object from API response
+        setTransactions(response.payload.transactions || []);
         const { totalPages } = response.payload.pagination;
-        setTotalPages(totalPages);
-
-        console.log('Current page:', page, 'Total pages:', totalPages);
+        setTotalPages(totalPages || 1);
       }
     } catch (error) {
       console.error('Failed to fetch transactions:', error);
-      toast.error('Failed to load transactions');
     } finally {
       setTransactionsLoading(false);
     }
   };
 
   useEffect(() => {
-    const handleFetchWallet = async () => {
-      await getWallet();
+    const initWallet = async () => {
+      const currentUserPhone = userStore.phone;
+      const storedUserPhone = wallet.userPhone;
+
+      if (storedUserPhone && storedUserPhone !== currentUserPhone) {
+        wallet.resetWallet();
+      }
+
+      // Wait for bootstrap
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      const isChecked = wallet.isWalletChecked;
+      const hasWalletFromStore = wallet.hasWallet;
+
+      if (isChecked && hasWalletFromStore) {
+        try {
+          const response = await getWallet();
+          if (response.status === 200 && response.payload?.wallet) {
+            wallet.setBalance(response.payload.wallet.balance.toString());
+            await fetchTransactions(currentPage);
+          }
+        } catch (error: any) {
+          console.error('Wallet fetch error:', error);
+          if (error?.status === 404) {
+            // Server says no wallet
+            wallet.setHasWallet(false);
+            setIsTncModalOpen(true);
+          }
+        } finally {
+          setInitialLoading(false);
+        }
+      } else if (isChecked && !hasWalletFromStore) {
+        // No wallet - show modal
+        setInitialLoading(false);
+        setIsTncModalOpen(true);
+      } else {
+        // Not checked yet - wait more
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setInitialLoading(false);
+
+        if (!wallet.isWalletChecked || !wallet.hasWallet) {
+          setIsTncModalOpen(true);
+        }
+      }
     };
 
-    handleFetchWallet();
-    fetchTransactions(currentPage);
+    initWallet();
+  }, []);
+
+  // Fetch transactions when page changes
+  useEffect(() => {
+    if (wallet.hasWallet && !initialLoading && wallet.isWalletChecked) {
+      fetchTransactions(currentPage);
+    }
   }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -182,10 +220,8 @@ const Wallet = () => {
       return;
     }
 
-    // Check if Razorpay is loaded
     if (!razorpayLoaded || typeof window.Razorpay === 'undefined') {
       toast.error('Payment gateway not loaded. Please refresh the page.');
-      console.error('Razorpay not loaded. razorpayLoaded:', razorpayLoaded, 'window.Razorpay:', typeof window.Razorpay);
       return;
     }
 
@@ -193,7 +229,6 @@ const Wallet = () => {
 
     try {
       const response = await reChargeWallet({ amount });
-      console.log('Recharge response:', response);
 
       if (response.status === 201) {
         const { razorpay } = response.payload;
@@ -203,8 +238,8 @@ const Wallet = () => {
         const userContact = userStore.phone || '9999999999';
 
         const options = {
-          key: razorpay.key, // Use key from API response
-          amount: razorpay.amount, // Already in paise
+          key: razorpay.key,
+          amount: razorpay.amount,
           currency: razorpay.currency || 'INR',
           name: 'Bhartiyam Wallet',
           description: 'Add money to wallet',
@@ -221,9 +256,14 @@ const Wallet = () => {
                 toast.success('Payment successful! Money added to wallet.');
                 setAmount(0);
                 setSelectedQuickAmount(null);
+
+                const walletResponse = await getWallet();
+                if (walletResponse.payload?.wallet) {
+                  wallet.setBalance(walletResponse.payload.wallet.balance.toString());
+                }
+
                 fetchTransactions(1);
                 setCurrentPage(1);
-                router.push('wallet');
               } else {
                 toast.error('Payment verification failed. Please contact support.');
               }
@@ -255,7 +295,6 @@ const Wallet = () => {
           },
         };
 
-        console.log('Opening Razorpay with options:', options);
         const razorpayWindow = new window.Razorpay(options);
 
         razorpayWindow.on('payment.failed', function (response: any) {
@@ -280,7 +319,31 @@ const Wallet = () => {
     }
   };
 
-  // Helper function to get transaction icon and color
+  const handleWalletCreated = async () => {
+    setInitialLoading(true);
+    setIsTncModalOpen(false);
+
+    try {
+      const response = await getWallet();
+      if (response.status === 200 || response.status === 201) {
+        wallet.setHasWallet(true);
+        wallet.setWalletChecked(true);
+        wallet.setUserPhone(userStore.phone || '');
+
+        if (response.payload?.wallet?.balance !== undefined) {
+          wallet.setBalance(response.payload.wallet.balance.toString());
+        }
+
+        await fetchTransactions(1);
+        setCurrentPage(1);
+      }
+    } catch (error) {
+      console.error('Failed to fetch wallet after creation:', error);
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
   const getTransactionStyle = (type: string) => {
     const lowerType = type.toLowerCase();
 
@@ -299,7 +362,6 @@ const Wallet = () => {
     };
   };
 
-  // Helper function to format date
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -312,7 +374,6 @@ const Wallet = () => {
     });
   };
 
-  // Helper function to get status badge color
   const getStatusColor = (status: string) => {
     const lowerStatus = status.toLowerCase();
 
@@ -329,7 +390,6 @@ const Wallet = () => {
     return 'bg-gray-100 text-gray-700';
   };
 
-  // Generate page numbers for pagination
   const generatePageNumbers = () => {
     const pages: (number | string)[] = [];
     const maxVisible = 5;
@@ -364,11 +424,98 @@ const Wallet = () => {
 
     return pages;
   };
+
+  const steps = [
+    {
+      number: 1,
+      title: 'Create Wallet',
+      desc: 'Accept terms & conditions',
+    },
+    {
+      number: 2,
+      title: 'Add Money',
+      desc: 'Via UPI or cards',
+    },
+    {
+      number: 3,
+      title: 'Shop & Save',
+      desc: 'Fast checkout & rewards',
+    },
+  ];
+
+  if (initialLoading) {
+    // Check if wallet exists in store to decide which skeleton to show
+    return wallet.hasWallet ? <WalletLoadedSkeleton /> : <WalletEmptySkeleton />;
+  }
+
+  if (!wallet.hasWallet) {
+    return (
+      <>
+        <div className="space-y-6">
+          {/* Empty State - No Wallet */}
+          <div className="flex min-h-100 flex-col items-center justify-center space-y-4 py-12">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
+              <WalletIconEmpty className="h-10 w-10 text-gray-600" />
+            </div>
+            <div className="space-y-2 text-center">
+              <h2 className="text-xl font-semibold text-gray-900">Create Your Wallet</h2>
+              <p className="max-w-md text-gray-600">
+                Accept terms & conditions to start using your wallet for faster checkout
+              </p>
+            </div>
+            <Button onClick={() => setIsTncModalOpen(true)} className="gap-2">
+              <WalletIconEmpty className="h-4 w-4" />
+              Create My Wallet
+            </Button>
+          </div>
+
+          {/* How it Works - Always Visible */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">How Wallet Works</h3>
+              <p className="mt-1 text-sm text-gray-600">Simple 3-step process to start using wallet</p>
+            </div>
+
+            {/* Horizontal Stepper */}
+            <div className="relative">
+              {/* Horizontal connecting line */}
+              <div className="absolute top-5 right-5 left-5 hidden h-0.5 bg-gray-200 md:block"></div>
+
+              <div className="grid gap-6 md:grid-cols-3">
+                {steps.map((step, index) => (
+                  <div key={step.number} className="relative flex flex-col items-start gap-3 md:items-center">
+                    {/* Circle with number */}
+                    <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold text-gray-700">
+                      {step.number}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 text-left md:text-center">
+                      <h4 className="mb-1 font-semibold text-gray-900">{step.title}</h4>
+                      <p className="text-sm text-gray-600">{step.desc}</p>
+                    </div>
+
+                    {/* Mobile vertical line */}
+                    {index < steps.length - 1 && (
+                      <div className="absolute top-12 left-5 h-full w-0.5 bg-gray-200 md:hidden"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Wallet T&C Modal */}
+        <WalletTncModal isOpen={isTncModalOpen} onClose={() => router.back()} onSuccess={handleWalletCreated} />
+      </>
+    );
+  }
+
   return (
     <div className="bg-gray-50 sm:bg-white">
-      <div className="space-y-4 p-3 sm:space-y-6 sm:p-4 md:p-6">
-        {/* Main Wallet Container */}
-        <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 sm:space-y-6 sm:p-6">
+      <div className="">
+        <div className="space-y-4 border-gray-200 bg-white">
           {/* Balance Section */}
           <div className="space-y-2 sm:space-y-4">
             <h2 className="text-xs font-medium text-gray-600 sm:text-sm">Available Balance</h2>
@@ -377,55 +524,55 @@ const Wallet = () => {
 
           {/* Add Money Section */}
           <div className="space-y-3 sm:space-y-4">
-            {/* Amount Input */}
             <div className="space-y-2">
-              <div className="relative">
-                <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm font-medium text-gray-500 sm:text-base">
+              <div className="focus-within:border-primary flex overflow-hidden rounded border border-gray-300 transition-colors">
+                <span className="border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
                   ₹
                 </span>
-                <Input
-                  type="number"
-                  value={amount || ''}
+                <input
+                  inputMode="numeric"
+                  value={amount}
                   onChange={handleAmountChange}
-                  className="h-10 w-full pl-7 text-base font-medium sm:h-12 sm:pl-8 sm:text-lg"
+                  maxLength={5}
+                  className="h-10 w-full flex-1 px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
                   placeholder="Enter amount"
                   disabled={loading}
                 />
               </div>
             </div>
 
-            {/* Quick Amounts */}
             <div className="space-y-2">
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {quickAmounts.map((quickAmount: number) => (
-                  <button
+                  <Button
                     key={quickAmount}
                     onClick={() => handleQuickAmount(quickAmount)}
                     disabled={loading}
-                    className={`shrink-0 cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm ${
+                    className={`shrink-0 cursor-pointer rounded border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm ${
                       selectedQuickAmount === quickAmount
-                        ? 'border-primary text-primary bg-orange-50'
-                        : 'border-gray-300 bg-white text-gray-400'
+                        ? 'border-primary hover:bg-primary-light bg-primary-light text-primary-dark hover:text-primary-dark border-2'
+                        : 'hover:border-primary bg-white text-gray-700 hover:bg-orange-50'
                     }`}
                   >
                     ₹{quickAmount.toLocaleString('en-IN')}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
-            <p className="text-xs text-gray-500">UPI can have maximum of ₹25000</p>
+            <p className="text-xs text-gray-500">Wallet can have maximum of ₹25,000</p>
           </div>
 
           <Button
-            className="bg-primary h-10 w-full text-sm font-semibold text-white hover:bg-orange-600 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
+            className="text-whiteenabled:cursor-pointer h-10 w-full font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!amount || loading || !razorpayLoaded}
             onClick={handleRecharge}
+            isLoading={loading}
+            loadingText="Processing..."
           >
-            {loading ? 'Processing...' : !razorpayLoaded ? 'Loading payment gateway...' : 'Add amount'}
+            {!razorpayLoaded ? 'Loading payment gateway...' : 'Add amount'}
           </Button>
 
-          {/* Important Note */}
-          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 sm:p-4">
+          <div className="rounded border border-yellow-200 bg-yellow-50 p-3 sm:p-4">
             <div className="flex items-start gap-2 sm:gap-3">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-yellow-600 sm:h-5 sm:w-5" />
               <div className="min-w-0">
@@ -438,22 +585,24 @@ const Wallet = () => {
           </div>
         </div>
 
-        {/* Transaction History Section */}
-        <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+        {/* Transaction History */}
+        <div className="mt-10 space-y-4">
           <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">Transaction History</h2>
 
           {transactionsLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+            <div className="flex items-center justify-center py-12">
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
             </div>
           ) : transactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <WalletTncModal />
-              <p className="mt-4 text-sm text-gray-500 sm:text-base">No transactions yet</p>
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                <WalletIconEmpty className="h-8 w-8 text-gray-400" />
+              </div>
+              <p className="text-sm text-gray-500 sm:text-base">No transactions yet</p>
+              <p className="mt-1 text-xs text-gray-400">Start by adding money to your wallet</p>
             </div>
           ) : (
             <>
-              {/* Transactions List */}
               <div className="space-y-3">
                 {transactions.map((transaction) => {
                   const style = getTransactionStyle(transaction.type);
@@ -461,13 +610,13 @@ const Wallet = () => {
                   return (
                     <div
                       key={transaction.id}
-                      className="flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 sm:p-4"
+                      className="flex items-center justify-between rounded border border-gray-200 p-3 transition-colors hover:bg-gray-50 sm:p-4"
                     >
                       <div className="flex items-center gap-3 sm:gap-4">
                         <div className={`rounded-full p-2 ${style.colorClass}`}>{style.icon}</div>
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-gray-900 sm:text-base">
-                            {transaction.type || 'Transaction'}
+                            {transaction.title || transaction.type || 'Transaction'}
                           </p>
                           <p className="text-xs text-gray-500 sm:text-sm">{formatDate(transaction.createdAt)}</p>
                           {transaction.description && (
@@ -493,7 +642,6 @@ const Wallet = () => {
                 })}
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="mt-6 flex justify-center">
                   <Pagination>

@@ -1,3 +1,4 @@
+// src/components/wallet/sidebar-wallet.tsx
 'use client';
 
 import { useRouter } from 'nextjs-toploader/app';
@@ -5,10 +6,15 @@ import { Wallet } from '../shared/svg/lucide-icon';
 import { ChevronRight } from '../shared/svg/svg-icon';
 import { useWalletStore } from '@/stores/useWallet.store';
 import { Button } from '@/components/ui/button';
+import SidebarWalletSkeleton from './sidebar-wallet-skeleton';
 
 const SidebarWallet = () => {
   const router = useRouter();
-  const { balance, hasWallet } = useWalletStore();
+  const { balance, hasWallet, isWalletChecked } = useWalletStore();
+
+  if (!isWalletChecked) {
+    return <SidebarWalletSkeleton />;
+  }
 
   return (
     <div className="mx-2 rounded border bg-white p-3 shadow-xs">

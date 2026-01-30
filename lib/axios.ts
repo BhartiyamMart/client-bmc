@@ -147,10 +147,8 @@ export const requestAPI = async <
   data?: TData,
   params?: TParams
 ): Promise<TResponse> => {
-  console.log('params', params);
   try {
     const url = buildUrl(version, service, endpoint, params);
-    console.log('Built URL:', url); // Debug log to verify URL construction
     const response = await API.request({ method, url, data });
     return response.data;
   } catch (error: unknown) {

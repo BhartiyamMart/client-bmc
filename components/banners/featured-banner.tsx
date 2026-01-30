@@ -25,7 +25,6 @@ const FeaturedBanner = () => {
     const fetchTopBanner = async (tag: string) => {
       try {
         setLoading(true);
-        console.log('tag is', tag);
         const response = await getBanners(tag);
         if (response.status === 200) {
           setBanners(response.payload);

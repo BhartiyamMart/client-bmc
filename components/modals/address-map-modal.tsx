@@ -350,8 +350,9 @@ const AddressMapModal: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, 
 
     const isOtherLabel = formData.label === 'OTHER';
 
+    // Phone validation
     if (isOtherLabel) {
-      if (!formData.addressPhone) {
+      if (!formData.addressPhone || !formData.addressPhone.trim()) {
         toast.error('Phone number is required for Other address type');
         return;
       }
@@ -360,7 +361,7 @@ const AddressMapModal: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, 
         return;
       }
     } else {
-      if (formData.addressPhone && formData.addressPhone.length !== 10) {
+      if (formData.addressPhone && formData.addressPhone.trim() && formData.addressPhone.length !== 10) {
         toast.error('Phone number must be 10 digits');
         return;
       }
@@ -374,22 +375,37 @@ const AddressMapModal: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, 
       return;
     }
 
-    const cleanedData: IAddressFormData = {
-      ...formData,
+    const cleanedData: Partial<IAddressFormData> = {
+      label: formData.label,
+      addressLineOne: formData.addressLineOne,
+      addressName: formData.addressName,
       latitude: formattedLatitude,
       longitude: formattedLongitude,
-      addressPhone: formData.addressPhone.toString(),
+      mapAddress: formData.mapAddress,
+      isDefault: formData.isDefault,
     };
 
-    if (!cleanedData.landmark?.trim()) delete cleanedData.landmark;
-    if (!cleanedData.addressLineTwo?.trim()) delete cleanedData.addressLineTwo;
-    if (!cleanedData.labelDescription?.trim()) delete cleanedData.labelDescription;
+    if (formData.labelDescription?.trim()) {
+      cleanedData.labelDescription = formData.labelDescription;
+    }
+
+    if (formData.addressLineTwo?.trim()) {
+      cleanedData.addressLineTwo = formData.addressLineTwo;
+    }
+
+    if (formData.landmark?.trim()) {
+      cleanedData.landmark = formData.landmark;
+    }
+
+    if (formData.addressPhone?.trim()) {
+      cleanedData.addressPhone = formData.addressPhone.toString();
+    }
 
     if (addressId) {
       cleanedData.addressId = addressId;
     }
 
-    onSave(cleanedData);
+    onSave(cleanedData as IAddressFormData);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -481,12 +497,12 @@ const AddressMapModal: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, 
                     <Button
                       onClick={handleUseCurrentLocation}
                       disabled={isLocating}
-                      className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-60"
+                      className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-100"
                       title="Use Current Location"
                     >
                       {isLocating ? (
                         <>
-                          <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                           <span>Locating...</span>
                         </>
                       ) : (
@@ -581,7 +597,7 @@ const AddressMapModal: React.FC<IAddressMapProps> = ({ isOpen, onClose, onSave, 
                       }}
                       className={`flex items-center justify-center gap-1.5 rounded border py-2.5 text-xs font-medium transition-all ${
                         formData.label === option.value
-                          ? 'border-primary bg-primary-light text-primary-dark border-2'
+                          ? 'border-primary hover:bg-primary-light bg-primary-light text-primary-dark hover:text-primary-dark border-2'
                           : 'hover:border-primary bg-white text-gray-700 hover:bg-orange-50'
                       }`}
                     >

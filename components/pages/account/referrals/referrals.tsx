@@ -42,7 +42,6 @@ const ReferralPage = () => {
 
     try {
       const res = await getReferralCode();
-      console.log('getReferralCode response:', res);
 
       if (res.status === 200) {
         const { hasReferralCode, code, totalReferrals, recentReferrals } = res.payload;
@@ -53,7 +52,6 @@ const ReferralPage = () => {
           totalReferrals: totalReferrals || 0,
           recentReferrals: recentReferrals || [],
         });
-        console.log('referrals:', referralData);
       } else {
         console.warn('Non-200 response:', res);
         setUIState((prev) => ({ ...prev, fetchError: true }));
@@ -76,7 +74,6 @@ const ReferralPage = () => {
 
     try {
       const res = await generateReferral();
-      console.log('generateReferral response:', res);
 
       if (res.status === 201 && res.payload?.referralCode) {
         setReferralData((prev) => ({

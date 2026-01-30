@@ -12,6 +12,7 @@ import { useErrorHandler } from '@/hooks/useErrorHandler';
 import AddressListSkeleton from './address-list-skeleton';
 import AddressMapModal from '@/components/modals/address-map-modal';
 import DeleteAddressModal from '@/components/modals/delete-address-modal';
+import { CircleCheck } from '@/components/shared/svg/lucide-icon';
 
 const AddressList = () => {
   const { addresses: storeAddresses, defaultAddress, setAddresses, deleteAddress } = useAddressStore();
@@ -259,84 +260,99 @@ const AddressList = () => {
             {storeAddresses.map((address) => (
               <div
                 key={address.addressId ?? Math.random()}
-                className={`group relative flex items-start justify-between gap-3 rounded border-2 p-4 transition-all md:gap-4 md:p-5 ${
+                className={`group relative rounded border-2 p-4 transition-all md:p-5 ${
                   selectedId === address.addressId
                     ? 'border-primary bg-primary/5'
                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                <div className="flex min-w-0 flex-1 items-start gap-3 md:gap-4">
-                  {/* Radio Button */}
-                  <div className="relative mt-1 flex items-center">
-                    <input
-                      type="radio"
-                      name="deliveryAddress"
-                      className="accent-primary focus:ring-primary h-5 w-5 shrink-0 cursor-pointer focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      checked={selectedId === address.addressId}
-                      onChange={() => handleSelect(address)}
-                      disabled={updatingPrimary}
-                    />
-                  </div>
+                <label
+                  htmlFor={`address-${address.addressId}`}
+                  className="flex cursor-pointer items-start justify-between gap-3 md:gap-4"
+                >
+                  <div className="flex min-w-0 flex-1 items-start gap-3 md:gap-4">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`address-${address.addressId}`}
+                        checked={selectedId === address.addressId}
+                        onChange={() => handleSelect(address)}
+                        disabled={updatingPrimary}
+                        className="peer sr-only"
+                      />
+                      <div className="peer-checked:border-primary peer-checked:bg-primary flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-xs border-2 border-gray-300 bg-white transition-all peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+                        {selectedId === address.addressId && (
+                          <CircleCheck className="h-full w-full text-white" strokeWidth={3} />
+                        )}
+                      </div>
+                    </div>
 
-                  {/* Address Details */}
-                  <div className="min-w-0 flex-1">
-                    {/* Label Badge */}
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="bg-primary-dark inline-flex items-center gap-1.5 rounded-xs px-2.5 py-1 text-xs font-medium text-white">
-                        <span className="capitalize">{address.label.toLowerCase()}</span>
-                      </span>
-
-                      {address.isDefault && (
-                        <span className="bg-primary inline-flex items-center rounded-xs px-2.5 py-1 text-xs font-semibold text-white">
-                          Primary
+                    {/* Address Details */}
+                    <div className="min-w-0 flex-1">
+                      {/* Label Badge */}
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="bg-primary-dark inline-flex items-center gap-1.5 rounded-xs px-2.5 py-1 text-xs font-medium text-white">
+                          <span className="capitalize">{address.label.toLowerCase()}</span>
                         </span>
-                      )}
-                    </div>
 
-                    {/* Address Text */}
-                    <p className="mb-2 text-sm leading-relaxed text-gray-900 capitalize md:text-base">
-                      {formatAddress(address)}
-                    </p>
+                        {address.isDefault && (
+                          <span className="bg-primary inline-flex items-center rounded-xs px-2.5 py-1 text-xs font-semibold text-white">
+                            Primary
+                          </span>
+                        )}
+                      </div>
 
-                    {/* Contact Info */}
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600 md:text-sm">
-                      <span className="font-medium capitalize">{address.addressName}</span>
-                      <span className="text-gray-400">•</span>
-                      <span>{address.addressPhone}</span>
+                      {/* Address Text */}
+                      <p className="mb-2 text-sm leading-relaxed text-gray-900 capitalize md:text-base">
+                        {formatAddress(address)}
+                      </p>
+
+                      {/* Contact Info */}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600 md:text-sm">
+                        <span className="font-medium capitalize">{address.addressName}</span>
+                        <span className="text-gray-400">•</span>
+                        <span>{address.addressPhone}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Action Buttons */}
-                <div className="flex shrink-0 items-center gap-1 md:gap-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="text-primary hover:bg-primary-dark/10 hover:text-primary h-9 w-9"
-                    title="Edit address"
-                    onClick={() => handleEdit(address.addressId!)}
-                    disabled={deletingId === address.addressId || updatingPrimary}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="flex shrink-0 items-center gap-1 md:gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-primary hover:bg-primary-dark/10 hover:text-primary h-9 w-9"
+                      title="Edit address"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent label click
+                        handleEdit(address.addressId!);
+                      }}
+                      disabled={deletingId === address.addressId || updatingPrimary}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
 
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="hover:bg-primary-dark/10 h-9 w-9 text-red-600 hover:text-red-700"
-                    title="Delete address"
-                    onClick={() => handleDeleteClick(address)}
-                    disabled={deletingId === address.addressId || updatingPrimary}
-                  >
-                    {deletingId === address.addressId ? (
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="hover:bg-primary-dark/10 h-9 w-9 text-red-600 hover:text-red-700"
+                      title="Delete address"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent label click
+                        handleDeleteClick(address);
+                      }}
+                      disabled={deletingId === address.addressId || updatingPrimary}
+                    >
+                      {deletingId === address.addressId ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </label>
               </div>
             ))}
 

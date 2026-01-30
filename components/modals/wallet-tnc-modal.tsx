@@ -111,7 +111,7 @@ const WalletTncModal: React.FC<WalletTncModalProps> = ({ isOpen, onClose, onSucc
             {/* Checkbox Agreement */}
             {walletTerms && walletTerms.length > 0 && (
               <div className="rounded border-2 border-gray-200 bg-white p-4">
-                <label htmlFor="terms-agreement" className="flex cursor-pointer items-start gap-3">
+                <label htmlFor="terms-agreement" className="flex cursor-pointer items-center gap-2">
                   <div className="relative mt-0.5 flex items-center">
                     <input
                       type="checkbox"
@@ -125,7 +125,7 @@ const WalletTncModal: React.FC<WalletTncModalProps> = ({ isOpen, onClose, onSucc
                       {isAgreed && <CircleCheck className="h-full w-full text-white" strokeWidth={3} />}
                     </div>
                   </div>
-                  <span className="flex-1 text-sm font-medium text-gray-900 select-none">
+                  <span className="mt-0.5 flex-1 text-sm font-medium text-gray-900 select-none">
                     I have read and agree to the terms and conditions
                   </span>
                 </label>

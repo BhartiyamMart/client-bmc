@@ -1,34 +1,53 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, forwardRef } from 'react';
-import { AnimatePresence } from 'framer-motion'; // Add this import
-
 import Container from '@/components/shared/ui/container';
 import ShopByCategory from '@/components/shared/ui/utility-bar/shop-by-category';
 import CategoryItem from '@/components/shared/ui/utility-bar/category-item';
-import MembershipButton from '@/components/shared/ui/utility-bar/membership-button';
 import CategorySidebar from '@/components/shared/ui/utility-bar/category-sidebar';
-
-const CATEGORIES = [
-  { name: 'Fruits & Vegetables', icon: '/temp/a.png' },
-  { name: 'Kitchen Appliance', icon: '/temp/b.png' },
-  { name: 'Special Offers', icon: '/temp/c.png' },
-  { name: 'Brands', icon: '/temp/d.png' },
-] as const;
+import { useContentStore } from '@/stores/useContent.store';
+import { fetchAllCategories } from '@/apis/content.api';
+import ShopUtilitySkeleton from './shop-utility-skelton';
 
 interface ShopUtilityProps {
   navbarRef?: React.RefObject<HTMLElement | null>;
 }
 
 const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef }, ref) => {
-  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarPosition, setSidebarPosition] = useState({ top: 0, left: 0 });
-  const [isPositionSet, setIsPositionSet] = useState(false);
+  const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 });
   const [navbarHeight, setNavbarHeight] = useState(90);
+  const [isLoading, setIsLoading] = useState(true);
   const buttonRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const allCategories = useContentStore((state) => state.categories);
+  const setAllCategories = useContentStore((state) => state.setCategories);
+
+  // Fetch categories
+  useEffect(() => {
+    const loadCategories = async () => {
+      if (allCategories.length > 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetchAllCategories();
+        if (response.status === 200) {
+          setAllCategories(response.payload.categories);
+        }
+      } catch (error) {
+        console.log('Error fetching categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCategories();
+  }, [allCategories.length, setAllCategories]);
 
   // Calculate navbar height dynamically
   useEffect(() => {
@@ -49,6 +68,28 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
     return () => window.removeEventListener('resize', updateNavbarHeight);
   }, [navbarRef]);
 
+  // Update button and sidebar positions
+  useEffect(() => {
+    const updatePositions = () => {
+      if (buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setButtonPosition({ top: rect.top, left: rect.left });
+        setSidebarPosition({ top: rect.bottom, left: rect.left });
+      }
+    };
+
+    updatePositions();
+
+    window.addEventListener('resize', updatePositions);
+    window.addEventListener('scroll', updatePositions, true);
+
+    return () => {
+      window.removeEventListener('resize', updatePositions);
+      window.removeEventListener('scroll', updatePositions, true);
+    };
+  }, [sidebarOpen]);
+
+  // Handle click outside
   useEffect(() => {
     if (!sidebarOpen) return;
 
@@ -61,7 +102,6 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
         !buttonRef.current.contains(target)
       ) {
         setSidebarOpen(false);
-        setIsPositionSet(false);
       }
     };
 
@@ -69,79 +109,68 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sidebarOpen]);
 
-  useEffect(() => {
-    if (!sidebarOpen) {
-      setIsPositionSet(false);
-      return;
-    }
-
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setSidebarPosition({ top: rect.bottom, left: rect.left });
-      setIsPositionSet(true);
-    }
-
-    const updatePosition = () => {
-      if (buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
-        setSidebarPosition({ top: rect.bottom, left: rect.left });
-      }
-    };
-
-    window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
-
-    return () => {
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
-    };
-  }, [sidebarOpen]);
+  if (isLoading) {
+    return <ShopUtilitySkeleton />;
+  }
 
   return (
     <>
       {/* Backdrop Overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/40"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Shop by Category Button - Fixed above backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40"
-          onClick={() => {
-            setSidebarOpen(false);
-            setIsPositionSet(false);
+          className="fixed z-50"
+          style={{
+            top: `${buttonPosition.top}px`,
+            left: `${buttonPosition.left}px`,
           }}
-        />
+        >
+          <ShopByCategory isOpen={sidebarOpen} onToggle={setSidebarOpen} />
+        </div>
       )}
 
-      {/* Navigation Bar - Dynamic top position */}
+      {/* Navigation Bar */}
       <nav
         ref={ref}
         className="sticky z-30 hidden w-full items-center justify-center bg-white p-3 shadow-sm md:p-4 lg:flex lg:p-5"
         style={{ top: `${navbarHeight}px` }}
       >
         <Container className="flex items-center gap-2.5">
-          <div ref={buttonRef} className="relative z-50">
+          <div ref={buttonRef}>
             <ShopByCategory isOpen={sidebarOpen} onToggle={setSidebarOpen} />
           </div>
 
           <div className="scrollbar-hide flex flex-1 gap-2.5 overflow-x-auto">
-            {CATEGORIES.map((category) => (
-              <CategoryItem key={category.name} name={category.name} icon={category.icon} />
+            {allCategories.slice(0, 6).map((category) => (
+              <CategoryItem
+                key={category.id}
+                name={category.name}
+                slug={category.slug}
+                icon={category.imageUrl || '/placeholder-category.png'}
+              />
             ))}
           </div>
-
-          <MembershipButton />
         </Container>
       </nav>
 
-      {/* Category Sidebar - Wrapped with AnimatePresence */}
+      {/* Category Sidebar */}
       <AnimatePresence>
-        {sidebarOpen && isPositionSet && (
+        {sidebarOpen && (
           <div ref={sidebarRef}>
-            <CategorySidebar
-              position={sidebarPosition}
-              onClose={() => {
-                setSidebarOpen(false);
-                setIsPositionSet(false);
-              }}
-            />
+            <CategorySidebar position={sidebarPosition} onClose={() => setSidebarOpen(false)} />
           </div>
         )}
       </AnimatePresence>

@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, subYears } from 'date-fns';
 import toast from 'react-hot-toast';
 import { ddMMYYYYToDate } from '@/utils/date';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
@@ -119,8 +119,21 @@ const Profile = () => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+
     if (!formData.name.trim()) newErrors.name = 'Name is required';
+
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Valid email is required';
+
+    if (!formData.dob) {
+      newErrors.dob = 'Date of birth is required';
+    } else {
+      const today = new Date();
+      const minAgeDate = subYears(today, 13);
+      if (formData.dob > minAgeDate) {
+        newErrors.dob = 'You must be at least 13 years old';
+      }
+    }
+
     if (!formData.gender) newErrors.gender = 'Gender is required';
 
     if (isEmailChanged && !isEmailVerified) {
@@ -245,6 +258,7 @@ const Profile = () => {
 
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 100;
+  const minAgeDate = subYears(new Date(), 13); // Minimum age 13 years
 
   if (isPageLoading) {
     return <ProfileSkeleton />;
@@ -371,7 +385,7 @@ const Profile = () => {
                 <div
                   className={cn(
                     'focus-within:border-primary flex cursor-pointer overflow-hidden rounded border transition-colors',
-                    'border-gray-300'
+                    errors.dob ? 'border-red-300' : 'border-gray-300'
                   )}
                 >
                   <span className="flex items-center border-r border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm font-medium text-gray-700 sm:px-3">
@@ -398,9 +412,9 @@ const Profile = () => {
                   }}
                   captionLayout="dropdown"
                   startMonth={new Date(startYear, 0)}
-                  endMonth={new Date(currentYear, 11)}
-                  disabled={(date) => date > new Date() || date < new Date(startYear, 0, 1)}
-                  defaultMonth={formData.dob || new Date(currentYear - 25, 0)}
+                  endMonth={minAgeDate}
+                  disabled={(date) => date > minAgeDate || date < new Date(startYear, 0, 1)}
+                  defaultMonth={formData.dob || subYears(new Date(), 25)}
                 />
               </PopoverContent>
             </Popover>

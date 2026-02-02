@@ -19,6 +19,10 @@ interface SliderProps {
   infinite?: boolean;
   className?: string;
   cardClassName?: string;
+  centerMode?: boolean;
+  maxCardWidth?: string;
+  minCardWidth?: string; // New prop
+  useFixedWidth?: boolean; // New prop - use fixed width instead of percentage
 }
 
 const Slider: React.FC<SliderProps> = memo(
@@ -34,6 +38,10 @@ const Slider: React.FC<SliderProps> = memo(
     infinite = true,
     className = '',
     cardClassName = '',
+    centerMode = false,
+    maxCardWidth = '220px',
+    minCardWidth = '160px',
+    useFixedWidth = false,
   }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentSlidesToShow, setCurrentSlidesToShow] = useState(slidesToShow);
@@ -46,7 +54,6 @@ const Slider: React.FC<SliderProps> = memo(
     const dragStateRef = useRef({ isDragging: false, startX: 0 });
     const transitioningRef = useRef(false);
 
-    // Memoized calculations
     const totalSlides = useMemo(() => cards.length, [cards.length]);
 
     const effectiveSlidesToShow = useMemo(
@@ -78,6 +85,8 @@ const Slider: React.FC<SliderProps> = memo(
       () => Math.max(1, Math.ceil((totalSlides - effectiveSlidesToShow) / currentSlidesToScroll) + 1),
       [totalSlides, effectiveSlidesToShow, currentSlidesToScroll]
     );
+
+    const useGridMode = useMemo(() => !shouldShowNavigation && centerMode, [shouldShowNavigation, centerMode]);
 
     // Navigation handlers
     const handleNext = useCallback(() => {
@@ -163,13 +172,13 @@ const Slider: React.FC<SliderProps> = memo(
       setDragOffset(0);
     }, [dragOffset, handleNext, handlePrev]);
 
-    // Mouse events
     const handleMouseDown = useCallback(
       (e: React.MouseEvent) => {
+        if (useGridMode) return;
         e.preventDefault();
         handleDragStart(e.clientX);
       },
-      [handleDragStart]
+      [handleDragStart, useGridMode]
     );
 
     const handleMouseMove = useCallback(
@@ -186,12 +195,12 @@ const Slider: React.FC<SliderProps> = memo(
       handleDragEnd();
     }, [handleDragEnd]);
 
-    // Touch events
     const handleTouchStart = useCallback(
       (e: React.TouchEvent) => {
+        if (useGridMode) return;
         handleDragStart(e.touches[0].clientX);
       },
-      [handleDragStart]
+      [handleDragStart, useGridMode]
     );
 
     const handleTouchMove = useCallback(
@@ -205,7 +214,6 @@ const Slider: React.FC<SliderProps> = memo(
       handleDragEnd();
     }, [handleDragEnd]);
 
-    // Auto-play control
     const stopAutoPlay = useCallback(() => {
       if (autoPlayRef.current) {
         clearInterval(autoPlayRef.current);
@@ -232,7 +240,6 @@ const Slider: React.FC<SliderProps> = memo(
       startAutoPlay();
     }, [startAutoPlay]);
 
-    // Responsive breakpoint handling with debounce
     useEffect(() => {
       let resizeTimeout: NodeJS.Timeout;
 
@@ -272,20 +279,17 @@ const Slider: React.FC<SliderProps> = memo(
       };
     }, [responsiveBreakpoints, slidesToShow, slidesToScroll]);
 
-    // Reset slide position when configuration changes
     useEffect(() => {
       if (currentSlide > maxSlide) {
         setCurrentSlide(Math.max(0, maxSlide));
       }
     }, [currentSlide, maxSlide]);
 
-    // Auto-play effect
     useEffect(() => {
       startAutoPlay();
       return () => stopAutoPlay();
     }, [startAutoPlay, stopAutoPlay]);
 
-    // Calculate transform value
     const transformValue = useMemo(() => {
       const slideWidth = 100 / effectiveSlidesToShow;
       const baseTransform = currentSlide * slideWidth;
@@ -298,13 +302,37 @@ const Slider: React.FC<SliderProps> = memo(
       return baseTransform;
     }, [currentSlide, effectiveSlidesToShow, totalSlides, dragOffset]);
 
+    // Grid Mode
+    if (useGridMode) {
+      return (
+        <div className={`slider-container ${className}`}>
+          <div className="flex flex-wrap justify-start gap-4">
+            {cards.map((card, index) => (
+              <div
+                key={index}
+                className={cardClassName}
+                style={{
+                  flex: `0 0 auto`,
+                  maxWidth: maxCardWidth,
+                  minWidth: minCardWidth,
+                  width: useFixedWidth ? maxCardWidth : 'auto',
+                }}
+              >
+                {card}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Slider Mode
     return (
       <div
         className={`slider-container relative ${className}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Main Slider */}
         <div className="overflow-hidden">
           <div
             ref={sliderRef}
@@ -327,10 +355,18 @@ const Slider: React.FC<SliderProps> = memo(
               <div
                 key={index}
                 className={`slider-slide shrink-0 ${cardClassName}`}
-                style={{
-                  width: `${100 / effectiveSlidesToShow}%`,
-                  minWidth: `${100 / effectiveSlidesToShow}%`,
-                }}
+                style={
+                  useFixedWidth
+                    ? {
+                        width: maxCardWidth,
+                        minWidth: maxCardWidth,
+                        maxWidth: maxCardWidth,
+                      }
+                    : {
+                        width: `${100 / effectiveSlidesToShow}%`,
+                        minWidth: `${100 / effectiveSlidesToShow}%`,
+                      }
+                }
               >
                 {card}
               </div>
@@ -338,38 +374,18 @@ const Slider: React.FC<SliderProps> = memo(
           </div>
         </div>
 
-        {/* Navigation Arrows - Blinkit Style */}
+        {/* Navigation Arrows */}
         {showArrows && shouldShowNavigation && (
           <>
-            {/* Previous Button */}
             {shouldShowPrevButton && (
               <button
                 onClick={handlePrev}
-                className={`slider-arrow slider-arrow-prev absolute top-1/2 left-0 z-20 -translate-y-1/2 transition-all duration-200 ${
+                className={`absolute top-1/2 left-0 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border-none bg-black/50 backdrop-blur-sm transition-all duration-200 hover:bg-black/70 focus:outline-none ${
                   isHovering ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-                } focus:scale-100 focus:opacity-100`}
+                }`}
                 aria-label="Previous slide"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  backdropFilter: 'blur(4px)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: 'none',
-                  cursor: 'pointer',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-                }}
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M12.5 15L7.5 10L12.5 5"
                     stroke="white"
@@ -381,35 +397,15 @@ const Slider: React.FC<SliderProps> = memo(
               </button>
             )}
 
-            {/* Next Button */}
             {shouldShowNextButton && (
               <button
                 onClick={handleNext}
-                className={`slider-arrow slider-arrow-next absolute top-1/2 right-0 z-20 -translate-y-1/2 transition-all duration-200 ${
+                className={`absolute top-1/2 right-0 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border-none bg-black/50 backdrop-blur-sm transition-all duration-200 hover:bg-black/70 focus:outline-none ${
                   isHovering ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-                } focus:scale-100 focus:opacity-100`}
+                }`}
                 aria-label="Next slide"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  backdropFilter: 'blur(4px)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: 'none',
-                  cursor: 'pointer',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-                }}
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M7.5 15L12.5 10L7.5 5"
                     stroke="white"
@@ -423,9 +419,9 @@ const Slider: React.FC<SliderProps> = memo(
           </>
         )}
 
-        {/* Dots Navigation */}
+        {/* Dots */}
         {showDots && shouldShowNavigation && dotsCount > 1 && (
-          <div className="slider-dots mt-4 flex justify-center space-x-2">
+          <div className="mt-4 flex justify-center space-x-2">
             {Array.from({ length: dotsCount }).map((_, index) => {
               const dotSlideIndex = index * currentSlidesToScroll;
               const isActive = Math.abs(currentSlide - dotSlideIndex) < currentSlidesToScroll;

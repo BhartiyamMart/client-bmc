@@ -1,8 +1,9 @@
 'use client';
 
-import { ChevronDown, ChevronRight } from '@/components/shared/svg/svg-icon';
 import * as IContent from '@/interfaces/catalog.interface';
 import { useCategoriesStore } from '@/stores/useCategories.store';
+import { ChevronDown, ChevronRight } from '@/components/shared/svg/svg-icon';
+import OptimizedImage from '@/components/shared/optimizeImage';
 
 interface CategorySidebarProps {
   categories: IContent.ICategoriesData[];
@@ -15,7 +16,6 @@ interface CategorySidebarProps {
 const CategorySidebar = ({ categories, pathname, onCategoryClick }: CategorySidebarProps) => {
   const { expandedCategories, toggleCategory, toggleExpandAll, allExpanded } = useCategoriesStore();
 
-  // Recursive component with parent path tracking
   const CategoryItem = ({
     category,
     level = 0,
@@ -36,6 +36,9 @@ const CategorySidebar = ({ categories, pathname, onCategoryClick }: CategorySide
     const hasChildren = children && children.length > 0;
     const isExpanded = expandedCategories.has(Number(category.id));
 
+    // Get category image
+    const categoryImage = category.imageUrl || category.imageUrl || '/placeholder-category.png';
+
     const handleClick = () => {
       onCategoryClick(categoryPath);
     };
@@ -47,55 +50,49 @@ const CategorySidebar = ({ categories, pathname, onCategoryClick }: CategorySide
 
     return (
       <li className="relative">
-        {/* Tree Lines */}
-        {level > 0 && (
-          <div className="absolute top-0 left-0 flex h-full">
-            {parentLines.map((showLine, index) => (
-              <div key={index} className="relative w-5">
-                {showLine && <div className="absolute top-0 left-2.5 h-full w-px bg-gray-200" />}
-              </div>
-            ))}
-            <div className="absolute top-4 left-0 h-px w-3 bg-gray-200" style={{ left: `${level * 20 - 8}px` }} />
-            {!isLast && (
-              <div className="absolute top-0 left-0 h-full w-px bg-gray-200" style={{ left: `${level * 20 - 8}px` }} />
-            )}
-          </div>
-        )}
-
         <button
           onClick={handleClick}
-          className={`relative flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left transition-all ${
+          className={`relative flex w-full cursor-pointer items-center gap-2.5 rounded px-3 py-2.5 text-left transition-all ${
             isActive
-              ? 'bg-orange-50 font-semibold text-orange-600 shadow-sm'
-              : 'font-medium text-gray-700 hover:bg-gray-50'
+              ? 'bg-primary-light text-primary font-semibold'
+              : 'hover:bg-primary-light hover:text-primary font-medium text-gray-700'
           }`}
           style={{ paddingLeft: `${level * 20 + 12}px` }}
         >
+          {/* Expand/Collapse Icon */}
           {hasChildren ? (
             <button
               onClick={handleToggle}
-              className="z-10 flex-shrink-0 rounded p-0.5 transition-colors hover:bg-gray-200"
+              className="z-10 shrink-0 rounded p-0.5 transition-colors hover:bg-orange-100"
               aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
               {isExpanded ? (
-                <ChevronDown className="h-4 w-4 text-gray-600" />
+                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-gray-500'}`} />
               ) : (
-                <ChevronRight className="h-4 w-4 text-gray-600" />
+                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-gray-500'}`} />
               )}
             </button>
           ) : (
             <div className="w-5" />
           )}
 
+          {/* Category Image */}
+          <div className={`relative h-7 w-7 shrink-0 overflow-hidden rounded`}>
+            <OptimizedImage src={categoryImage} alt={category.name} fill className="object-cover" sizes={'28px'} />
+          </div>
+
+          {/* Category Name */}
           <span className="flex-1 truncate text-sm">{category.name}</span>
 
+          {/* Children Count Badge */}
           {hasChildren && (
-            <span className="ml-auto rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+            <span className="bg-primary-dark ml-auto rounded-full px-2 py-0.5 text-xs font-medium text-white">
               {children.length}
             </span>
           )}
         </button>
 
+        {/* Nested Children */}
         {hasChildren && isExpanded && (
           <ul className="mt-0.5 space-y-0.5">
             {children.map((child: IContent.ICategoriesData, index: number) => (
@@ -118,13 +115,13 @@ const CategorySidebar = ({ categories, pathname, onCategoryClick }: CategorySide
 
   return (
     <div className="flex h-full flex-col bg-white">
-      {/* Categories List - No Header */}
+      {/* Categories List */}
       <div className="customScrollbarLeft flex-1 overflow-y-auto p-3">
         <nav>
           {rootCategories.length === 0 ? (
             <div className="px-4 py-16 text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-orange-50 to-orange-100">
-                <svg className="h-10 w-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-orange-100 to-orange-200">
+                <svg className="h-10 w-10 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -152,16 +149,16 @@ const CategorySidebar = ({ categories, pathname, onCategoryClick }: CategorySide
         </nav>
       </div>
 
-      {/* Footer with Expand/Collapse Toggle */}
-      <div className="border-t bg-gradient-to-r from-gray-50 to-orange-50/30 px-4 py-3">
+      {/* Footer */}
+      <div className="border-t px-4 py-3">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-gray-600">
+          <p className="text-xs font-semibold text-gray-700">
             {rootCategories.length} {rootCategories.length === 1 ? 'Category' : 'Categories'}
           </p>
 
           <button
             onClick={toggleExpandAll}
-            className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-orange-600 shadow-sm ring-1 ring-orange-200 transition-all ring-inset hover:bg-orange-50 hover:shadow-md"
+            className="flex cursor-pointer items-center gap-1.5 rounded bg-white px-3 py-1.5 text-xs font-semibold text-orange-600 ring-1 ring-orange-200 transition-all ring-inset hover:bg-orange-50 hover:ring-orange-300"
           >
             {allExpanded ? (
               <>

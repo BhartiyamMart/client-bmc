@@ -83,9 +83,9 @@ const CategoryLayout = ({ children }: CategoryLayoutProps) => {
 
   return (
     <Section className="py-4">
-      <Container className="flex flex-col gap-0 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+      <Container className="flex flex-col gap-0 overflow-hidden rounded border border-gray-200 bg-white">
         {/* Breadcrumb */}
-        {/* <CategoryBreadcrumb /> */}
+        <CategoryBreadcrumb />
 
         {/* Main Content Area */}
         <div className="relative flex h-auto min-h-[70vh] w-full flex-col lg:h-[80vh] lg:flex-row">
@@ -131,7 +131,7 @@ const CategoryLayout = ({ children }: CategoryLayoutProps) => {
                 />
               </div>
 
-              <div className="customScrollbar min-h-0 flex-1 overflow-y-auto bg-gray-50/50">
+              <div className="customScrollbar min-h-0 flex-1 overflow-y-auto">
                 <div className="p-4 py-6">{children}</div>
               </div>
             </main>

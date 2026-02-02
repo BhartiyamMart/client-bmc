@@ -1,6 +1,5 @@
 'use client';
 
-// import { Menu } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CategoryHeaderProps {
@@ -14,7 +13,6 @@ interface CategoryHeaderProps {
 }
 
 const CategoryHeader = ({ title, onMenuClick, showMenuButton, productCount, onSortChange }: CategoryHeaderProps) => {
-  // Format title: Remove hyphens and capitalize properly
   const formatTitle = (slug: string) => {
     if (!slug) return 'All Categories';
 
@@ -31,21 +29,25 @@ const CategoryHeader = ({ title, onMenuClick, showMenuButton, productCount, onSo
   };
 
   return (
-    <header className="flex flex-col border-b bg-white">
+    <header className="flex flex-col border-b">
       {/* Top Row */}
-      <div className="flex items-center gap-3 px-4 py-3">
+      <div className="flex items-center gap-3 px-4 py-3.5">
         {/* Menu Button (Mobile Only) */}
         {showMenuButton && (
-          <button onClick={onMenuClick} className="rounded-lg p-2 hover:bg-gray-100 lg:hidden" aria-label="Open menu">
-            {/* <Menu className="h-5 w-5 text-gray-700" /> */}
+          <button
+            onClick={onMenuClick}
+            className="rounded p-2 text-orange-600 transition-colors hover:bg-orange-50 lg:hidden"
+            aria-label="Open menu"
+          >
+            {/* <Menu className="h-5 w-5" /> */}x
           </button>
         )}
 
         {/* Title */}
         <div className="flex-1">
-          <h1 className="text-lg font-semibold text-gray-900">{formatTitle(title)}</h1>
+          <h1 className="text-lg font-semibold">{formatTitle(title)}</h1>
           {productCount !== undefined && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs font-medium text-orange-600">
               {productCount} {productCount === 1 ? 'product' : 'products'}
             </p>
           )}
@@ -54,7 +56,7 @@ const CategoryHeader = ({ title, onMenuClick, showMenuButton, productCount, onSo
         {/* Desktop Sort Dropdown */}
         <div className="hidden lg:block">
           <Select defaultValue="relevance" onValueChange={handleSortChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-45 cursor-pointer rounded bg-white font-medium shadow-none">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -70,9 +72,9 @@ const CategoryHeader = ({ title, onMenuClick, showMenuButton, productCount, onSo
       </div>
 
       {/* Mobile Sort Dropdown */}
-      <div className="border-t px-4 py-2 lg:hidden">
+      <div className="border-t border-orange-100 bg-orange-50/20 px-4 py-2.5 lg:hidden">
         <Select defaultValue="relevance" onValueChange={handleSortChange}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border-orange-200 bg-white font-medium text-gray-700">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>

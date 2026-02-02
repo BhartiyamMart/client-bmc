@@ -384,7 +384,7 @@ const Profile = () => {
               <PopoverTrigger asChild>
                 <div
                   className={cn(
-                    'focus-within:border-primary flex cursor-pointer overflow-hidden rounded border transition-colors',
+                    'focus-within:border-primary flex h-10 cursor-pointer overflow-hidden rounded border transition-colors',
                     errors.dob ? 'border-red-300' : 'border-gray-300'
                   )}
                 >
@@ -428,7 +428,7 @@ const Profile = () => {
             </label>
             <div
               className={cn(
-                'focus-within:border-primary flex overflow-hidden rounded border transition-colors',
+                'focus-within:border-primary flex h-10 overflow-hidden rounded border transition-colors',
                 errors.gender ? 'border-red-300' : 'border-gray-300'
               )}
             >

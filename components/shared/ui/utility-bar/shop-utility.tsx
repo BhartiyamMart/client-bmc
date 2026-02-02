@@ -6,9 +6,8 @@ import Container from '@/components/shared/ui/container';
 import ShopByCategory from '@/components/shared/ui/utility-bar/shop-by-category';
 import CategoryItem from '@/components/shared/ui/utility-bar/category-item';
 import CategorySidebar from '@/components/shared/ui/utility-bar/category-sidebar';
-import { useContentStore } from '@/stores/useContent.store';
-import { fetchAllCategories } from '@/apis/content.api';
 import ShopUtilitySkeleton from './shop-utility-skelton';
+import { useCategories } from '@/hooks/useCategories';
 
 interface ShopUtilityProps {
   navbarRef?: React.RefObject<HTMLElement | null>;
@@ -19,35 +18,12 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
   const [sidebarPosition, setSidebarPosition] = useState({ top: 0, left: 0 });
   const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 });
   const [navbarHeight, setNavbarHeight] = useState(90);
-  const [isLoading, setIsLoading] = useState(true);
+
   const buttonRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  const allCategories = useContentStore((state) => state.categories);
-  const setAllCategories = useContentStore((state) => state.setCategories);
-
-  // Fetch categories
-  useEffect(() => {
-    const loadCategories = async () => {
-      if (allCategories.length > 0) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetchAllCategories();
-        if (response.status === 200) {
-          setAllCategories(response.payload.categories);
-        }
-      } catch (error) {
-        console.log('Error fetching categories:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadCategories();
-  }, [allCategories.length, setAllCategories]);
+  // Use custom hook for categories
+  const { categories, isLoading, isInitialized } = useCategories({ autoFetch: true });
 
   // Calculate navbar height dynamically
   useEffect(() => {
@@ -109,8 +85,14 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sidebarOpen]);
 
-  if (isLoading) {
+  // Show skeleton only if not initialized yet
+  if (isLoading && !isInitialized) {
     return <ShopUtilitySkeleton />;
+  }
+
+  // Don't render if no categories after initialization
+  if (isInitialized && categories.length === 0) {
+    return null;
   }
 
   return (
@@ -154,7 +136,7 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
           </div>
 
           <div className="scrollbar-hide flex flex-1 gap-2.5 overflow-x-auto">
-            {allCategories.slice(0, 6).map((category) => (
+            {categories.slice(0, 6).map((category) => (
               <CategoryItem
                 key={category.id}
                 name={category.name}

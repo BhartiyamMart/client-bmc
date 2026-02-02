@@ -2,54 +2,49 @@
 
 import Link from 'next/link';
 import OptimizedImage from '@/components/shared/optimizeImage';
-import { useState } from 'react';
 import FeaturedCategorySkeleton from './featured-categorySkeleton';
 import Section from '@/components/shared/ui/section';
 import Container from '@/components/shared/ui/container';
 import Slider from '@/components/shared/ui/slider';
-import { useContentStore } from '@/stores/useContent.store';
+import { useCategories } from '@/hooks/useCategories';
 
 const FeaturedCategory = () => {
-  const [loading, setLoading] = useState(false);
-  const categories = useContentStore((state) => state.categories);
+  const { categories, isLoading, isInitialized } = useCategories({ autoFetch: true });
 
-  if (loading) {
+  // Show skeleton only on first load
+  if (isLoading && !isInitialized) {
     return <FeaturedCategorySkeleton />;
   }
 
-  if (categories.length === 0) {
+  // Don't render if no categories after loading
+  if (isInitialized && categories.length === 0) {
     return null;
   }
 
   const cards = categories.map((cat) => (
-    <div key={cat.id}>
-      <Link href={`/pc/${cat.slug}`}>
-        <div className="group h-full">
-          <div className="flex h-full max-h-50 flex-col overflow-hidden rounded-xl border bg-white transition-all duration-200 hover:shadow-lg">
-            {/* Header */}
-            <div className="min-h-12.4 flex items-center justify-center bg-[#FFE3C5] px-3 py-2">
-              <h3 className="line-clamp-2 text-center text-sm leading-tight font-semibold text-[#7F3200] sm:text-base">
-                {cat.name}
-              </h3>
-            </div>
-
-            {/* Image */}
-            <div className="flex flex-1 items-center justify-center p-4 sm:p-5">
-              <div className="relative aspect-square w-full">
-                <OptimizedImage
-                  src={cat.imageUrl || '/placeholder-category.png'}
-                  alt={cat.name}
-                  fill
-                  priority
-                  className="object-contain transition-transform duration-200 group-hover:scale-105"
-                  sizes="(max-width: 640px) 140px, (max-width: 1024px) 160px, 180px"
-                />
-              </div>
+    <Link key={cat.id} href={`/pc/${cat.slug}`}>
+      <div className="group h-full">
+        <div className="flex h-full flex-col overflow-hidden rounded-xl border bg-white transition-all duration-200 hover:shadow-lg">
+          <div className="flex min-h-[50px] items-center justify-center bg-[#FFE3C5] px-3 py-2">
+            <h3 className="line-clamp-2 text-center text-sm leading-tight font-semibold text-[#7F3200] sm:text-base">
+              {cat.name}
+            </h3>
+          </div>
+          <div className="flex flex-1 items-center justify-center p-4 sm:p-5">
+            <div className="relative aspect-square w-full">
+              <OptimizedImage
+                src={cat.imageUrl || '/placeholder-category.png'}
+                alt={cat.name}
+                fill
+                priority
+                className="object-contain transition-transform duration-200 group-hover:scale-105"
+                sizes="(max-width: 640px) 140px, (max-width: 1024px) 160px, 180px"
+              />
             </div>
           </div>
         </div>
-      </Link>
-    </div>
+      </div>
+    </Link>
   ));
 
   return (
@@ -72,9 +67,8 @@ const FeaturedCategory = () => {
           autoPlay={false}
           infinite={false}
           centerMode={true}
-          maxCardWidth="240px"
-          minCardWidth="200px"
-          useFixedWidth={false}
+          cardWidth="equal"
+          gap={16}
         />
       </Container>
     </Section>

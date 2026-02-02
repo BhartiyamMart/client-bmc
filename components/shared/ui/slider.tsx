@@ -20,9 +20,8 @@ interface SliderProps {
   className?: string;
   cardClassName?: string;
   centerMode?: boolean;
-  maxCardWidth?: string;
-  minCardWidth?: string; // New prop
-  useFixedWidth?: boolean; // New prop - use fixed width instead of percentage
+  cardWidth?: 'auto' | 'equal'; // New: auto adjusts to content, equal divides space equally
+  gap?: number; // Gap between cards in pixels
 }
 
 const Slider: React.FC<SliderProps> = memo(
@@ -39,9 +38,8 @@ const Slider: React.FC<SliderProps> = memo(
     className = '',
     cardClassName = '',
     centerMode = false,
-    maxCardWidth = '220px',
-    minCardWidth = '160px',
-    useFixedWidth = false,
+    cardWidth = 'equal',
+    gap = 16,
   }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentSlidesToShow, setCurrentSlidesToShow] = useState(slidesToShow);
@@ -56,6 +54,7 @@ const Slider: React.FC<SliderProps> = memo(
 
     const totalSlides = useMemo(() => cards.length, [cards.length]);
 
+    // Dynamically adjust slidesToShow if cards are less
     const effectiveSlidesToShow = useMemo(
       () => Math.min(currentSlidesToShow, totalSlides),
       [currentSlidesToShow, totalSlides]
@@ -302,22 +301,18 @@ const Slider: React.FC<SliderProps> = memo(
       return baseTransform;
     }, [currentSlide, effectiveSlidesToShow, totalSlides, dragOffset]);
 
-    // Grid Mode
+    // Calculate card width percentage
+    const cardWidthPercentage = useMemo(() => {
+      return 100 / effectiveSlidesToShow;
+    }, [effectiveSlidesToShow]);
+
+    // Grid Mode: For few items when centerMode is on
     if (useGridMode) {
       return (
         <div className={`slider-container ${className}`}>
-          <div className="flex flex-wrap justify-start gap-4">
+          <div className="flex flex-wrap justify-start" style={{ gap: `${gap}px` }}>
             {cards.map((card, index) => (
-              <div
-                key={index}
-                className={cardClassName}
-                style={{
-                  flex: `0 0 auto`,
-                  maxWidth: maxCardWidth,
-                  minWidth: minCardWidth,
-                  width: useFixedWidth ? maxCardWidth : 'auto',
-                }}
-              >
+              <div key={index} className={cardClassName} style={{ flex: '0 0 auto' }}>
                 {card}
               </div>
             ))}
@@ -342,6 +337,7 @@ const Slider: React.FC<SliderProps> = memo(
             style={{
               transform: `translateX(-${transformValue}%)`,
               willChange: dragStateRef.current.isDragging ? 'transform' : 'auto',
+              gap: cardWidth === 'equal' ? `${gap}px` : undefined,
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -355,18 +351,16 @@ const Slider: React.FC<SliderProps> = memo(
               <div
                 key={index}
                 className={`slider-slide shrink-0 ${cardClassName}`}
-                style={
-                  useFixedWidth
-                    ? {
-                        width: maxCardWidth,
-                        minWidth: maxCardWidth,
-                        maxWidth: maxCardWidth,
-                      }
-                    : {
-                        width: `${100 / effectiveSlidesToShow}%`,
-                        minWidth: `${100 / effectiveSlidesToShow}%`,
-                      }
-                }
+                style={{
+                  width:
+                    cardWidth === 'equal'
+                      ? `calc(${cardWidthPercentage}% - ${(gap * (effectiveSlidesToShow - 1)) / effectiveSlidesToShow}px)`
+                      : 'auto',
+                  minWidth:
+                    cardWidth === 'equal'
+                      ? `calc(${cardWidthPercentage}% - ${(gap * (effectiveSlidesToShow - 1)) / effectiveSlidesToShow}px)`
+                      : undefined,
+                }}
               >
                 {card}
               </div>

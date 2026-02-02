@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { getWallet, reChargeWallet, verifyReChargeWallet, getWalletTransaction } from '@/apis/wallet.api';
 import { useWalletStore } from '@/stores/useWallet.store';
 import toast from 'react-hot-toast';
-import { env } from '@/config/env';
+// import { env } from '@/config/env';
 import { useAuthStore } from '@/stores/useAuth.store';
 import { useRouter } from 'nextjs-toploader/app';
 import { Button } from '@/components/ui/button';
@@ -82,7 +82,7 @@ const Wallet = () => {
         }
 
         const script = document.createElement('script');
-        script.src = env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js';
+        script.src = process.env.NEXT_RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
 
         script.onload = () => {
@@ -104,7 +104,7 @@ const Wallet = () => {
 
     return () => {
       const script = document.querySelector(
-        `script[src="${env.RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js'}"]`
+        `script[src="${process.env.NEXT_RAZORPAY_CHECKOUT_URL || 'https://checkout.razorpay.com/v1/checkout.js'}"]`
       );
       if (script) {
         document.body.removeChild(script);

@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect, useState, useCallback } from 'react';
-import { fetchAllCategories } from '@/apis/content.api';
-import { useContentStore } from '@/stores/useContent.store';
+import { useState, useEffect } from 'react';
+import { useCategories } from '@/hooks/useCategories';
 
 interface CategorySidebarProps {
   position: { top: number; left: number };
@@ -14,35 +13,14 @@ interface CategorySidebarProps {
 const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
   const [activeCategory, setActiveCategory] = useState<number>(0);
   const [activeSubCategory, setActiveSubCategory] = useState<number>(0);
-  const allCategories = useContentStore((state) => state.categories);
-  const setAllCategories = useContentStore((state) => state.setCategories);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchCategories = useCallback(async () => {
-    if (allCategories.length > 0) return;
-
-    setIsLoading(true);
-    try {
-      const response = await fetchAllCategories();
-      if (response.status === 200) {
-        setAllCategories(response.payload.categories);
-      }
-    } catch (error) {
-      console.log('Error fetching categories:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [allCategories.length, setAllCategories]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  const { categories, isLoading } = useCategories({ autoFetch: true });
 
   useEffect(() => {
     setActiveSubCategory(0);
   }, [activeCategory]);
 
-  const currentSubcategories = allCategories[activeCategory]?.subcategories || [];
+  const currentSubcategories = categories[activeCategory]?.subcategories || [];
   const currentNestedSubcategories = currentSubcategories[activeSubCategory]?.subcategories || [];
 
   const hasSubcategories = currentSubcategories.length > 0;
@@ -50,9 +28,7 @@ const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
 
   // Build URL paths
   const buildCategoryPath = (slug: string) => `/pc/${slug}`;
-
   const buildSubcategoryPath = (parentSlug: string, slug: string) => `/pc/${parentSlug}/${slug}`;
-
   const buildNestedPath = (grandParentSlug: string, parentSlug: string, slug: string) =>
     `/pc/${grandParentSlug}/${parentSlug}/${slug}`;
 
@@ -69,13 +45,13 @@ const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
     >
       {/* First Column - Main Categories */}
       <div className="customScrollbar flex h-120 w-68 flex-col overflow-y-auto border-r border-gray-200">
-        {isLoading || allCategories.length === 0 ? (
+        {isLoading || categories.length === 0 ? (
           <div className="flex h-full items-center justify-center">
             <p className="text-sm text-gray-500">{isLoading ? 'Loading categories...' : 'No categories available'}</p>
           </div>
         ) : (
           <ul>
-            {allCategories.map((cat, index) => (
+            {categories.map((cat, index) => (
               <li key={cat.id}>
                 <Link
                   href={buildCategoryPath(cat.slug)}
@@ -121,7 +97,7 @@ const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
             {currentSubcategories.map((sub, index) => (
               <li key={sub.id}>
                 <Link
-                  href={buildSubcategoryPath(allCategories[activeCategory].slug, sub.slug)}
+                  href={buildSubcategoryPath(categories[activeCategory].slug, sub.slug)}
                   onMouseEnter={() => setActiveSubCategory(index)}
                   onClick={onClose}
                   className={`flex w-full cursor-pointer items-center justify-between px-5 py-3.5 text-left text-[15px] font-medium transition-colors ${
@@ -164,7 +140,7 @@ const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
               <li key={nestedSub.id}>
                 <Link
                   href={buildNestedPath(
-                    allCategories[activeCategory].slug,
+                    categories[activeCategory].slug,
                     currentSubcategories[activeSubCategory].slug,
                     nestedSub.slug
                   )}

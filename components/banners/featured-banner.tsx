@@ -11,39 +11,20 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
-import { useEffect, useState } from 'react';
-import { ApiResponse } from '@/interfaces/api.interface';
-import toast from 'react-hot-toast';
-import { getBanners } from '@/apis/content.api';
-import { IBanner } from '@/interfaces/content.interface';
+import { useTopBanners } from '@/hooks/useBanner';
 
 const FeaturedBanner = () => {
-  const [banners, setBanners] = useState<IBanner[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { banners, isLoading, isInitialized } = useTopBanners();
 
-  useEffect(() => {
-    const fetchTopBanner = async (tag: string) => {
-      try {
-        setLoading(true);
-        const response = await getBanners(tag);
-        if (response.status === 200) {
-          setBanners(response.payload);
-        } else {
-          toast.error(response.message);
-        }
-      } catch (error: unknown) {
-        const apiError = error as ApiResponse<IBanner[]>;
-        toast.error(apiError.message || 'Failed to fetch banners');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Show skeleton only on first load
+  if (isLoading && !isInitialized) {
+    return <FeaturedBannerSkeleton dots={4} />;
+  }
 
-    fetchTopBanner('TOP_SLIDER');
-  }, []); // Added dependency array to run only once
-
-  if (loading) return <FeaturedBannerSkeleton dots={4} />;
-  if (banners.length === 0) return null;
+  // Don't render if no banners after loading
+  if (isInitialized && banners.length === 0) {
+    return null;
+  }
 
   return (
     <Section>
@@ -112,7 +93,7 @@ const FeaturedBanner = () => {
           </Swiper>
 
           {/* Pagination Dots Below Banner */}
-          {banners.length > 1 && <div className="custom-pagination-dots mt-3 flex items-center justify-center"></div>}
+          {banners.length > 1 && <div className="custom-pagination-dots mt-3 flex items-center justify-center" />}
         </div>
       </Container>
     </Section>

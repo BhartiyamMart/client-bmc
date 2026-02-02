@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import * as IContent from '@/interfaces/content.interface';
-import { fetchAllCategories } from '@/apis/content.api';
+import * as IContent from '@/interfaces/catalog.interface';
+import { fetchAllCategories } from '@/apis/catalog.api';
 
 interface CategoriesState {
   categories: IContent.ICategoriesData[];

@@ -1,81 +1,25 @@
-// API Response Interfaces
-export interface IBannerImages {
-  small: string;
-  large: string;
+// API Request Interface
+export interface IBannerRequest {
+  tag?: string;
+  format?: 'flat' | 'nested';
 }
 
-export interface IBannerItem {
-  id: string;
-  title: string;
-  priority: number;
-  images: IBannerImages;
-  bannerUrl: string;
-  description: string;
-}
-
-export interface IBannerGroup {
-  tag: string;
-  banners: IBannerItem[];
-  count: number;
-}
-
-export interface IBannerPayload {
-  banners: IBannerGroup[];
-  totalTags: number;
-  totalBanners: number;
-}
-
-export type IBannerRES = IBanner[];
-
-// Frontend Transformed Interface
+// Single Banner Interface
 export interface IBanner {
   id: string;
   title: string;
+  tag: string;
   priority: number;
   imageUrlSmall: string;
   imageUrlLarge: string;
   bannerUrl?: string;
-  // description: string;
-  tag: string;
 }
 
-// Organized Banners by Tag
-export interface BannersByTag {
-  top: IBanner[];
-  categoryBanner: IBanner[];
-}
+// API Response - Direct Array (what you're actually getting)
+export type IBannerResponse = IBanner[];
 
-export interface ISubCategoryData {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  imageUrl: string | null;
-  priority: number;
-  depth: number;
-  parentId: string | null;
-  hasParent: boolean;
-  hasChildren: boolean;
-  childrenCount: number;
-  subcategories: ISubCategoryData[];
-}
-
-export interface ICategoriesData {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  imageUrl: string | null;
-  priority: number;
-  depth: number;
-  parentId: string | null;
-  hasParent: boolean;
-  hasChildren: boolean;
-  childrenCount: number;
-  subcategories: ISubCategoryData[]; // recursive children
-}
-
-export interface ICategoryFetchRES {
+// Alternative format (if API changes to nested)
+export interface IBannerFlatResponse {
+  banners: IBanner[];
   total: number;
-  categories: ICategoriesData[];
 }

@@ -3,104 +3,24 @@ import Section from '@/components/shared/ui/section';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const FeaturedCategorySkeleton = () => {
+  // Single responsive layout using Tailwind breakpoints
   return (
-    <Section className="my-5">
+    <Section className="py-6">
       <Container>
-        <div className="relative">
-          {/* Mobile - 2 items */}
-          <div className="flex gap-2 sm:hidden">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="flex-1">
-                <div className="relative flex h-full w-full flex-col rounded-xl border">
-                  {/* Category Name Skeleton */}
-                  <div className="rounded-t-xl bg-[#FFE6CB] py-3">
-                    <Skeleton className="mx-auto h-4 w-20" />
-                  </div>
-
-                  {/* Image Skeleton */}
-                  <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4">
-                    <Skeleton className="h-16 w-16 rounded-full" />
-                  </div>
-                </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex flex-col overflow-hidden rounded-xl border bg-white">
+              {/* Header Skeleton */}
+              <div className="flex min-h-12.5 items-center justify-center bg-[#FFE3C5] px-3 py-2">
+                <Skeleton className="h-4 w-20 sm:h-5 sm:w-24" />
               </div>
-            ))}
-          </div>
 
-          {/* Tablet - 3 items */}
-          <div className="hidden gap-3 sm:flex md:hidden">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex-1">
-                <div className="relative flex h-full w-full flex-col rounded-xl border">
-                  {/* Category Name Skeleton */}
-                  <div className="rounded-t-xl bg-[#FFE6CB] py-3">
-                    <Skeleton className="mx-auto h-5 w-24" />
-                  </div>
-
-                  {/* Image Skeleton */}
-                  <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4">
-                    <Skeleton className="h-20 w-20 rounded-full" />
-                  </div>
-                </div>
+              {/* Image Skeleton */}
+              <div className="flex flex-1 items-center justify-center p-4 sm:p-5">
+                <Skeleton className="aspect-square w-full rounded-lg" />
               </div>
-            ))}
-          </div>
-
-          {/* Desktop - 4 items */}
-          <div className="hidden gap-4 md:flex lg:hidden">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex-1">
-                <div className="relative flex h-full w-full flex-col rounded-xl border">
-                  {/* Category Name Skeleton */}
-                  <div className="rounded-t-xl bg-[#FFE6CB] py-3">
-                    <Skeleton className="mx-auto h-6 w-28" />
-                  </div>
-
-                  {/* Image Skeleton */}
-                  <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4">
-                    <Skeleton className="h-32 w-32 rounded-full" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Large Desktop - 5 items */}
-          <div className="hidden gap-4 lg:flex xl:hidden">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex-1">
-                <div className="relative flex h-full w-full flex-col rounded-xl border">
-                  {/* Category Name Skeleton */}
-                  <div className="rounded-t-xl bg-[#FFE6CB] py-3">
-                    <Skeleton className="mx-auto h-7 w-32" />
-                  </div>
-
-                  {/* Image Skeleton */}
-                  <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4">
-                    <Skeleton className="h-36 w-36 rounded-full" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Extra Large Desktop - 6 items */}
-          <div className="hidden gap-5 xl:flex">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex-1">
-                <div className="relative flex h-full w-full flex-col rounded-xl border">
-                  {/* Category Name Skeleton */}
-                  <div className="rounded-t-xl bg-[#FFE6CB] py-3">
-                    <Skeleton className="mx-auto h-8 w-36" />
-                  </div>
-
-                  {/* Image Skeleton */}
-                  <div className="flex flex-1 items-center justify-center rounded-b-xl bg-white py-4">
-                    <Skeleton className="h-40 w-40 rounded-full" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </Container>
     </Section>

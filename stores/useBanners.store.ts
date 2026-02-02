@@ -31,7 +31,7 @@ const initialState: BannersState = {
   expiresAt: null,
 };
 
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const CACHE_DURATION: number = Number(process.env.CACHE_DURATION);
 
 export type BannersStore = BannersState & BannersActions;
 
@@ -39,10 +39,8 @@ export const useBannersStore = create<BannersStore>()(
   persist(
     (set, get) => ({
       ...initialState,
-
       setBanners: (banners) => {
         const now = Date.now();
-        console.log('Setting banners:', banners); // Debug log
         set({
           banners,
           isLoading: false,
@@ -52,17 +50,13 @@ export const useBannersStore = create<BannersStore>()(
           expiresAt: now + CACHE_DURATION,
         });
       },
-
       setLoading: (loading) => set({ isLoading: loading }),
-
       setError: (error) => set({ error, isLoading: false }),
-
       isExpired: () => {
         const { expiresAt } = get();
         if (!expiresAt) return true;
         return Date.now() > expiresAt;
       },
-
       fetchBanners: async (forceRefresh = false) => {
         const { banners, isLoading, isExpired } = get();
 
@@ -101,7 +95,6 @@ export const useBannersStore = create<BannersStore>()(
       getBannersByTag: (tag: string) => {
         const { banners } = get();
         const filtered = banners.filter((banner) => banner.tag === tag).sort((a, b) => a.priority - b.priority);
-        console.log(`Banners for tag "${tag}":`, filtered); // Debug log
         return filtered;
       },
 

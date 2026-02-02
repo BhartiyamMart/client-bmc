@@ -10,6 +10,8 @@ interface CategoriesState {
   error: string | null;
   lastFetched: number | null;
   expiresAt: number | null;
+  expandedCategories: Set<number>;
+  allExpanded: boolean;
 }
 
 interface CategoriesActions {
@@ -19,6 +21,13 @@ interface CategoriesActions {
   fetchCategories: (forceRefresh?: boolean) => Promise<void>;
   clearCategories: () => void;
   isExpired: () => boolean;
+
+  expandCategory: (id: number) => void;
+  collapseCategory: (id: number) => void;
+  toggleCategory: (id: number) => void;
+  toggleExpandAll: () => void;
+
+  buildCategoryPath: (category: IContent.ICategoriesData, parentPath?: string) => string;
 }
 
 const initialState: CategoriesState = {
@@ -28,10 +37,11 @@ const initialState: CategoriesState = {
   error: null,
   lastFetched: null,
   expiresAt: null,
+  expandedCategories: new Set(),
+  allExpanded: false,
 };
 
-// Cache expiry time: 5 minutes (adjust as needed)
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CACHE_DURATION = 5 * 60 * 1000;
 
 export type CategoriesStore = CategoriesState & CategoriesActions;
 
@@ -40,7 +50,6 @@ export const useCategoriesStore = create<CategoriesStore>()(
     (set, get) => ({
       ...initialState,
 
-      // Set categories with timestamp
       setCategories: (categories) => {
         const now = Date.now();
         set({
@@ -53,31 +62,25 @@ export const useCategoriesStore = create<CategoriesStore>()(
         });
       },
 
-      // Set loading state
       setLoading: (loading) => {
         set({ isLoading: loading });
       },
 
-      // Set error state
       setError: (error) => {
         set({ error, isLoading: false });
       },
 
-      // Check if cache is expired
       isExpired: () => {
         const { expiresAt } = get();
         if (!expiresAt) return true;
         return Date.now() > expiresAt;
       },
 
-      // Fetch categories from API
       fetchCategories: async (forceRefresh = false) => {
         const { categories, isLoading, isExpired } = get();
 
-        // Skip if already loading
         if (isLoading) return;
 
-        // Skip if cache is valid and not forcing refresh
         if (!forceRefresh && categories.length > 0 && !isExpired()) {
           return;
         }
@@ -100,9 +103,62 @@ export const useCategoriesStore = create<CategoriesStore>()(
         }
       },
 
-      // Clear categories
       clearCategories: () => {
         set(initialState);
+      },
+
+      expandCategory: (id) => {
+        set((state) => ({
+          expandedCategories: new Set([...state.expandedCategories, id]),
+        }));
+      },
+
+      collapseCategory: (id) => {
+        set((state) => {
+          const newExpanded = new Set(state.expandedCategories);
+          newExpanded.delete(id);
+          return { expandedCategories: newExpanded };
+        });
+      },
+
+      toggleCategory: (id) => {
+        const { expandedCategories } = get();
+        if (expandedCategories.has(id)) {
+          get().collapseCategory(id);
+        } else {
+          get().expandCategory(id);
+        }
+      },
+
+      toggleExpandAll: () => {
+        const { allExpanded } = get();
+
+        if (allExpanded) {
+          set({ expandedCategories: new Set(), allExpanded: false });
+        } else {
+          const getAllIds = (cats: IContent.ICategoriesData[]): number[] => {
+            let ids: number[] = [];
+            cats.forEach((cat) => {
+              ids.push(Number(cat.id));
+              const children = cat.children || cat.subcategories || [];
+              if (children.length > 0) {
+                ids = [...ids, ...getAllIds(children)];
+              }
+            });
+            return ids;
+          };
+
+          const allIds = getAllIds(get().categories);
+          set({ expandedCategories: new Set(allIds), allExpanded: true });
+        }
+      },
+
+      // Simplified path building - parent path is passed during recursion
+      buildCategoryPath: (category, parentPath = '') => {
+        if (parentPath) {
+          return `${parentPath}/${category.slug}`;
+        }
+        return `/pc/${category.slug}`;
       },
     }),
     {
@@ -112,7 +168,17 @@ export const useCategoriesStore = create<CategoriesStore>()(
         lastFetched: state.lastFetched,
         expiresAt: state.expiresAt,
         isInitialized: state.isInitialized,
+        expandedCategories: Array.from(state.expandedCategories),
+        allExpanded: state.allExpanded,
       }),
+      merge: (persistedState: any, currentState) => {
+        return {
+          ...currentState,
+          ...persistedState,
+          expandedCategories: new Set(persistedState?.expandedCategories || []),
+          allExpanded: persistedState?.allExpanded || false,
+        };
+      },
     }
   )
 );

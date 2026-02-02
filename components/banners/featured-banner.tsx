@@ -16,13 +16,11 @@ import { useTopBanners } from '@/hooks/useBanner';
 const FeaturedBanner = () => {
   const { banners, isLoading, isInitialized } = useTopBanners();
 
-  // Show skeleton only on first load
-  if (isLoading && !isInitialized) {
+  if (isLoading || !isInitialized) {
     return <FeaturedBannerSkeleton dots={4} />;
   }
 
-  // Don't render if no banners after loading
-  if (isInitialized && banners.length === 0) {
+  if (banners.length === 0) {
     return null;
   }
 

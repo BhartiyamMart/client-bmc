@@ -26,8 +26,6 @@ export const useBanners = (options: UseBannersOptions = {}) => {
 
   const banners = tag ? getBannersByTag(tag) : allBanners;
 
-  console.log('Hook returns:', { banners, isLoading, isInitialized, error }); // Debug log
-
   return {
     banners,
     isLoading,

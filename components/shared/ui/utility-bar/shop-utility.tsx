@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, forwardRef } from 'react';
 import Container from '@/components/shared/ui/container';
 import ShopByCategory from '@/components/shared/ui/utility-bar/shop-by-category';
 import CategoryItem from '@/components/shared/ui/utility-bar/category-item';
-import CategorySidebar from '@/components/shared/ui/utility-bar/category-sidebar';
+import CategoryColumn from '@/components/shared/ui/utility-bar/category-column';
 import ShopUtilitySkeleton from './shop-utility-skelton';
 import { useCategories } from '@/hooks/useCategories';
 
@@ -152,7 +152,7 @@ const ShopUtility = forwardRef<HTMLDivElement, ShopUtilityProps>(({ navbarRef },
       <AnimatePresence>
         {sidebarOpen && (
           <div ref={sidebarRef}>
-            <CategorySidebar position={sidebarPosition} onClose={() => setSidebarOpen(false)} />
+            <CategoryColumn position={sidebarPosition} onClose={() => setSidebarOpen(false)} />
           </div>
         )}
       </AnimatePresence>

@@ -20,8 +20,8 @@ interface SliderProps {
   className?: string;
   cardClassName?: string;
   centerMode?: boolean;
-  cardWidth?: 'auto' | 'equal'; // New: auto adjusts to content, equal divides space equally
-  gap?: number; // Gap between cards in pixels
+  cardWidth?: 'auto' | 'equal';
+  gap?: number;
 }
 
 const Slider: React.FC<SliderProps> = memo(
@@ -54,7 +54,6 @@ const Slider: React.FC<SliderProps> = memo(
 
     const totalSlides = useMemo(() => cards.length, [cards.length]);
 
-    // Dynamically adjust slidesToShow if cards are less
     const effectiveSlidesToShow = useMemo(
       () => Math.min(currentSlidesToShow, totalSlides),
       [currentSlidesToShow, totalSlides]
@@ -289,30 +288,24 @@ const Slider: React.FC<SliderProps> = memo(
       return () => stopAutoPlay();
     }, [startAutoPlay, stopAutoPlay]);
 
+    // Fixed transform calculation considering gap
     const transformValue = useMemo(() => {
-      const slideWidth = 100 / effectiveSlidesToShow;
-      const baseTransform = currentSlide * slideWidth;
-
       if (dragStateRef.current.isDragging) {
-        const maxTransform = (totalSlides - effectiveSlidesToShow) * slideWidth;
-        return Math.min(Math.max(baseTransform + dragOffset, 0), maxTransform);
+        return dragOffset;
       }
 
-      return baseTransform;
-    }, [currentSlide, effectiveSlidesToShow, totalSlides, dragOffset]);
+      // Calculate actual card width including gap
+      const cardWidthPercent = 100 / effectiveSlidesToShow;
+      return currentSlide * cardWidthPercent;
+    }, [currentSlide, effectiveSlidesToShow, dragOffset]);
 
-    // Calculate card width percentage
-    const cardWidthPercentage = useMemo(() => {
-      return 100 / effectiveSlidesToShow;
-    }, [effectiveSlidesToShow]);
-
-    // Grid Mode: For few items when centerMode is on
+    // Grid Mode
     if (useGridMode) {
       return (
         <div className={`slider-container ${className}`}>
-          <div className="flex flex-wrap justify-start" style={{ gap: `${gap}px` }}>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {cards.map((card, index) => (
-              <div key={index} className={cardClassName} style={{ flex: '0 0 auto' }}>
+              <div key={index} className={cardClassName}>
                 {card}
               </div>
             ))}
@@ -337,7 +330,7 @@ const Slider: React.FC<SliderProps> = memo(
             style={{
               transform: `translateX(-${transformValue}%)`,
               willChange: dragStateRef.current.isDragging ? 'transform' : 'auto',
-              gap: cardWidth === 'equal' ? `${gap}px` : undefined,
+              gap: `${gap}px`,
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -354,12 +347,8 @@ const Slider: React.FC<SliderProps> = memo(
                 style={{
                   width:
                     cardWidth === 'equal'
-                      ? `calc(${cardWidthPercentage}% - ${(gap * (effectiveSlidesToShow - 1)) / effectiveSlidesToShow}px)`
+                      ? `calc((100% - ${gap * (effectiveSlidesToShow - 1)}px) / ${effectiveSlidesToShow})`
                       : 'auto',
-                  minWidth:
-                    cardWidth === 'equal'
-                      ? `calc(${cardWidthPercentage}% - ${(gap * (effectiveSlidesToShow - 1)) / effectiveSlidesToShow}px)`
-                      : undefined,
                 }}
               >
                 {card}

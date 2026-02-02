@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useCategories } from '@/hooks/useCategories';
 
-interface CategorySidebarProps {
+interface CategoryColumnProps {
   position: { top: number; left: number };
   onClose: () => void;
 }
 
-const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
+const CategoryColumn = ({ position, onClose }: CategoryColumnProps) => {
   const [activeCategory, setActiveCategory] = useState<number>(0);
   const [activeSubCategory, setActiveSubCategory] = useState<number>(0);
 
@@ -158,4 +158,4 @@ const CategorySidebar = ({ position, onClose }: CategorySidebarProps) => {
   );
 };
 
-export default CategorySidebar;
+export default CategoryColumn;
